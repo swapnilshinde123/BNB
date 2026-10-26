@@ -48,4 +48,9 @@ footer p,footer>small,footer>span{font-size:13px;line-height:1.75}footer>a{font-
 .modal-body{grid-template-columns:minmax(0,1fr) 360px}.reservation .stay-date-trigger{font-size:14px!important;gap:6px;padding:13px 12px!important;white-space:nowrap}.stay-date-trigger svg{flex-shrink:0}
 @media(max-width:900px){.modal-body{grid-template-columns:1fr}}
 @media(max-width:380px){.date-fields{grid-template-columns:1fr}.date-fields>label{width:100%}}
+/* Keep short control labels intact; let their rows adapt instead. */
+.stay-date-trigger,.month-picker-trigger,.date-range-summary b,.range-pill b{white-space:nowrap}
+.stay-select-trigger{min-width:0;gap:10px}.stay-select-trigger>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;text-align:left}.stay-select-trigger>span:last-child,.stay-select-trigger svg,.month-picker-trigger svg{flex-shrink:0}
+.primary,.outline,.login,.text-button,.search-button,.row-actions button,.filter-chips button,.filter-button,.view-toggle button,.header nav button,.booking-actions a,.booking-actions button{white-space:nowrap;flex-shrink:0}
+.admin-heading>div:last-child,.booking-actions,.row-actions{flex-wrap:wrap;gap:10px}.search-segment>span,.search-segment>b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.table-wrap th{white-space:nowrap}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
