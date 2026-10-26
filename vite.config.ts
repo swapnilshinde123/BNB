@@ -40,6 +40,20 @@ const localBindingConfig = {
         },
       ]
     : [],
+  env: {
+    admin: {
+      d1_databases: d1
+        ? [
+            {
+              binding: d1,
+              database_name: "aangan-stays",
+              database_id: productionDatabaseId || SITE_CREATOR_PLACEHOLDER_DATABASE_ID,
+              migrations_dir: "./drizzle",
+            },
+          ]
+        : [],
+    },
+  },
 };
 
 export default defineConfig(async ({ command }) => {
