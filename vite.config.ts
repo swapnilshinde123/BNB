@@ -42,6 +42,8 @@ const localBindingConfig = {
     : [],
   env: {
     admin: {
+      name: "aangan-stays-admin",
+      workers_dev: true,
       d1_databases: d1
         ? [
             {
