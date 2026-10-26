@@ -5,6 +5,8 @@ Responsive property booking app with host approval, guest history, map search an
 ## What works
 
 - React/Vinext guest interface and server API routes.
+- Creative responsive design, complementary fonts, animated photo collage, map motion graphics, scroll reveals and reduced-motion support.
+- Admin property management with photo upload, map pin selection, nightly rates, amenities and listing visibility.
 - Cloudflare D1 booking storage and unique property-night reservations.
 - Pending requests hold dates; cancellation or rejection releases them.
 - Owner-only confirmation, manual bookings, monthly booking-value reports and CSV export.
@@ -22,6 +24,8 @@ Use Node.js 22.13 or newer.
 npm run install:ci
 npm run build
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_mysterious_flatman.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_blocked_dates.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_managed_properties.sql
 npm run dev
 ```
 

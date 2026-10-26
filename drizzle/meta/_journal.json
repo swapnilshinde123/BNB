@@ -8,6 +8,20 @@
       "when": 1792926412486,
       "tag": "0000_mysterious_flatman",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1792945719911,
+      "tag": "0001_blocked_dates",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792946181493,
+      "tag": "0002_managed_properties",
+      "breakpoints": true
     }
   ]
 }

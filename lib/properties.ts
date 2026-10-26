@@ -6,6 +6,6 @@ export const properties = [
  {id:'p5',name:'The Terracotta Home',area:'Wakad',type:'2 BHK',guests:4,beds:2,baths:2,price:3600,rating:'4.90',reviews:24,tag:'A little more space',category:'Family friendly',image:'photo-1600607687939-ce8a6c25118c',lat:18.598,lng:73.762,description:'Earthy tones and unhurried mornings. Settle into a fully equipped apartment with space for family, work and everything in between.'},
  {id:'p6',name:'The Garden Apartment',area:'Hinjewadi',type:'1 BHK',guests:3,beds:1,baths:1,price:2600,rating:'4.93',reviews:19,tag:'Green escape',category:'Design-led',image:'photo-1600210491892-03d54c0aaf87',lat:18.5913,lng:73.7389,description:'A calm, green hideaway close to the IT district. Your own private balcony, an equipped kitchen and a neighbourhood that feels like home.'},
 ];
-export type Property = typeof properties[number];
-export const photo=(id:string,w=900)=>`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=85`;
+export type Property = typeof properties[number] & {address?:string;photos?:string[];amenities?:string[];cleaningFee?:number;active?:boolean;managed?:boolean};
+export const photo=(id:string,w=900)=>id.startsWith('data:image/')||/^https?:\/\//.test(id)?id:`https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=85`;
 export const money=(n:number)=>'₹'+n.toLocaleString('en-IN');
