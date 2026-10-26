@@ -4,6 +4,7 @@ import {PropertyWizard,PropertyDraft} from '@/components/stays/property-wizard';
 import {SearchControls} from '@/components/stays/search-controls';
 import {GoogleSignIn} from '@/components/stays/google-signin';
 import '@/components/stays/controls.css';
+import '@/components/stays/typography.css';
 import {useCallback,useEffect,useState,useRef} from 'react';
 import {ArrowUpRight,ArrowRight,MapPin,Search,SlidersHorizontal,Grid2X2,Map,Heart,Star,Users,BedDouble,Bath,Wifi,Car,Wind,Check,ChevronDown,ChevronLeft,ChevronRight,X,Plus,Minus,CalendarDays,ShieldCheck,MessageCircle,Clock,Leaf,LayoutDashboard,Download,LogOut,Home,CheckCircle2,Menu} from 'lucide-react';
 import {properties,photo,money,Property} from '@/lib/properties';

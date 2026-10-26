@@ -1,0 +1,48 @@
+/* Readable type across the guest experience and host tools. */
+body{font-size:16px;line-height:1.6}
+.header nav button,.login,.primary,.search-button,.outline,.text-button,.hero-how{font-size:14px}
+.header nav{gap:30px}.header nav button{min-height:44px}.login{min-height:44px}
+.eyebrow,.hero .eyebrow,.section-heading>.eyebrow,.steps-intro .eyebrow,.why .eyebrow{font-size:12px;line-height:1.6;letter-spacing:1.7px}
+.hero-copy>p{font-size:16px;line-height:1.8;max-width:480px}
+.hero-actions{flex-wrap:wrap;gap:18px 24px}.hero-actions .primary{font-size:14px;padding:16px 22px;min-height:50px}
+.hero-proof{flex-wrap:wrap;row-gap:15px}.hero-proof b{font-size:13px}.hero-proof small{font-size:12px;line-height:1.65}
+.hero-photo-label span,.hero-small-photo>span,.floating-note small,.pune-map-note small{font-size:12px;line-height:1.5}
+.floating-note{font-size:14px;line-height:1.5}.floating-note>div{min-width:0}.hero-edition{font-size:10px;letter-spacing:1px;line-height:1.5}
+.search-caption{font-size:13px;line-height:1.7;flex-wrap:wrap}.search-segment b{font-size:14px}.search-segment>span{font-size:15px}
+.section-heading>p,.steps-intro>p,.why-item p,.empty p,.inner-page>p,.admin-heading p{font-size:15px;line-height:1.8}
+.view-toggle button,.filter-chips button,.filter-button{font-size:14px;min-height:42px}.filter-chips{flex-wrap:wrap;row-gap:10px}
+.results-meta,.results-meta>label,.results-meta select{font-size:13px}.results-meta{gap:12px;flex-wrap:wrap;line-height:1.6}
+.property-tag,.image-visit{font-size:12px}.card-title h3,.map-layout .card-title h3{font-size:19px;line-height:1.4}
+.card-title{align-items:flex-start;gap:12px;margin-top:15px}.card-title>span{font-size:13px;flex-shrink:0;padding-top:3px}
+.property-location,.map-layout .property-location{font-size:14px;line-height:1.65;flex-wrap:wrap;row-gap:2px}
+.property-meta,.map-layout .property-meta{font-size:13px;flex-wrap:wrap;row-gap:8px}.card-bottom b,.map-layout .card-bottom b{font-size:21px}
+.card-bottom small{font-size:13px}.sample-note{font-size:12px;line-height:1.8}
+.steps-intro h2,.why h2{font-size:34px;line-height:1.2}.step-card h3,.why-item h3{font-size:18px;line-height:1.4}
+.step-card>p{font-size:14px;line-height:1.8}.why-item a{font-size:14px}
+footer p,footer>small,footer>span{font-size:13px;line-height:1.75}footer>a{font-size:14px}
+.modal-about>p:not(.property-meta):not(.sample-note),.success-content>p{font-size:15px;line-height:1.8}.modal-about>.property-meta,.amenities{font-size:14px}
+.host-note b{font-size:15px}.host-note p{font-size:14px;line-height:1.7}.reservation label,.date-fields>label{font-size:14px;line-height:1.5}
+.reservation input,.reservation select{font-size:16px}.reservation .stay-date-trigger,.reservation .stay-select-trigger{font-size:15px!important;min-height:50px;padding:13px 14px!important}
+.price-summary{font-size:15px}.booking-disclaimer,.blocked-dates{font-size:13px;line-height:1.7}.reservation .primary{font-size:15px}
+.stay-select-trigger,.stay-date-trigger,.month-picker-trigger,.stay-select-option{font-size:15px!important}.destination-input input{font-size:16px}.destination-list b{font-size:15px}.destination-list small{font-size:13px}
+.rdp-root{font-size:14px}.rdp-root .rdp-month_caption{font-size:17px}.rdp-root .rdp-weekday{font-size:12px}.guest-counter small,.wizard-counter small{font-size:13px}
+.login-content>p{font-size:16px;line-height:1.8}.login-content .google-signin-trust{font-size:13px;line-height:1.7}.login-content>.text-button{font-size:14px}.login-content>.eyebrow{font-size:12px;line-height:1.7}
+.login-visual>div>small{font-size:14px}.login-visual>div>span{font-size:12px}
+.booking-card p,.booking-facts{font-size:14px;line-height:1.7}.booking-card small{font-size:13px}.badge,.visibility{font-size:12px}
+.stat>div{font-size:14px;line-height:1.5;gap:12px}.stat>small{font-size:12px;line-height:1.6}.stat>b{font-size:34px;line-height:1.3}
+.panel-title h3{font-size:19px}.panel-title>span,.panel-title small{font-size:13px}.panel-title{gap:16px;flex-wrap:wrap}
+.table-wrap table{font-size:14px;line-height:1.65}.table-wrap th,.table-wrap td small{font-size:12px}.row-actions button{font-size:13px;padding:9px 12px}
+.whatsapp-panel p{font-size:14px;line-height:1.8}.whatsapp-panel small{font-size:13px;line-height:1.7}.command{font-size:14px}.chart-column{font-size:13px}
+.availability-heading p{font-size:14px;line-height:1.7}.availability-property{font-size:14px}.availability-controls h3{font-size:18px}.availability-controls .text-button{font-size:14px}
+.availability-day b{font-size:16px}.availability-day small{font-size:12px}.availability-weekdays>span,.availability-legend>span,.availability-hint{font-size:12px;line-height:1.7}
+.managed-card-heading h4{font-size:17px;line-height:1.4}.managed-card-heading>div>span,.managed-card-body>p{font-size:13px;line-height:1.7}.managed-card-body>p b{font-size:17px}.managed-card-body .outline,.managed-properties>.panel-title>.primary{font-size:14px}
+.wizard-sidebar>p,.wizard-sidebar nav b,.wizard-side-note p{font-size:14px}.wizard-sidebar nav small,.wizard-side-note small{font-size:12px;line-height:1.7}
+.wizard-section-intro p,.amenities-heading p,.wizard-upload p{font-size:14px;line-height:1.7}.wizard-section-intro h4,.amenities-heading h4{font-size:17px}
+.wizard-fields label,.wizard-extra,.wizard-address,.wizard-coordinates label{font-size:14px}.wizard-content input:not([type=checkbox]):not([type=file]),.wizard-content textarea{font-size:16px!important;line-height:1.6}
+.wizard-content label small{font-size:12px;line-height:1.7}.wizard-amenities button{font-size:13px;line-height:1.5;min-height:92px}.wizard-counter b{font-size:16px}
+.wizard-price-grid input{font-size:28px!important}.wizard-price-preview p,.wizard-price-preview small,.wizard-summary span{font-size:13px;line-height:1.7}.wizard-summary b{font-size:16px}
+.wizard-header>div>span,.wizard-price-grid label>span,.wizard-price-preview span,.wizard-summary small{font-size:12px;line-height:1.6}.wizard-visibility>span:first-child{font-size:14px}
+.error,.property-notice{font-size:14px;line-height:1.6}.map-caption{font-size:12px}
+@media(max-width:1100px) and (min-width:761px){.header nav{gap:20px}.header .brand-logo{width:210px}.hero-copy>p{font-size:15px}.hero-actions{gap:15px}.hero-actions .primary{padding:14px 17px}.hero-proof .proof-divider{display:none}}
+@media(max-width:760px){.header nav{gap:24px}.header nav button,.login{font-size:14px}.hero-copy>p{font-size:16px}.hero .eyebrow{font-size:11px;letter-spacing:1.1px}.hero-proof .proof-divider{display:none}.hero-actions .primary{font-size:14px}.hero-how{font-size:14px}.hero-proof .pune-proof{font-size:16px}.heading-row h2{font-size:32px}.property-grid{grid-template-columns:1fr}.property{padding:10px 10px 18px}.property-location{font-size:14px}.property-meta{font-size:13px}.card-title h3{font-size:20px}.card-bottom b{font-size:22px}.section-heading>p{font-size:15px}.view-toggle button{font-size:13px}.steps-intro h2,.why h2{font-size:32px}.step-card h3,.why-item h3{font-size:18px}.step-card>p{font-size:14px}.admin-heading h1{font-size:30px;line-height:1.25}.admin-heading .primary,.admin-heading .outline{font-size:13px;min-height:44px}.stat>div{font-size:13px}.stat>b{font-size:30px}.stat>small{font-size:12px}.panel-title h3{font-size:18px}.availability-grid{overflow-x:auto;padding-bottom:8px}.availability-weekdays,.availability-dates{min-width:480px}.availability-day{padding:9px 7px;min-height:75px}.availability-hint{font-size:12px}.managed-card-heading h4{font-size:17px}.managed-card-heading>div>span,.managed-card-body>p{font-size:13px}.login-content>p{font-size:16px}.login-content .google-signin-trust{font-size:13px}.wizard-price-grid{grid-template-columns:1fr}.wizard-price-grid input{font-size:28px!important}.wizard-header h3{font-size:28px}.wizard-content{padding:22px}.wizard-fields{gap:20px}.wizard-summary{flex-wrap:wrap}.wizard-summary strong{font-size:20px}.wizard-amenities{grid-template-columns:repeat(2,minmax(0,1fr))}.date-fields{gap:10px}.reservation .stay-date-trigger{font-size:14px!important;padding:12px!important}.search-caption{font-size:13px;line-height:1.7}.footer-brand .brand-logo{width:190px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
