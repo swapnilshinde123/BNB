@@ -36,3 +36,8 @@ Set `ADMIN_EMAIL=seedy@sites.test` in an ignored `.dev.vars` file for the local 
 The application is deployed as separate Cloudflare Workers for the guest site and host dashboard. Both Workers use the same Cloudflare D1 database binding named DB. Production OAuth and host-only access are configured on both Workers. The admin Worker deploys from the `admin` Wrangler environment, which creates the separate `aangan-stays-admin` address; both environments bind the same D1 database. The `.openai/hosting.json` file preserves the selected Sites project identity.
 
 See [OPERATIONS.md](OPERATIONS.md) and [.env.example](.env.example) for configuration and WhatsApp setup. Never commit runtime secrets or local databases.
+
+
+## Cloudflare deployment
+
+The GitHub build runs `npm run build`, then `npm run deploy:workers` to publish the customer site and the admin environment as separate Workers.
