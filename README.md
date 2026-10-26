@@ -29,10 +29,10 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 npm run dev
 ```
 
-Set `ADMIN_EMAIL=seedy@sites.test` in an ignored `.dev.vars` file for the local test identity, and set `OWNER_WHATSAPP` to the intended owner number in international digits-only format. Local sign-in is simulated by the starter; production authentication is provided by Sites dispatch.
+Set `ADMIN_EMAIL=seedy@sites.test` in an ignored `.dev.vars` file for the local test identity, and set `OWNER_WHATSAPP` to the intended owner number in international digits-only format. Local sign-in is simulated by the starter.
 
 ## Hosting
 
-This application targets Sites/Cloudflare Workers with a D1 binding named DB. It is not a GitHub Pages static site. The `.openai/hosting.json` file preserves the selected Sites project identity. Production authentication must remain behind Sites dispatch; do not deploy its trusted identity headers as public self-asserted authentication on another host.
+The application is deployed as separate Cloudflare Workers for the guest site and host dashboard. Both Workers use the same Cloudflare D1 database binding named DB. Production OAuth and host-only access must be configured on both Workers. The `.openai/hosting.json` file preserves the selected Sites project identity.
 
 See [OPERATIONS.md](OPERATIONS.md) and [.env.example](.env.example) for configuration and WhatsApp setup. Never commit runtime secrets or local databases.
