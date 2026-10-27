@@ -6,7 +6,7 @@ import {FancySelect} from './controls';
 import {Property,money,photo} from '@/lib/properties';
 import './mobile-explore.css';
 export function MobileNavigation({page,onNavigate,onAccount,accountOpen}:{page:string;onNavigate:(page:string)=>void;onAccount:()=>void;accountOpen:boolean}){
- return <nav className="mobile-bottom-nav" aria-label="Main navigation">{[{id:'explore',label:'Explore',Icon:Search},{id:'saved',label:'Saved',Icon:Heart},{id:'bookings',label:'Bookings',Icon:Clock},{id:'account',label:'Account',Icon:UserCircle}].map(({id,label,Icon})=><button key={id} type="button" aria-label={label} aria-current={(id==='account'?accountOpen:page===id&&!accountOpen)?'page':undefined} onClick={()=>id==='account'?onAccount():onNavigate(id)}><Icon size={23} strokeWidth={1.7}/><span>{label}</span></button>)}</nav>
+ return <nav className="mobile-bottom-nav" aria-label="Main navigation">{[{id:'explore',label:'Explore',Icon:Search},{id:'saved',label:'Saved',Icon:Heart},{id:'bookings',label:'Bookings',Icon:Clock},{id:'account',label:'Account',Icon:UserCircle}].map(({id,label,Icon})=><button key={id} type="button" aria-label={label} aria-current={(id==='account'?accountOpen:page===id&&!accountOpen)?'page':undefined} onClick={()=>id==='account'?onAccount():onNavigate(id)}><Icon size={26} strokeWidth={1.9}/><span>{label}</span></button>)}</nav>
 }
 function MobileHomeCard({home,saved,onSave,onOpen,compact=false}:{home:Property;saved:boolean;onSave:()=>void;onOpen:()=>void;compact?:boolean}){
  const [index,setIndex]=useState(0);const images=home.photos?.length?home.photos:[home.image];
