@@ -43,3 +43,12 @@
 @media(max-width:1024px){.ribbon-track{animation-duration:38s}}
 @media(max-width:760px){.ribbon-track{animation-duration:32s}.ribbon-star{flex-basis:22px;width:22px;height:22px}}
 @media(prefers-reduced-motion:reduce){.ribbon-track{animation:none!important;transform:none!important}}
+
+/* Leave room for hover lifts and keyboard rings inside scrolling controls. */
+.filter-row .filter-chips{overflow:visible;padding:8px 4px;scroll-padding-inline:4px}
+.guest-gallery{padding-bottom:8px;scroll-padding-inline:8px}
+.availability-panel .availability-grid{box-sizing:border-box;padding:8px 4px}
+@media(max-width:760px){
+ .filter-row .filter-chips{overflow-x:auto;overflow-y:hidden;padding:8px 4px 10px;overscroll-behavior-x:contain}
+ .guest-gallery{padding-bottom:8px}
+}
