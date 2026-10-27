@@ -54,3 +54,5 @@ footer p,footer>small,footer>span{font-size:13px;line-height:1.75}footer>a{font-
 .primary,.outline,.login,.text-button,.search-button,.row-actions button,.filter-chips button,.filter-button,.view-toggle button,.header nav button,.booking-actions a,.booking-actions button{white-space:nowrap;flex-shrink:0}
 .admin-heading>div:last-child,.booking-actions,.row-actions{flex-wrap:wrap;gap:10px}.search-segment>span,.search-segment>b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.table-wrap th{white-space:nowrap}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+.stay-times{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0;padding:14px;border:1px solid #e6e5de;border-radius:14px;background:#f7f7f2}.stay-times>span{display:grid;grid-template-columns:19px 1fr;align-items:center;column-gap:7px;min-width:0}.stay-times svg{grid-row:span 2;color:#72836f}.stay-times small{font-size:11px;color:#7d827c}.stay-times b{font-size:14px;color:#263b32}
