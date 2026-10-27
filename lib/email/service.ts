@@ -14,14 +14,14 @@ export async function drainEmails(){
  const db=env.DB,c=settings(),now=Date.now(),policy=deliveryPolicy(c);
  const restriction=policy.adminOnly?" AND kind='admin-request' AND lower(recipient)=?":'';
  const parameters: (string|number)[]=[now,now,now-7*86400000];if(policy.adminOnly)parameters.push(policy.adminEmail);
- const jobs=await db.prepare("SELECT id FROM booking_emails WHERE sent_at IS NULL AND provider_id IS NULL AND attempts<5 AND next_attempt_at<=? AND lease_until<? AND created_at>?"+restriction+" ORDER BY CASE WHEN kind IN ('confirmed','rejected','cancelled') THEN 0 ELSE 1 END,created_at,id LIMIT "+(policy.gmailReady?'1':'4')+"").bind(...parameters).all<{id:string}>();
- for(const item of jobs.results){
+ const jobs=await db.prepare("SELECT id FROM booking_emails WHERE sent_at IS NULL AND provider_id IS NULL AND attempts<5 AND next_attempt_at<=? AND lease_until<? AND created_at>?"+restriction+" ORDER BY CASE WHEN kind IN ('confirmed','rejected','cancelled') THEN 0 ELSE 1 END,created_at,id LIMIT 2").bind(...parameters).all<{id:string}>();
+ await Promise.all(jobs.results.map(async item=>{
   const lease=crypto.randomUUID();
   const job=await db.prepare('UPDATE booking_emails SET lease=?,lease_until=?,attempts=attempts+1 WHERE id=? AND sent_at IS NULL AND provider_id IS NULL AND attempts<5 AND lease_until<? RETURNING *').bind(lease,Date.now()+120000,item.id,Date.now()).first<{id:string;kind:MailKind;recipient:string;payload:string;attempts:number}>();
-  if(!job)continue;
-  if(!canDeliver(c,job.kind,job.recipient)){await db.prepare('UPDATE booking_emails SET attempts=attempts-1,lease_until=0 WHERE id=? AND lease=?').bind(job.id,lease).run();continue}
+  if(!job)return;
+  if(!canDeliver(c,job.kind,job.recipient)){await db.prepare('UPDATE booking_emails SET attempts=attempts-1,lease_until=0 WHERE id=? AND lease=?').bind(job.id,lease).run();return}
   try{
-   if(job.kind==='guest-request'){const current=await db.prepare('SELECT status FROM bookings WHERE id=?').bind(job.id.split(':')[0]).first<{status:string}>();if(current&&current.status!=='pending'){await db.prepare("UPDATE booking_emails SET provider_id='suppressed:request-reviewed',last_error=NULL,lease_until=0 WHERE id=? AND lease=?").bind(job.id,lease).run();continue}}
+   if(job.kind==='guest-request'){const current=await db.prepare('SELECT status FROM bookings WHERE id=?').bind(job.id.split(':')[0]).first<{status:string}>();if(current&&current.status!=='pending'){await db.prepare("UPDATE booking_emails SET provider_id='suppressed:request-reviewed',last_error=NULL,lease_until=0 WHERE id=? AND lease=?").bind(job.id,lease).run();return}}
    const message=bookingEmail(JSON.parse(job.payload),job.kind);
    let providerId:string;
    if(policy.gmailReady&&job.kind!=='admin-request'){providerId=await sendGmail(c,job.id,job.recipient,message)}else{
@@ -35,5 +35,5 @@ export async function drainEmails(){
    const message=error instanceof Error&&/^Email provider /.test(error.message)?error.message:'Email connection failed';
    await db.prepare('UPDATE booking_emails SET last_error=?,next_attempt_at=?,lease_until=0 WHERE id=? AND lease=?').bind(message,Date.now()+Math.min(3600000,60000*2**job.attempts),job.id,lease).run();
   }
- }
+ }));
 }
