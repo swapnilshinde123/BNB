@@ -19,3 +19,11 @@ Check spam folders and sender/provider delivery logs if mail is accepted but not
 ## Without a sender domain: owner-only test mode
 
 Set `EMAIL_FROM=Aangan Stays <onboarding@resend.dev>` and `EMAIL_MODE=admin_only` on both Workers. The Resend account email and ADMIN_EMAIL must be the same. Only admin-request messages addressed to that owner email are sent; all guest receipts and decisions are held. The dashboard labels this mode explicitly. A resend.dev sender enforces this restriction even if EMAIL_MODE is accidentally omitted. This is Resend's restricted testing sender, not a verified production sending domain. Provider limits and policies apply.
+
+## Customer emails through the host Google account
+
+The optional relay in `integrations/google-mail-relay` uses Google MailApp with only `script.send_mail`. Deploy it as the owner and allow public HTTP invocation **only with the HMAC checks in place**. Add a random 32-byte hex `AANGAN_RELAY_SECRET` in Script Properties, and the identical value as encrypted `GMAIL_RELAY_SECRET` on both Workers. Set `GMAIL_RELAY_URL` to the deployed /exec URL and `EMAIL_CUSTOMER_PROVIDER=gmail` on both Workers. Keep the existing Resend admin connection. Do not put secrets in source or URL query strings.
+
+The relay accepts fresh signed booking messages only, checks recipient/header formats, and records each job ID. Concurrent/repeated requests do not resend. An interrupted send remains marked for manual review to avoid duplicate mail. Successful markers expire after 30 days; the website retries only jobs younger than seven days. MailApp daily recipient quotas apply; consumer accounts currently typically have 100/day. An expired quota backs off without consuming a sending marker. The admin connection-test button sends only to ADMIN_EMAIL and does not change bookings.
+
+When releasing held messages, final decisions are prioritized. An obsolete request receipt for an already-reviewed booking is suppressed (`provider_id=suppressed:request-reviewed`), without marking it delivered or retrying it.
