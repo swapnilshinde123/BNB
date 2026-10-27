@@ -73,3 +73,23 @@
  .mobile-search-pill small{font-size:9px;gap:4px}
  .mobile-map-stage .leaflet-bottom{bottom:calc(44% + 96px)}
 }
+@media(max-width:760px){
+ .mobile-map-sheet{height:min(42dvh,390px);max-height:calc(100% - 100px - env(safe-area-inset-bottom));border-radius:25px 25px 0 0}
+ .mobile-map-sheet.expanded{height:calc(100% - 100px - env(safe-area-inset-bottom));max-height:calc(100% - 100px - env(safe-area-inset-bottom))}
+ .mobile-sheet-handle{min-height:30px}
+ .mobile-sheet-heading{padding:4px 16px 9px;align-items:center}
+ .mobile-sheet-heading b{font-size:15px;line-height:1.35;font-weight:650;letter-spacing:-.3px}
+ .mobile-sheet-heading small{font-size:11px;line-height:1.4}
+ .mobile-sheet-heading>button{min-width:76px;min-height:44px;justify-content:center;border:1px solid #e3e7df;border-radius:24px;background:#fafbf8;text-decoration:none;font-size:13px;font-weight:600}
+ .mobile-sheet-content{padding:0 16px max(14px,env(safe-area-inset-bottom));touch-action:pan-y;-webkit-overflow-scrolling:touch}
+ .mobile-map-card-nav{font-size:12px;padding-bottom:8px}
+ .mobile-map-card-nav button{width:42px;height:42px;background:#fff;touch-action:manipulation}
+ .compact .mobile-home-photo{aspect-ratio:3.2}
+ .compact .mobile-home-title{min-height:44px;padding:7px 0 3px}
+ .compact .mobile-home-title h2{font-size:17px;font-weight:650;line-height:1.35;letter-spacing:-.35px}
+ .compact .mobile-home-area{font-size:12px;line-height:1.5}
+ .compact .mobile-home-price{min-height:42px;margin-top:2px;font-size:13px}
+ .compact .mobile-home-price b{font-size:18px}
+ .mobile-map-stage .leaflet-marker-icon{cursor:pointer;touch-action:manipulation}
+ .mobile-map-stage .leaflet-control-zoom a{touch-action:manipulation}
+}
