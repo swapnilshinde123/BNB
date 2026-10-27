@@ -1,0 +1,21 @@
+import {database,isAdmin,transition} from '@/lib/server';
+import {escapeHtml,reviewPath} from '@/lib/email/templates';
+import {findProperty} from '@/lib/property-data';
+
+function page(title:string,body:string,status=200){return new Response(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)} · Aangan Stays</title><style>body{margin:0;background:#f6f4ed;color:#263a2e;font:17px/1.7 Arial,sans-serif}main{box-sizing:border-box;max-width:640px;margin:7vh auto;padding:32px;background:white;border:1px solid #e2e5da;border-radius:24px}h1{font-size:30px;line-height:1.3}dl{display:grid;grid-template-columns:auto 1fr;gap:14px}dd{margin:0;text-align:right;overflow-wrap:anywhere}a,button{display:inline-block;padding:14px 20px;border:0;border-radius:12px;background:#2c4937;color:white;font:inherit;text-decoration:none;cursor:pointer}small{color:#697366}form{margin-top:28px}@media(max-width:680px){main{margin:20px 12px;padding:24px}dl{font-size:15px}}</style></head><body><main><small>AANGAN HOST SPACE</small><h1>${escapeHtml(title)}</h1>${body}</main></body></html>`,{status,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",'X-Content-Type-Options':'nosniff'}})}
+function selection(req:Request){const q=new URL(req.url).searchParams,id=q.get('id')||'',action=q.get('action')||'';return /^ANG-[A-F0-9]{8}$/.test(id)&&['confirmed','rejected'].includes(action)?{id,action}:null}
+export async function GET(req:Request){
+ const s=selection(req);if(!s)return page('Invalid booking link','<p>Please open the original booking email.</p>',400);
+ if(!await isAdmin())return page('Sign in to review this booking',`<p>Use your approved host Google account to view the request and make a decision.</p><a href="/login?return_to=${encodeURIComponent(reviewPath(s.id,s.action))}">Sign in with Google</a>`,401);
+ const b=await database().prepare('SELECT * FROM bookings WHERE id=?').bind(s.id).first<any>();if(!b)return page('Booking not found','<p>This request is unavailable.</p>',404);
+ if(b.status!=='pending')return page('This booking has already been reviewed',`<p>${escapeHtml(b.id)} is <strong>${escapeHtml(b.status)}</strong>.</p><a href="/host">Open dashboard</a>`,409);
+ const home=await findProperty(b.property_id,true),rows=[['Guest',b.name],['Email',b.email],['Home',home?.name||b.property_id],['Check-in',b.check_in],['Check-out',b.check_out],['Guests',b.guests],['Amount',new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(b.total)]];
+ return page(s.action==='confirmed'?'Accept this booking?':'Reject this booking?',`<p>Booking reference: <strong>${escapeHtml(b.id)}</strong></p><dl>${rows.map(([k,v])=>`<dt>${escapeHtml(k)}</dt><dd>${escapeHtml(v)}</dd>`).join('')}</dl><p>${s.action==='confirmed'?'The guest will be notified that their stay is confirmed.':'The dates will be released and the guest will be notified.'}</p><form method="post" action="${escapeHtml(reviewPath(s.id,s.action))}"><button type="submit">${s.action==='confirmed'?'Yes, accept booking':'Yes, reject booking'}</button></form><p><a href="/host">Back to dashboard</a></p><small>Opening this link does not change the booking. Email notifications require an active email connection.</small>`);
+}
+export async function POST(req:Request){
+ const s=selection(req);if(!s)return page('Invalid request','<p>Please reopen the original email.</p>',400);
+ if(req.headers.get('origin')!==new URL(req.url).origin)return page('Request not verified','<p>Please reopen the original email.</p>',403);
+ if(!await isAdmin())return page('Host sign-in required',`<a href="${escapeHtml(reviewPath(s.id,s.action))}">Return to sign in</a>`,403);
+ const changed=await transition(s.id,s.action);
+ return page(changed?'Booking '+s.action:'Booking already reviewed',`<p>${changed?'Your decision has been saved. The guest update is queued for email delivery.':'This booking is no longer pending. Your action was not applied again.'}</p><a href="/host">Open dashboard</a>`,changed?200:409);
+}

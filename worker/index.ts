@@ -1,3 +1,4 @@
+import {drainEmails} from '../lib/email/service';
 import handler from "vinext/server/fetch-handler";
 import { runWithConnectorBinding } from "../lib/connector-context";
 import type { ConnectorBinding } from "../lib/connector-contract.mjs";
@@ -23,7 +24,9 @@ const worker = {
         },
       };
     }
-    return runWithConnectorBinding(binding, () => handler.fetch(request, env, ctx));
+    const response = runWithConnectorBinding(binding, () => handler.fetch(request, env, ctx));
+    ctx.waitUntil(Promise.resolve(response).then(() => drainEmails()).catch(() => console.error('Booking email delivery unavailable')));
+    return response;
   },
 };
 

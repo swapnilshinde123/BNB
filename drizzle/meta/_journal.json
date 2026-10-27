@@ -22,6 +22,13 @@
       "when": 1792946181493,
       "tag": "0002_managed_properties",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1793070000000,
+      "tag": "0003_booking_emails",
+      "breakpoints": true
     }
   ]
 }

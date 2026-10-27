@@ -1,0 +1,11 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import ts from 'typescript';
+import {readFileSync} from 'node:fs';
+const source=readFileSync(new URL('../lib/email/templates.ts',import.meta.url),'utf8');
+const js=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+const {bookingEmail,reviewPath}=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'));
+const booking={id:'ANG-1234ABCD',name:'<img src=x onerror=alert(1)>',email:'guest@example.com',phone:'+917083834078',property_id:'p1',property_name:'Pune & Peace',check_in:'2026-11-10',check_out:'2026-11-12',guests:2,total:7500,status:'pending'};
+test('admin email has full booking details and both admin review actions',()=>{const m=bookingEmail(booking,'admin-request');for(const value of ['2026-11-10','2026-11-12','7,500','guest@example.com','ANG-1234ABCD'])assert.ok(m.text.includes(value));assert.ok(m.html.includes('action=confirmed'));assert.ok(m.html.includes('action=rejected'));assert.ok(m.html.includes('aangan-stays-admin.aangan-pune.workers.dev'));assert.ok(!m.html.includes('<img src=x'));assert.ok(m.html.includes('&lt;img'));});
+test('guest status emails have correct state, no admin action, and booking link',()=>{for(const kind of ['guest-request','confirmed','rejected','cancelled']){const m=bookingEmail(booking,kind);assert.ok(m.text.includes('2026-11-10'));assert.ok(m.html.includes('/my-bookings'));assert.ok(!m.html.includes('email-action'));assert.ok(!m.html.includes('Guest phone'));assert.ok(m.text.includes('No payment was collected'));}assert.match(bookingEmail(booking,'guest-request').text,/pending until/);assert.match(bookingEmail(booking,'confirmed').subject,/confirmed/);assert.match(bookingEmail(booking,'rejected').subject,/rejected/)});
+test('review links encode references and never contain a bearer credential',()=>{const path=reviewPath('ANG-&admin=true','confirmed');const u=new URL(path,'https://example.com');assert.equal(u.searchParams.get('id'),'ANG-&admin=true');assert.equal(u.searchParams.get('admin'),null);assert.equal(u.searchParams.size,2)});

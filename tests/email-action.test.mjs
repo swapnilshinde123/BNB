@@ -1,0 +1,18 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import ts from 'typescript';
+const encode=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
+const compile=path=>ts.transpileModule(readFileSync(new URL(path,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+const state={admin:false,status:'pending',calls:0};
+globalThis.__emailActionTest=state;
+const server=encode(`const s=globalThis.__emailActionTest;export async function isAdmin(){return s.admin}export function database(){return {prepare(){return {bind(){return {async first(){return {id:'ANG-1234ABCD',name:'Guest',email:'guest@example.com',property_id:'p1',check_in:'2026-12-01',check_out:'2026-12-03',guests:2,total:7000,status:s.status}}}}}}}}export async function transition(id,status){s.calls++;if(s.status!=='pending')return false;s.status=status;return true}`);
+const templates=encode(compile('../lib/email/templates.ts'));
+const properties=encode(`export async function findProperty(){return {name:'Pune home'}}`);
+let route=compile('../app/api/bookings/email-action/route.ts').replace("'@/lib/server'",JSON.stringify(server)).replace("'@/lib/email/templates'",JSON.stringify(templates)).replace("'@/lib/property-data'",JSON.stringify(properties));
+const {GET,POST}=await import(encode(route));
+const url='https://aangan-stays-admin.aangan-pune.workers.dev/api/bookings/email-action?id=ANG-1234ABCD&action=confirmed';
+test('unauthenticated email link reveals no guest details and cannot approve',async()=>{state.admin=false;const r=await GET(new Request(url));assert.equal(r.status,401);assert.ok(!(await r.text()).includes('guest@example.com'));assert.equal((await POST(new Request(url,{method:'POST',headers:{origin:new URL(url).origin}}))).status,403);assert.equal(state.calls,0)});
+test('scanner GET has no side effects even with owner session',async()=>{state.admin=true;const r=await GET(new Request(url));assert.equal(r.status,200);assert.match(await r.text(),/method="post"/);assert.equal(state.calls,0)});
+test('cross-origin and missing Origin POST cannot approve',async()=>{for(const headers of [{},{origin:'https://attacker.example'}])assert.equal((await POST(new Request(url,{method:'POST',headers}))).status,403);assert.equal(state.calls,0)});
+test('owner explicit same-origin POST approves once, repeated decision rejected',async()=>{const req=()=>new Request(url,{method:'POST',headers:{origin:new URL(url).origin}});assert.equal((await POST(req())).status,200);assert.equal(state.status,'confirmed');assert.equal((await POST(req())).status,409);assert.equal((await GET(new Request(url))).status,409)});
