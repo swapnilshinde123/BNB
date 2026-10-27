@@ -34,3 +34,12 @@
 @media(max-width:760px){.login-card.login-modal{top:auto;bottom:0;left:0;transform:none;width:100%;max-width:100%;max-height:94dvh;grid-template-columns:minmax(0,1fr);padding:10px 10px max(16px,env(safe-area-inset-bottom));border-radius:26px 26px 0 0;animation:login-sheet .22s ease-out}.login-modal .login-visual{height:145px;min-height:0}.login-modal .login-visual>div{left:18px;bottom:16px;gap:5px}.login-modal .login-visual>div>b{font-size:27px}.login-modal .login-visual>div>span{font-size:10px}.login-modal .login-visual>div>small{display:none}.login-modal .login-content{padding:24px 18px 16px}.login-modal .login-content h1{font-size:34px;margin:16px 0 12px}.login-modal .login-content>.eyebrow{font-size:11px;letter-spacing:1px}.login-modal .login-choices{margin:24px 0 20px}.close-login{width:40px;height:40px;top:18px;right:18px}.login-modal .google-signin-trust{font-size:12px}.login-modal .login-content>.text-button{min-height:44px}}
 @media(prefers-reduced-motion:reduce){.login-modal-backdrop,.login-card.login-modal{animation:none}}
 @keyframes login-fade{from{opacity:0}to{opacity:1}}@keyframes login-sheet{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* Keep the neighbourhood marquee moving across phone, tablet and desktop. */
+.neighbourhood-ribbon{width:100%;max-width:100%;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent)}
+.ribbon-track{animation:city-drift 42s linear infinite;will-change:transform}.ribbon-group{flex:0 0 auto}.ribbon-group>span{flex-shrink:0}.ribbon-star{flex:0 0 24px;width:24px;height:24px}
+.neighbourhood-ribbon:hover .ribbon-track{animation-play-state:running}
+@media(hover:hover) and (pointer:fine){.neighbourhood-ribbon:hover .ribbon-track{animation-play-state:paused}}
+@media(max-width:1024px){.ribbon-track{animation-duration:38s}}
+@media(max-width:760px){.ribbon-track{animation-duration:32s}.ribbon-star{flex-basis:22px;width:22px;height:22px}}
+@media(prefers-reduced-motion:reduce){.ribbon-track{animation:none!important;transform:none!important}}
