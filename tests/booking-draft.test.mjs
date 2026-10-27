@@ -1,0 +1,20 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import ts from 'typescript';
+const encode=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
+const compile=p=>ts.transpileModule(readFileSync(new URL(p,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+const {readBookingDraft,bookingResumeUrl,BOOKING_DRAFT_TTL}=await import(encode(compile('../lib/booking-draft.ts')));
+const now=Date.now();
+const draft={version:1,createdAt:now,propertyId:'managed-home-1',returnPath:'/saved-homes',checkIn:'2026-12-03',checkOut:'2026-12-06',guests:3,name:'Booking Test Guest',phone:'+91 9000000000',email:'guest@example.com',manual:false,photoIndex:2,modalScroll:730,scrollY:420,area:'Baner',searchArea:'Baner',category:'Design-led',maxPrice:6500,sort:'Price: low to high',map:true};
+test('booking form and browsing context survive the login round trip',()=>assert.deepEqual(readBookingDraft(JSON.stringify(draft),now+30000),draft));
+test('expired, malformed, future and incompatible drafts are discarded',()=>{for(const raw of [null,'{',JSON.stringify({...draft,version:0}),JSON.stringify({...draft,createdAt:now-BOOKING_DRAFT_TTL-1}),JSON.stringify({...draft,createdAt:now+120000}),JSON.stringify({...draft,propertyId:''})])assert.equal(readBookingDraft(raw,now),null)});
+test('draft return paths cannot redirect to a third party or an API',()=>{for(const returnPath of ['https://evil.example','//evil.example','/api/bookings','/login']){assert.equal(readBookingDraft(JSON.stringify({...draft,returnPath}),now),null);assert.equal(bookingResumeUrl(returnPath),'/?resume=booking')}});
+test('partial bookings are retained while invalid numbers and dates are normalized',()=>{const result=readBookingDraft(JSON.stringify({...draft,checkIn:'',checkOut:'2026-02-31',guests:100,modalScroll:-1,photoIndex:-1}),now);assert.equal(result.checkIn,'');assert.equal(result.checkOut,'');assert.equal(result.guests,20);assert.equal(result.modalScroll,0);assert.equal(result.photoIndex,0);assert.equal(result.phone,draft.phone)});
+test('resume URL carries no guest details and retains the original page',()=>{assert.equal(bookingResumeUrl(draft.returnPath),'/saved-homes?resume=booking');assert.ok(!bookingResumeUrl(draft.returnPath).includes(draft.phone))});
+
+const server=encode(`export function config(){return {GOOGLE_CLIENT_ID:'test-client'}}export function json(d,s=200){return Response.json(d,{status:s})}`);
+const auth=encode(`export function cookieName(){return 'session'}export function cookieValue(raw,name){const part=raw.split(';').map(s=>s.trim()).find(s=>s.startsWith(name+'='));return part?decodeURIComponent(part.slice(name.length+1)):null}export async function verifyGoogleToken(){return {email_verified:true,exp:Math.floor(Date.now()/1000)+3600}}`);
+const route=compile('../app/api/auth/google/route.ts').replace("'@/lib/server'",JSON.stringify(server)).replace("'@/app/google-auth'",JSON.stringify(auth));
+const {GET,POST}=await import(encode(route));
+test('Google callback returns to the original page with its resume marker',async()=>{const base='https://aangan-stays.aangan-pune.workers.dev/api/auth/google';const setup=await GET(new Request(base+'?return_to='+encodeURIComponent('/saved-homes?resume=booking')));const cookie=setup.headers.get('set-cookie');assert.match(cookie,/SameSite=None; Secure/);assert.match(cookie,/HttpOnly/);const form=new FormData();form.set('g_csrf_token','test-csrf');form.set('credential','test-credential');const response=await POST(new Request(base,{method:'POST',headers:{cookie:'g_csrf_token=test-csrf; '+cookie.split(';')[0]},body:form}));assert.equal(response.status,303);assert.equal(response.headers.get('location'),'https://aangan-stays.aangan-pune.workers.dev/saved-homes?resume=booking');assert.match(response.headers.get('set-cookie'),/session=.*SameSite=Lax/)});

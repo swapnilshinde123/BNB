@@ -2,10 +2,13 @@ import {config,json} from '@/lib/server';
 import {cookieName,cookieValue,verifyGoogleToken} from '@/app/google-auth';
 
 const RETURN_COOKIE='aangan_google_return';
+// Google returns with a cross-site POST. Only the short-lived, validated return
+// path needs SameSite=None; the authenticated session cookie stays SameSite=Lax.
+const returnCookieOptions=(url:URL)=>`Path=/api/auth/google; ${url.protocol==='https:'?'SameSite=None; Secure':'SameSite=Lax'}; HttpOnly`;
 function safeReturn(value:string|null){if(!value||!value.startsWith('/')||value.startsWith('//'))return '/my-bookings';try{const url=new URL(value,'https://aangan.local');return url.origin==='https://aangan.local'&&!['/api/auth/google','/api/auth/google/start','/api/auth/google/logout'].includes(url.pathname)?url.pathname+url.search+url.hash:'/my-bookings'}catch{return '/my-bookings'}}
 export async function GET(request:Request){
  const url=new URL(request.url),returnTo=safeReturn(url.searchParams.get('return_to'));
- return new Response(JSON.stringify({ok:true}),{headers:{'Content-Type':'application/json','Cache-Control':'no-store','Set-Cookie':`${RETURN_COOKIE}=${encodeURIComponent(returnTo)}; Path=/api/auth/google; SameSite=Lax; Max-Age=600${url.protocol==='https:'?'; Secure':''}; HttpOnly`}});
+ return new Response(JSON.stringify({ok:true}),{headers:{'Content-Type':'application/json','Cache-Control':'no-store','Set-Cookie':`${RETURN_COOKIE}=${encodeURIComponent(returnTo)}; ${returnCookieOptions(url)}; Max-Age=600`}});
 }
 
 export async function POST(request:Request){
@@ -21,6 +24,6 @@ export async function POST(request:Request){
  const returnTo=safeReturn(cookieValue(cookies,RETURN_COOKIE));
  const headers=new Headers({'Location':new URL(returnTo,url.origin).toString(),'Cache-Control':'no-store'});
  headers.append('Set-Cookie',`${cookieName()}=${encodeURIComponent(credential)}; Path=/; SameSite=Lax; Max-Age=${maxAge}${url.protocol==='https:'?'; Secure':''}; HttpOnly`);
- headers.append('Set-Cookie',`${RETURN_COOKIE}=; Path=/api/auth/google; SameSite=Lax; Max-Age=0${url.protocol==='https:'?'; Secure':''}; HttpOnly`);
+ headers.append('Set-Cookie',`${RETURN_COOKIE}=; ${returnCookieOptions(url)}; Max-Age=0`);
  return new Response(null,{status:303,headers});
 }
