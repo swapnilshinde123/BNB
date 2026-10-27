@@ -43,3 +43,33 @@
 }
 @media(max-width:350px){.mobile-brand img{width:166px}.mobile-bottom-nav{left:10px;right:10px;padding:7px;gap:2px}.mobile-bottom-nav>button{gap:5px;font-size:11px}.mobile-bottom-nav>button svg{width:21px;height:21px}}
 @media(prefers-reduced-motion:reduce){.mobile-bottom-nav>button{transition:none}}
+/* Let mobile guests see more of the Pune map and keep search details on one line. */
+@media(max-width:760px){
+ .mobile-category-row{display:none}
+ .mobile-search-header{padding:10px 16px 10px;row-gap:6px}
+ .mobile-brand{min-height:40px}
+ .mobile-search-pill{min-height:50px;padding:8px 13px;gap:8px}
+ .mobile-search-pill>svg{width:19px;height:19px;flex-shrink:0}
+ .mobile-search-pill>span{display:flex;align-items:baseline;gap:8px;min-width:0;flex:1}
+ .mobile-search-pill b{font-size:13px;line-height:1.25;flex:0 1 auto;max-width:43%;}
+ .mobile-search-pill small{display:flex;align-items:center;gap:6px;min-width:0;flex:1;font-size:10px;line-height:1.3;overflow:hidden}
+ .mobile-search-pill small>span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .mobile-search-pill small>span:last-child{flex-shrink:0}
+ .mobile-search-pill i{flex-shrink:0}
+ .is-map .mobile-search-header{padding:10px 16px 10px}
+ .is-map .mobile-search-pill{min-height:50px;padding:8px 13px}
+ .mobile-map-sheet{max-height:44%}
+ .mobile-map-sheet.expanded{max-height:calc(100% - 100px - env(safe-area-inset-bottom))}
+ .mobile-map-stage .leaflet-top{top:10px;left:10px}
+ .mobile-map-stage .leaflet-control-zoom a{width:36px;height:36px;line-height:34px}
+ .mobile-map-stage .leaflet-bottom{top:auto;bottom:calc(44% + 100px);right:6px}
+ .mobile-map-stage .leaflet-control-attribution{max-width:170px;padding:2px 5px;background:#ffffffd9;border-radius:6px;font-size:8px;line-height:1.4}
+}
+@media(max-width:350px){
+ .mobile-search-header{padding-inline:10px}
+ .mobile-brand img{width:166px}
+ .mobile-search-pill{padding-inline:10px}
+ .mobile-search-pill b{font-size:12px;max-width:41%}
+ .mobile-search-pill small{font-size:9px;gap:4px}
+ .mobile-map-stage .leaflet-bottom{bottom:calc(44% + 96px)}
+}
