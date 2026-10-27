@@ -1,0 +1,12 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import ts from 'typescript';
+import {readFileSync} from 'node:fs';
+const js=ts.transpileModule(readFileSync(new URL('../lib/email/policy.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+const {deliveryPolicy,canDeliver}=await import('data:text/javascript;base64,'+Buffer.from(js).toString('base64'));
+const config={ADMIN_EMAIL:'swapnil690123@gmail.com',RESEND_API_KEY:'mock-test-key',EMAIL_FROM:'Aangan Stays <onboarding@resend.dev>'};
+test('Resend test sender always restricts to the owner admin request',()=>{assert.equal(deliveryPolicy(config).adminOnly,true);assert.equal(canDeliver(config,'admin-request',config.ADMIN_EMAIL),true);assert.equal(canDeliver(config,'admin-request','other@gmail.com'),false);for(const kind of ['guest-request','confirmed','rejected','cancelled'])assert.equal(canDeliver(config,kind,config.ADMIN_EMAIL),false)});
+test('test sender cannot be widened by EMAIL_MODE=all',()=>assert.equal(deliveryPolicy({...config,EMAIL_MODE:'all'}).adminOnly,true));
+test('explicit admin-only mode also protects a verified sender',()=>{const c={...config,EMAIL_FROM:'bookings@example.com',EMAIL_MODE:'admin_only'};assert.equal(canDeliver(c,'guest-request','customer@example.com'),false);assert.equal(canDeliver(c,'admin-request',config.ADMIN_EMAIL),true)});
+test('missing configuration never permits sending',()=>{assert.equal(canDeliver({...config,RESEND_API_KEY:''},'admin-request',config.ADMIN_EMAIL),false)});
+test('verified-domain unrestricted delivery still permits customers',()=>assert.equal(canDeliver({...config,EMAIL_FROM:'bookings@example.com',EMAIL_MODE:'all'},'confirmed','customer@example.com'),true));

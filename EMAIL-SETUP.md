@@ -15,3 +15,7 @@ The Worker processes up to four queued messages after a web request. Claims prev
 The email action is a host-authenticated review page. GET never changes status; POST requires an exact same-origin Origin header and the verified owner identity. It does not use bearer approval links or put guest details in URL parameters. Forwarding an email does not grant approval rights.
 
 Check spam folders and sender/provider delivery logs if mail is accepted but not received. Configure both Workers consistently because their database and delivery queue are shared.
+
+## Without a sender domain: owner-only test mode
+
+Set `EMAIL_FROM=Aangan Stays <onboarding@resend.dev>` and `EMAIL_MODE=admin_only` on both Workers. The Resend account email and ADMIN_EMAIL must be the same. Only admin-request messages addressed to that owner email are sent; all guest receipts and decisions are held. The dashboard labels this mode explicitly. A resend.dev sender enforces this restriction even if EMAIL_MODE is accidentally omitted. This is Resend's restricted testing sender, not a verified production sending domain. Provider limits and policies apply.

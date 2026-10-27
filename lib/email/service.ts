@@ -1,19 +1,24 @@
 import {env} from 'cloudflare:workers';
 import {bookingEmail,type BookingMail,type MailKind} from './templates';
+import {deliveryPolicy,canDeliver} from './policy';
 const settings=()=>env as unknown as Record<string,string>;
-export function emailReady(){const c=settings();return !!(c.RESEND_API_KEY&&c.EMAIL_FROM&&c.ADMIN_EMAIL)}
+export function emailPolicy(){return deliveryPolicy(settings())}
+export function emailReady(){return emailPolicy().configured}
 export function mailJob(db:D1Database,b:BookingMail,kind:MailKind,recipient:string,conditional=false){
  // Called inside the same transaction as booking creation/status changes.
  return db.prepare(`INSERT OR IGNORE INTO booking_emails(id,booking_id,kind,recipient,payload,created_at) SELECT ?,?,?,?,?,?${conditional?' WHERE changes()>0':''}`).bind(`${b.id}:${kind}`,b.id,kind,recipient,JSON.stringify(b),Date.now());
 }
 export async function drainEmails(){
  if(!emailReady()||!env.DB)return;
- const db=env.DB,c=settings(),now=Date.now();
- const jobs=await db.prepare("SELECT id FROM booking_emails WHERE sent_at IS NULL AND attempts<5 AND next_attempt_at<=? AND lease_until<? AND created_at>? ORDER BY created_at,id LIMIT 4").bind(now,now,now-7*86400000).all<{id:string}>();
+ const db=env.DB,c=settings(),now=Date.now(),policy=deliveryPolicy(c);
+ const restriction=policy.adminOnly?" AND kind='admin-request' AND lower(recipient)=?":'';
+ const parameters: (string|number)[]=[now,now,now-7*86400000];if(policy.adminOnly)parameters.push(policy.adminEmail);
+ const jobs=await db.prepare("SELECT id FROM booking_emails WHERE sent_at IS NULL AND attempts<5 AND next_attempt_at<=? AND lease_until<? AND created_at>?"+restriction+" ORDER BY created_at,id LIMIT 4").bind(...parameters).all<{id:string}>();
  for(const item of jobs.results){
   const lease=crypto.randomUUID();
   const job=await db.prepare('UPDATE booking_emails SET lease=?,lease_until=?,attempts=attempts+1 WHERE id=? AND sent_at IS NULL AND attempts<5 AND lease_until<? RETURNING *').bind(lease,Date.now()+120000,item.id,Date.now()).first<{id:string;kind:MailKind;recipient:string;payload:string;attempts:number}>();
   if(!job)continue;
+  if(!canDeliver(c,job.kind,job.recipient)){await db.prepare('UPDATE booking_emails SET attempts=attempts-1,lease_until=0 WHERE id=? AND lease=?').bind(job.id,lease).run();continue}
   try{
    const message=bookingEmail(JSON.parse(job.payload),job.kind);
    const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${c.RESEND_API_KEY}`,'Content-Type':'application/json','Idempotency-Key':job.id},body:JSON.stringify({from:c.EMAIL_FROM,to:[job.recipient],reply_to:c.ADMIN_EMAIL,...message}),signal:AbortSignal.timeout(10000)});
