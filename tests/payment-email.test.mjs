@@ -1,0 +1,21 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import ts from 'typescript';
+const encode=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
+test('accepting queues one payment pending email for the guest, confirming queues a separate confirmation',async()=>{
+ const state={status:'pending',jobs:[]};
+ const db={prepare(sql){return {bind(...args){return {sql,args,async first(){if(sql.includes('SELECT name'))return {name:'Test Home'};return state.status===args[1]?{id:args[0],status:state.status,email:'guest@example.com',property_id:'p1',total:3146.85}:null}}}}},async batch(commands){const [update,mail]=commands;assert.equal(update.args[3],state.status);state.status=update.args[0];assert.equal(mail.conditional,true);state.jobs.push(mail);return [{meta:{changes:1}}]}};
+ globalThis.__paymentMailEnv={DB:db};
+ let source=ts.transpileModule(readFileSync(new URL('../lib/server.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+ source=source.replace("import { env } from 'cloudflare:workers';",'const env=globalThis.__paymentMailEnv;').replace(/import .* from '@\/lib\/email\/service';/,'const mailJob=(db,booking,kind,recipient,conditional)=>({booking,kind,recipient,conditional});').replace(/import .* from '@\/app\/chatgpt-auth';/,'const getChatGPTUser=async()=>null;').replace(/import .* from '@\/app\/google-auth';/,'const readGoogleUser=async()=>null;').replace("'@/lib/properties'",JSON.stringify(encode('export const properties=[];')));
+ const {transition}=await import(encode(source));
+ assert.equal(await transition('ANG-1234ABCD','payment_pending'),true);
+ assert.equal(state.jobs[0].kind,'payment-pending');
+ assert.equal(state.jobs[0].recipient,'guest@example.com');
+ assert.equal(state.jobs[0].booking.total,3146.85);
+ assert.equal(await transition('ANG-1234ABCD','payment_pending'),false);
+ assert.equal(state.jobs.length,1);
+ assert.equal(await transition('ANG-1234ABCD','confirmed'),true);
+ assert.equal(state.jobs[1].kind,'confirmed');
+});
