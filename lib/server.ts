@@ -15,16 +15,21 @@ export async function isAdmin(){const u=await identity();return !!u && u.email.t
 export function database(){if(!env.DB)throw new Error('Database unavailable');return env.DB}
 export function json(data:unknown,status=200){return Response.json(data,{status,headers:{'Cache-Control':'no-store'}})}
 export async function transition(id:string,status:string){
- if(!['confirmed','rejected','cancelled'].includes(status))throw new Error('Invalid booking status');
+ if(!['payment_pending','confirmed','rejected','cancelled'].includes(status))throw new Error('Invalid booking status');
+ const from=status==='confirmed'?'payment_pending':'pending';
  const db=database();
- const row=await db.prepare("SELECT * FROM bookings WHERE id=? AND status='pending'").bind(id).first<BookingMail>();
+ const row=status==='rejected'
+  ?await db.prepare("SELECT * FROM bookings WHERE id=? AND status IN ('pending','payment_pending')").bind(id).first<BookingMail>()
+  :await db.prepare('SELECT * FROM bookings WHERE id=? AND status=?').bind(id,from).first<BookingMail>();
  if(!row)return false;
+ const previous=row.status;
  const home=await db.prepare('SELECT name FROM properties WHERE id=?').bind(row.property_id).first<{name:string}>();
  const {properties}=await import('@/lib/properties');
  const booking={...row,status,property_name:home?.name||properties.find(p=>p.id===row.property_id)?.name||row.property_id};
+ const emailKind=status==='payment_pending'?'payment-pending':status as MailKind;
  const result=await db.batch([
-  db.prepare("UPDATE bookings SET status=?,updated_at=? WHERE id=? AND status='pending'").bind(status,new Date().toISOString(),id),
-  mailJob(db,booking,status as MailKind,row.email,true),
+  db.prepare('UPDATE bookings SET status=?,updated_at=? WHERE id=? AND status=?').bind(status,new Date().toISOString(),id,previous),
+  mailJob(db,booking,emailKind,row.email,true),
   db.prepare("DELETE FROM nights WHERE booking_id=? AND EXISTS(SELECT 1 FROM bookings WHERE id=? AND status IN ('rejected','cancelled'))").bind(id,id)
  ]);
  return result[0].meta.changes>0;

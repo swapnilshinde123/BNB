@@ -14,7 +14,7 @@ export async function drainEmails(){
  const db=env.DB,c=settings(),now=Date.now(),policy=deliveryPolicy(c);
  const restriction=policy.adminOnly?" AND kind='admin-request' AND lower(recipient)=?":'';
  const parameters: (string|number)[]=[now,now,now-7*86400000];if(policy.adminOnly)parameters.push(policy.adminEmail);
- const jobs=await db.prepare("SELECT id FROM booking_emails WHERE sent_at IS NULL AND provider_id IS NULL AND attempts<5 AND next_attempt_at<=? AND lease_until<? AND created_at>?"+restriction+" ORDER BY CASE WHEN kind IN ('confirmed','rejected','cancelled') THEN 0 ELSE 1 END,created_at,id LIMIT 2").bind(...parameters).all<{id:string}>();
+ const jobs=await db.prepare("SELECT id FROM booking_emails WHERE sent_at IS NULL AND provider_id IS NULL AND attempts<5 AND next_attempt_at<=? AND lease_until<? AND created_at>?"+restriction+" ORDER BY CASE WHEN kind IN ('payment-pending','confirmed','rejected','cancelled') THEN 0 ELSE 1 END,created_at,id LIMIT 2").bind(...parameters).all<{id:string}>();
  await Promise.all(jobs.results.map(async item=>{
   const lease=crypto.randomUUID();
   const job=await db.prepare('UPDATE booking_emails SET lease=?,lease_until=?,attempts=attempts+1 WHERE id=? AND sent_at IS NULL AND provider_id IS NULL AND attempts<5 AND lease_until<? RETURNING *').bind(lease,Date.now()+120000,item.id,Date.now()).first<{id:string;kind:MailKind;recipient:string;payload:string;attempts:number}>();

@@ -16,7 +16,7 @@ export async function GET(req:Request){
  const start=month+'-01',end=new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5,7)),1)).toISOString().slice(0,10),db=database();
  const [blocked,booked]=await Promise.all([
   db.prepare('SELECT date FROM blocked_dates WHERE property_id=? AND date>=? AND date<? ORDER BY date').bind(propertyId,start,end).all<{date:string}>(),
-  db.prepare("SELECT n.date,b.status FROM nights n JOIN bookings b ON b.id=n.booking_id WHERE n.property_id=? AND n.date>=? AND n.date<? AND b.status IN ('pending','confirmed') ORDER BY n.date").bind(propertyId,start,end).all<{date:string;status:string}>(),
+  db.prepare("SELECT n.date,b.status FROM nights n JOIN bookings b ON b.id=n.booking_id WHERE n.property_id=? AND n.date>=? AND n.date<? AND b.status IN ('pending','payment_pending','confirmed') ORDER BY n.date").bind(propertyId,start,end).all<{date:string;status:string}>(),
  ]);
  return json({blocked:blocked.results.map(x=>x.date),booked:booked.results});
 }
