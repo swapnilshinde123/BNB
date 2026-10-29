@@ -14,6 +14,5 @@ export function UpiPayment({amount,bookingId}:{amount:number;bookingId:string}){
   <p className="upi-amount">₹{amount.toLocaleString('en-IN')}</p>
   <p className="upi-fixed"><LockKeyhole size={13}/>Exact booking amount</p>
   <p className="upi-id">UPI ID <b>{UPI_ID}</b></p>
-  <small className="upi-note">Your host will confirm the stay after verifying payment.</small>
  </aside>
 }
