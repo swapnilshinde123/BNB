@@ -1,0 +1,31 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import ts from 'typescript';
+const encode=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
+const compile=p=>ts.transpileModule(readFileSync(new URL(p,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+const pricing=encode(compile('../lib/date-pricing.ts'));
+const {dateQuote,rateForDate,defaultRatePlan,validateRatePlan}=await import(pricing);
+test('AI suggestions require owner access and reject invalid model output',async()=>{
+ const state={admin:false,calls:0,response:'{"percent":30,"reason":"Host long-weekend preference; limited data."}'};globalThis.__rateAI=state;
+ const server=encode('export const isAdmin=async()=>globalThis.__rateAI.admin;export const json=(d,status=200)=>Response.json(d,{status});export const database=()=>({prepare(){return {bind(){return {first:async()=>({count:0})}}}}});');
+ const props=encode('export const findProperty=async()=>({id:"p1",price:4200,area:"Pune"});');
+ const code=compile('../app/api/pricing/suggest/route.ts').replace("import { env } from 'cloudflare:workers';",'const env={AI:{run:async()=>{globalThis.__rateAI.calls++;return {response:globalThis.__rateAI.response}}}};').replace("'@/lib/server'",JSON.stringify(server)).replace("'@/lib/property-data'",JSON.stringify(props)).replace("'@/lib/date-pricing'",JSON.stringify(pricing));
+ const {POST}=await import(encode(code));const req=()=>new Request('https://example.com/api/pricing/suggest',{method:'POST',headers:{origin:'https://example.com'},body:JSON.stringify({propertyId:'p1',start:'2026-11-06',end:'2026-11-09',kind:'long-weekend',label:'Long weekend'})});
+ assert.equal((await POST(req())).status,403);assert.equal(state.calls,0);state.admin=true;assert.equal((await (await POST(req())).json()).percent,30);state.response='{"percent":900,"reason":"fake"}';assert.equal((await POST(req())).status,503);state.response='not json';assert.equal((await POST(req())).status,503);
+});
+test('weekend is Saturday and Sunday, checkout is excluded, GST is added once',()=>{const p={...defaultRatePlan(),weekendEnabled:true};const q=dateQuote(1000,'2026-11-06','2026-11-09',p);assert.deepEqual(q.nights.map(n=>n.amount),[1000,1200,1200]);assert.equal(q.subtotal,3400);assert.equal(q.gst,170);assert.equal(q.total,3570)});
+test('long weekend does not compound with weekend and fixed rate wins',()=>{const rule={id:'a',label:'Long weekend',start:'2026-11-06',end:'2026-11-09',kind:'long-weekend',mode:'percent',value:30};const p={weekendEnabled:true,weekendPercent:20,rules:[rule]};assert.equal(rateForDate(1000,'2026-11-07',p).amount,1300);p.rules.push({...rule,id:'b',kind:'manual',mode:'fixed',value:950});p.rules.push({...rule,id:'c',kind:'festival',value:50});assert.equal(rateForDate(1000,'2026-11-07',p).amount,950);p.rules=p.rules.filter(r=>r.id!=='b');assert.equal(rateForDate(1000,'2026-11-07',p).amount,1500)});
+test('default plan preserves existing base rate and paise rounding',()=>{const q=dateQuote(999,'2026-12-31','2027-01-03',defaultRatePlan());assert.equal(q.total,3146.85);assert.throws(()=>dateQuote(1000,'2026-02-30','2026-03-02',defaultRatePlan()));assert.throws(()=>dateQuote(1000,'2026-11-02','2026-11-02',defaultRatePlan()))});
+test('invalid and duplicate rules cannot be saved',()=>{assert.throws(()=>validateRatePlan({...defaultRatePlan(),weekendPercent:101}));const r={id:'a',label:'Festival',start:'2026-11-08',end:'2026-11-07',kind:'festival',mode:'fixed',value:100};assert.throws(()=>validateRatePlan({...defaultRatePlan(),rules:[r]}));r.end=r.start;r.value=1000;assert.throws(()=>validateRatePlan({...defaultRatePlan(),rules:[r,r]}));assert.equal(validateRatePlan({...defaultRatePlan(),rules:[r]}).rules.length,1)});
+test('pricing save requires admin, same origin and matching version',async()=>{
+ const s={admin:false,conflict:false,writes:0};globalThis.__rateApi=s;
+ const server=encode('export const isAdmin=async()=>globalThis.__rateApi.admin;export const json=(d,status=200)=>Response.json(d,{status});');
+ const store=encode('export const readRatePlan=async()=>({version:0,plan:{weekendEnabled:false,weekendPercent:20,rules:[]}});export const saveRatePlan=async()=>{globalThis.__rateApi.writes++;return !globalThis.__rateApi.conflict};');
+ const props=encode('export const findProperty=async id=>id==="p1"?{id,price:1000}:null;');
+ const code=compile('../app/api/pricing/route.ts').replace("'@/lib/server'",JSON.stringify(server)).replace("'@/lib/property-data'",JSON.stringify(props)).replace("'@/lib/date-pricing'",JSON.stringify(pricing)).replace("'@/lib/rate-store'",JSON.stringify(store));
+ const {GET,PUT}=await import(encode(code));
+ const request=(origin='https://example.com')=>new Request('https://example.com/api/pricing',{method:'PUT',headers:{origin},body:JSON.stringify({propertyId:'p1',version:0,plan:defaultRatePlan()})});
+ assert.equal((await PUT(request())).status,403);s.admin=true;assert.equal((await PUT(request('https://bad.example'))).status,403);assert.equal(s.writes,0);assert.equal((await PUT(request())).status,200);s.conflict=true;assert.equal((await PUT(request())).status,409);
+ s.admin=false;assert.equal((await GET(new Request('https://example.com/api/pricing?admin=1&propertyId=p1'))).status,403);const quote=await GET(new Request('https://example.com/api/pricing?propertyId=p1&start=2026-11-06&end=2026-11-09'));assert.equal((await quote.json()).total,3150);
+});

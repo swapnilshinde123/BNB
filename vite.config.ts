@@ -20,6 +20,7 @@ const localBindingConfig = {
   name: "aangan-stays",
   workers_dev: true,
   keep_vars: true,
+  ai: {binding: "AI"},
   main: "./worker/index.ts",
   compatibility_flags: ["nodejs_compat"],
   d1_databases: d1
@@ -44,6 +45,7 @@ const localBindingConfig = {
     admin: {
       name: "aangan-stays-admin",
       workers_dev: true,
+      ai: {binding: "AI"},
       d1_databases: d1
         ? [
             {

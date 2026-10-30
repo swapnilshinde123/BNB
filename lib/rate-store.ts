@@ -1,0 +1,7 @@
+import {database} from './server';
+import {defaultRatePlan,validateRatePlan,type RatePlan} from './date-pricing';
+// Idempotent rollout: both Workers share this table and existing bookings are untouched.
+let tableReady=false;
+export async function ensureRateTable(){if(tableReady)return;await database().prepare('CREATE TABLE IF NOT EXISTS property_rate_plans (property_id TEXT PRIMARY KEY, version INTEGER NOT NULL DEFAULT 1, plan_json TEXT NOT NULL, updated_at TEXT NOT NULL)').run();tableReady=true}
+export async function readRatePlan(propertyId:string){await ensureRateTable();const row=await database().prepare('SELECT version,plan_json FROM property_rate_plans WHERE property_id=?').bind(propertyId).first<{version:number;plan_json:string}>();return {version:row?.version||0,plan:row?validateRatePlan(JSON.parse(row.plan_json)):defaultRatePlan()}}
+export async function saveRatePlan(propertyId:string,plan:RatePlan,version:number){await ensureRateTable();const result=version===0?await database().prepare('INSERT OR IGNORE INTO property_rate_plans(property_id,version,plan_json,updated_at) VALUES(?,1,?,?)').bind(propertyId,JSON.stringify(plan),new Date().toISOString()).run():await database().prepare('UPDATE property_rate_plans SET version=version+1,plan_json=?,updated_at=? WHERE property_id=? AND version=?').bind(JSON.stringify(plan),new Date().toISOString(),propertyId,version).run();return result.meta.changes>0}
