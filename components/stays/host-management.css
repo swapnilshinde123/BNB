@@ -36,3 +36,9 @@
 .host-invite-dialog small{font-size:12px;line-height:1.6;color:#788471;text-align:center}
 @media(max-width:1200px){.host-layout .managed-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:760px){.host-layout .managed-grid{grid-template-columns:1fr}.host-layout .booking-feed-controls{display:grid;grid-template-columns:1fr 1fr;width:100%}.host-layout .booking-feed-controls .stay-select-trigger{width:100%;min-width:0}.host-layout .booking-feed-controls>.outline{grid-column:1/-1}.host-layout .team-invite-toolbar{align-items:flex-start;flex-direction:column}.host-invite-dialog{padding:26px 22px}.host-invite-dialog h2{font-size:23px}}
+.host-shell>.header{position:relative;top:auto;inset:auto;z-index:40;display:flex;box-sizing:border-box;width:100%;max-width:none;height:88px;min-height:88px;margin:0;padding:16px max(28px,calc((100% - 1544px)/2));background:#f7f8f4;border-bottom:1px solid #e3e7df;backdrop-filter:none;flex-wrap:nowrap}
+.host-shell>.header .brand-logo{width:220px;height:auto;max-width:100%}
+.host-shell>.header .header-right{margin-left:auto;flex-shrink:0}
+.host-shell .host-layout{box-sizing:border-box;width:100%;padding-top:28px}
+.host-shell .host-sidebar{top:24px}
+@media(max-width:760px){.host-shell>.header{height:76px;min-height:76px;padding:14px 20px;gap:16px}.host-shell>.header .brand-logo{width:180px}.host-shell .host-layout{padding-top:20px}}
