@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import ts from 'typescript';
 const encode=source=>'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
-const compile=path=>ts.transpileModule(readFileSync(new URL(path,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+const compile=path=>ts.transpileModule(readFileSync(new URL(path,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText.replace(/import .* from ['"]@\/lib\/tenancy['"];?/g,'const canManageBooking=async()=>globalThis.__emailActionTest.admin;');
 const state={admin:false,status:'pending',calls:0};
 globalThis.__emailActionTest=state;
 const server=encode(`const s=globalThis.__emailActionTest;export async function isAdmin(){return s.admin}export function database(){return {prepare(){return {bind(){return {async first(){return {id:'ANG-1234ABCD',name:'Guest',email:'guest@example.com',property_id:'p1',check_in:'2026-12-01',check_out:'2026-12-03',guests:2,total:7000,status:s.status}}}}}}}}export async function transition(id,status){s.calls++;if(s.status!=='pending')return false;s.status=status;return true}`);

@@ -20,6 +20,7 @@ const localBindingConfig = {
   name: "aangan-stays",
   workers_dev: true,
   keep_vars: true,
+  triggers: {crons: ["*/5 * * * *"]},
   ai: {binding: "AI"},
   main: "./worker/index.ts",
   compatibility_flags: ["nodejs_compat"],
@@ -84,6 +85,7 @@ export default defineConfig(async ({ command }) => {
         inspectorPort: false,
         config: {
           ...localBindingConfig,
+          ...(command === "serve" ? {ai: undefined} : {}),
           ...(command === "serve"
             ? {
                 services: [

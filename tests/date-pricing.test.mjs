@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import ts from 'typescript';
 const encode=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
-const compile=p=>ts.transpileModule(readFileSync(new URL(p,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+const compile=p=>ts.transpileModule(readFileSync(new URL(p,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText.replace(/import .* from ['"]@\/lib\/tenancy['"];?/g,'const canManageProperty=async()=>true;');
 const pricing=encode(compile('../lib/date-pricing.ts'));
 const {dateQuote,rateForDate,defaultRatePlan,validateRatePlan}=await import(pricing);
 test('AI suggestions require owner access and reject invalid model output',async()=>{

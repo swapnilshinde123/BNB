@@ -1,3 +1,4 @@
+import {drainPlatformEmails} from "../lib/email/platform";
 import {drainEmails} from '../lib/email/service';
 import handler from "vinext/server/fetch-handler";
 import { runWithConnectorBinding } from "../lib/connector-context";
@@ -6,7 +7,8 @@ import type { ConnectorBinding } from "../lib/connector-contract.mjs";
 const worker = {
   async scheduled() {
     // Cloudflare invokes this even when nobody has the website open.
-    await drainEmails();
+    const results=await Promise.allSettled([drainEmails(),drainPlatformEmails()]);
+    const failure=results.find(r=>r.status==='rejected');if(failure?.status==='rejected')throw failure.reason;
   },
   fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext<{ CONNECTORS?: ConnectorBinding }>) {
     let binding = ctx.props?.CONNECTORS;
@@ -29,7 +31,7 @@ const worker = {
       };
     }
     const response = runWithConnectorBinding(binding, () => handler.fetch(request, env, ctx));
-    ctx.waitUntil(Promise.resolve(response).then(() => drainEmails()).catch(() => console.error('Booking email delivery unavailable')));
+    ctx.waitUntil(Promise.resolve(response).then(() => Promise.allSettled([drainEmails(),drainPlatformEmails()])).catch(() => console.error('Booking email delivery unavailable')));
     return response;
   },
 };

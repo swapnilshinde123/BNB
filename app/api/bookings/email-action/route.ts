@@ -1,3 +1,4 @@
+import {canManageBooking} from "@/lib/tenancy";
 import {database,isAdmin,transition} from '@/lib/server';
 import {escapeHtml,reviewPath} from '@/lib/email/templates';
 import {emailPolicy} from '@/lib/email/service';
@@ -8,7 +9,7 @@ function selection(req:Request){const q=new URL(req.url).searchParams,id=q.get('
 export async function GET(req:Request){
  const s=selection(req);if(!s)return page('Invalid booking link','<p>Please open the original booking email.</p>',400);
  if(!await isAdmin())return page('Sign in to review this booking',`<p>Use your approved host Google account to view the request and make a decision.</p><a href="/login?return_to=${encodeURIComponent(reviewPath(s.id,s.action))}">Sign in with Google</a>`,401);
- const b=await database().prepare('SELECT * FROM bookings WHERE id=?').bind(s.id).first<any>();if(!b)return page('Booking not found','<p>This request is unavailable.</p>',404);
+ if(!await canManageBooking(s.id))return page("Booking unavailable","<p>This booking is not assigned to your company.</p>",404);const b=await database().prepare('SELECT * FROM bookings WHERE id=?').bind(s.id).first<any>();if(!b)return page('Booking not found','<p>This request is unavailable.</p>',404);
  if(s.action==='payment_pending'?b.status!=='pending':!['pending','payment_pending'].includes(b.status))return page('This booking has already been reviewed',`<p>${escapeHtml(b.id)} is <strong>${escapeHtml(b.status)}</strong>.</p><a href="/host">Open dashboard</a>`,409);
  const delivery=emailPolicy(),guestEmailReady=delivery.configured&&!delivery.adminOnly;
  const home=await findProperty(b.property_id,true),rows=[['Guest',b.name],['Email',b.email],['Home',home?.name||b.property_id],['Check-in',b.check_in],['Check-out',b.check_out],['Guests',b.guests],['Amount',new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(b.total)]];
@@ -18,6 +19,6 @@ export async function POST(req:Request){
  const s=selection(req);if(!s)return page('Invalid request','<p>Please reopen the original email.</p>',400);
  if(req.headers.get('origin')!==new URL(req.url).origin)return page('Request not verified',`<p>Please reload the booking review before submitting again.</p><a href="${escapeHtml(reviewPath(s.id,s.action))}">Review booking again</a>`,403);
  if(!await isAdmin())return page('Host sign-in required',`<a href="${escapeHtml(reviewPath(s.id,s.action))}">Return to sign in</a>`,403);
- const changed=await transition(s.id,s.action);
+ if(!await canManageBooking(s.id))return page("Booking unavailable","<p>This booking is not assigned to your company.</p>",404);const changed=await transition(s.id,s.action);
  return page(changed?s.action==='payment_pending'?'Payment requested':'Booking rejected':'Booking already reviewed',`<p>${changed?s.action==='payment_pending'?'Your acceptance is saved. The booking stays unconfirmed until you verify payment and mark it paid in the host dashboard.':'The booking was rejected and its dates released.':'This booking is no longer awaiting this action. Nothing was changed.'}</p><a href="/host">Open dashboard</a>`,changed?200:409);
 }

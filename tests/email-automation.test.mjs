@@ -7,6 +7,7 @@ const compile=p=>ts.transpileModule(readFileSync(new URL(p,import.meta.url),'utf
 test('scheduled delivery runs without a website request and reports failures',async()=>{
  globalThis.__scheduledMail={calls:0,fail:false};
  let source=compile('../worker/index.ts').replace(/import .* from ['"].*['"];?/g,line=>{
+  if(line.includes('email/platform'))return 'const drainPlatformEmails=async()=>{};';
   if(line.includes('email/service'))return `const drainEmails=async()=>{const s=globalThis.__scheduledMail;s.calls++;if(s.fail)throw Error('delivery unavailable')};`;
   if(line.includes('fetch-handler'))return 'const handler={fetch(){throw Error("HTTP handler must not run")}};';
   if(line.includes('connector-context'))return 'const runWithConnectorBinding=()=>{};';

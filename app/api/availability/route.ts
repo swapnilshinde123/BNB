@@ -1,3 +1,4 @@
+import {canManageProperty,sameOrigin} from "@/lib/tenancy";
 import {identity,isAdmin,database,json} from '@/lib/server';
 import {findProperty} from '@/lib/property-data';
 
@@ -12,6 +13,7 @@ export async function GET(req:Request){
  if(!user)return json({error:'Sign in required.'},401);
  if(!await isAdmin())return json({error:'Owner access required.'},403);
  const url=new URL(req.url),propertyId=url.searchParams.get('propertyId')||'',month=url.searchParams.get('month')||'';
+ if(!await canManageProperty(propertyId))return json({error:"Home not found."},404);
  if(!await findProperty(propertyId,true)||!/^\d{4}-(0[1-9]|1[0-2])$/.test(month))return json({error:'Choose a valid property and month.'},400);
  const start=month+'-01',end=new Date(Date.UTC(Number(month.slice(0,4)),Number(month.slice(5,7)),1)).toISOString().slice(0,10),db=database();
  const [blocked,booked]=await Promise.all([
@@ -21,13 +23,14 @@ export async function GET(req:Request){
  return json({blocked:blocked.results.map(x=>x.date),booked:booked.results});
 }
 
-export async function POST(req:Request){
+export async function POST(req:Request){if(!sameOrigin(req))return json({error:"Open the host dashboard."},403);
  const user=await identity();
  if(!user)return json({error:'Sign in required.'},401);
  if(!await isAdmin())return json({error:'Owner access required.'},403);
  let body:{propertyId?:unknown;date?:unknown;blocked?:unknown};try{body=await req.json() as typeof body}catch{return json({error:'Invalid request.'},400)}
  const propertyId=body.propertyId,date=body.date,blocked=body.blocked;
  if(typeof propertyId!=='string'||!await findProperty(propertyId,true)||!validDate(date)||typeof blocked!=='boolean')return json({error:'Choose a valid property, date and availability.'},400);
+ if(!await canManageProperty(propertyId))return json({error:"Home not found."},404);
  const dateToday=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
  if(date<dateToday)return json({error:'Past dates cannot be changed.'},400);
  const db=database();

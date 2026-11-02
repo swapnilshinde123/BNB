@@ -1,3 +1,4 @@
+import {hostAccess} from './tenancy';
 import {env} from 'cloudflare:workers';
 import {mailJob} from '@/lib/email/service';
 import type {BookingMail,MailKind} from '@/lib/email/templates';
@@ -11,7 +12,7 @@ export async function identity(){
  // verified Google token; never trust caller-supplied identity headers on a Worker.
  return import.meta.env.DEV?getChatGPTUser():null;
 }
-export async function isAdmin(){const u=await identity();return !!u && u.email.toLowerCase()===(config().ADMIN_EMAIL||'').toLowerCase()}
+export async function isAdmin(){return (await hostAccess()).role!=='guest'}
 export function database(){if(!env.DB)throw new Error('Database unavailable');return env.DB}
 export function json(data:unknown,status=200){return Response.json(data,{status,headers:{'Cache-Control':'no-store'}})}
 export async function transition(id:string,status:string){

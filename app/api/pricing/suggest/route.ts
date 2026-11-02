@@ -1,3 +1,4 @@
+import {canManageProperty} from "@/lib/tenancy";
 import {env} from 'cloudflare:workers';
 import {database,isAdmin,json} from '@/lib/server';
 import {findProperty} from '@/lib/property-data';
@@ -7,7 +8,7 @@ export async function POST(req:Request){
  if(req.headers.get('origin')!==new URL(req.url).origin)return json({error:'Open the host dashboard to request suggestions.'},403);
  let b:any;try{b=await req.json()}catch{return json({error:'Invalid request.'},400)}
  if(!validDate(b.start)||!validDate(b.end)||b.start>b.end||(Date.parse(b.end)-Date.parse(b.start))/86400000>365||!['long-weekend','festival','manual'].includes(b.kind)||typeof b.label!=='string'||b.label.length>80)return json({error:'Select dates and a short event name first.'},400);
- const home=await findProperty(b.propertyId,true);if(!home)return json({error:'Home not found.'},404);
+ if(typeof b.propertyId!=="string"||!await canManageProperty(b.propertyId))return json({error:"Home not found."},404);const home=await findProperty(b.propertyId,true);if(!home)return json({error:'Home not found.'},404);
  const ai=(env as unknown as {AI?:{run:(model:string,input:unknown)=>Promise<unknown>}}).AI;
  if(!ai)return json({error:'AI suggestions are not connected yet. Manual pricing is available.'},503);
  try{

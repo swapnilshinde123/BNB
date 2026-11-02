@@ -13,8 +13,8 @@ function doPost(event) {
   var expected=hex_(Utilities.computeHmacSha256Signature(envelope.payload,secret,Utilities.Charset.UTF_8));
   if(!same_(expected,envelope.signature))return reply_({ok:false,error:'not_authorized'});
   var m=JSON.parse(envelope.payload),now=Date.now();
-  if(!Number.isFinite(m.timestamp)||Math.abs(now-m.timestamp)>300000||typeof m.id!=='string'||!/^ANG-[A-F0-9]{8}:(guest-request|confirmed|rejected|cancelled|connection-test)$/.test(m.id))return reply_({ok:false,error:'invalid_request'});
-  if(typeof m.to!=='string'||m.to.length>254||!/^\S+@\S+\.\S+$/.test(m.to)||/[\r\n,;]/.test(m.to)||typeof m.subject!=='string'||m.subject.length>250||/[\r\n]/.test(m.subject)||!m.subject.toLowerCase().includes('booking')||typeof m.text!=='string'||typeof m.html!=='string'||m.html.length>65000||m.text.length>15000)return reply_({ok:false,error:'invalid_message'});
+  if(!Number.isFinite(m.timestamp)||Math.abs(now-m.timestamp)>300000||typeof m.id!=='string'||!/^(ANG-[A-F0-9]{8}:(guest-request|payment-pending|confirmed|rejected|cancelled|connection-test)|PLATFORM-[a-f0-9]{64})$/.test(m.id))return reply_({ok:false,error:'invalid_request'});
+  if(typeof m.to!=='string'||m.to.length>254||!/^\S+@\S+\.\S+$/.test(m.to)||/[\r\n,;]/.test(m.to)||typeof m.subject!=='string'||m.subject.length>250||/[\r\n]/.test(m.subject)||!(m.id.startsWith('PLATFORM-')?m.subject.startsWith('Aangan Stays · '):m.subject.toLowerCase().includes('booking'))||typeof m.text!=='string'||typeof m.html!=='string'||m.html.length>65000||m.text.length>15000)return reply_({ok:false,error:'invalid_message'});
   locked=lock.tryLock(10000);if(!locked)return reply_({ok:false,error:'busy'});
   var key='mail_'+hex_(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,m.id,Utilities.Charset.UTF_8));
   var existing=properties.getProperty(key);
