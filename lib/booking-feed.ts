@@ -1,4 +1,4 @@
-export type Booking={id:string;name:string;email:string;phone:string;property_id:string;check_in:string;check_out:string;guests:number;total:number;status:string;source:string;created_at:string};
+export type Booking={id:string;name:string;email:string;phone:string;property_id:string;check_in:string;check_out:string;guests:number;total:number;status:string;source:string;created_at:string;company_id?:string;company_name?:string;host_admins?:{email:string;name:string;active:boolean}[];resolution_reason?:string;resolution_actor?:string};
 export type FeedUpdate={bookings?:Booking[];error?:string;updatedAt?:number;refreshing:boolean};
 
 export function filterAdminBookings(bookings:Booking[],status:string,month:string|null=null){

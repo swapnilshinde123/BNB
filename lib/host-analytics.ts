@@ -1,0 +1,10 @@
+import type {Booking} from './booking-feed';
+export function monthOffset(month:string,offset:number){const [year,m]=month.split('-').map(Number);const d=new Date(Date.UTC(year,m-1+offset,1));return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`}
+export function growth(current:number,previous:number):number|null{return previous?Math.round((current-previous)/previous*100):current?null:0}
+export function hostAnalytics(bookings:Booking[],month:string){
+ const monthly=bookings.filter(b=>b.check_in.startsWith(month)),previous=bookings.filter(b=>b.check_in.startsWith(monthOffset(month,-1)));
+ const confirmed=monthly.filter(b=>b.status==='confirmed'),cancelled=monthly.filter(b=>b.status==='cancelled'),rejected=monthly.filter(b=>b.status==='rejected');
+ const value=confirmed.reduce((sum,b)=>sum+b.total,0),previousValue=previous.filter(b=>b.status==='confirmed').reduce((sum,b)=>sum+b.total,0);
+ const reasons=(rows:Booking[])=>Object.entries(rows.reduce<Record<string,number>>((all,b)=>{const reason=b.resolution_reason?.trim()||'Reason not recorded';all[reason]=(all[reason]||0)+1;return all},{})).map(([reason,count])=>({reason,count})).sort((a,b)=>b.count-a.count||a.reason.localeCompare(b.reason));
+ return {total:monthly.length,confirmed:confirmed.length,pending:monthly.filter(b=>b.status==='pending').length,paymentPending:monthly.filter(b=>b.status==='payment_pending').length,cancelled:cancelled.length,rejected:rejected.length,value,averageValue:confirmed.length?Math.round(value/confirmed.length):0,cancellationRate:monthly.length?Math.round(cancelled.length/monthly.length*100):0,bookingGrowth:growth(monthly.length,previous.length),valueGrowth:growth(value,previousValue),previousTotal:previous.length,previousValue,cancellationReasons:reasons(cancelled),rejectionReasons:reasons(rejected),trend:Array.from({length:6},(_,i)=>{const key=monthOffset(month,i-5),rows=bookings.filter(b=>b.check_in.startsWith(key));return {month:key,total:rows.length,confirmed:rows.filter(b=>b.status==='confirmed').length,value:rows.filter(b=>b.status==='confirmed').reduce((sum,b)=>sum+b.total,0)}})};
+}

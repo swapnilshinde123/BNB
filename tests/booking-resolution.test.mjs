@@ -1,0 +1,22 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {DatabaseSync} from 'node:sqlite';
+import {readFileSync,readdirSync} from 'node:fs';
+import ts from 'typescript';
+const sql=new DatabaseSync(':memory:');
+for(const file of readdirSync(new URL('../drizzle',import.meta.url)).filter(f=>f.endsWith('.sql')).sort())sql.exec(readFileSync(new URL('../drizzle/'+file,import.meta.url),'utf8'));
+sql.exec('CREATE TABLE booking_resolutions(booking_id TEXT PRIMARY KEY,status TEXT,reason TEXT,actor_email TEXT,actor_role TEXT,created_at INTEGER)');
+const db={prepare(query){let args=[];return {bind(...values){args=values;return this},async first(){return sql.prepare(query).get(...args)||null},async run(){return {meta:{changes:sql.prepare(query).run(...args).changes}}}}},async batch(commands){sql.exec('BEGIN');try{const results=[];for(const command of commands)results.push(await command.run());sql.exec('COMMIT');return results}catch(e){sql.exec('ROLLBACK');throw e}}};
+globalThis.__resolutionDb=db;
+const encode=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
+let source=ts.transpileModule(readFileSync(new URL('../lib/server.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText;
+source=source.replace(/import .* from ['"]\.\/tenancy['"];?/g,'const hostAccess=async()=>({role:"guest"});const ensureTenancy=async()=>{};').replace("import { env } from 'cloudflare:workers';",'const env={DB:globalThis.__resolutionDb};').replace(/import .* from '@\/lib\/email\/service';/,'const mailJob=(db,b,kind,recipient)=>db.prepare("INSERT OR IGNORE INTO booking_emails(id,booking_id,kind,recipient,payload,created_at) SELECT ?,?,?,?,?,? WHERE changes()>0").bind(b.id+":"+kind,b.id,kind,recipient,JSON.stringify(b),Date.now());').replace(/import .* from '@\/app\/chatgpt-auth';/,'const getChatGPTUser=async()=>null;').replace(/import .* from '@\/app\/google-auth';/,'const readGoogleUser=async()=>null;').replace("'@/lib/properties'",JSON.stringify(encode('export const properties=[];')));
+const {transition}=await import(encode(source));
+test('cancellation reason, status, guest email and date release are saved together, once',async()=>{
+ sql.prepare("INSERT INTO bookings VALUES('ANG-1234ABCD','guest','Guest','guest@example.com','9999999999','p1','2027-12-01','2027-12-03',2,7000,'pending','website','now','now')").run();
+ sql.prepare("INSERT INTO nights VALUES('night1','ANG-1234ABCD','p1','2027-12-01')").run();
+ assert.equal(await transition('ANG-1234ABCD','cancelled',{reason:'Travel plans changed',actorEmail:'guest@example.com',actorRole:'guest'}),true);
+ assert.equal(sql.prepare('SELECT status FROM bookings').get().status,'cancelled');assert.equal(sql.prepare('SELECT count(*) AS n FROM nights').get().n,0);
+ const note=sql.prepare('SELECT * FROM booking_resolutions').get();assert.equal(note.reason,'Travel plans changed');assert.equal(note.actor_role,'guest');assert.equal(sql.prepare('SELECT kind FROM booking_emails').get().kind,'cancelled');
+ assert.equal(await transition('ANG-1234ABCD','cancelled',{reason:'Overwrite attempt'}),false);assert.equal(sql.prepare('SELECT reason FROM booking_resolutions').get().reason,'Travel plans changed');assert.equal(sql.prepare('SELECT count(*) AS n FROM booking_emails').get().n,1);
+});

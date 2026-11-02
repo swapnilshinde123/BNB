@@ -1,4 +1,4 @@
-import {hostAccess} from './tenancy';
+import {hostAccess,ensureTenancy} from './tenancy';
 import {env} from 'cloudflare:workers';
 import {mailJob} from '@/lib/email/service';
 import type {BookingMail,MailKind} from '@/lib/email/templates';
@@ -15,9 +15,10 @@ export async function identity(){
 export async function isAdmin(){return (await hostAccess()).role!=='guest'}
 export function database(){if(!env.DB)throw new Error('Database unavailable');return env.DB}
 export function json(data:unknown,status=200){return Response.json(data,{status,headers:{'Cache-Control':'no-store'}})}
-export async function transition(id:string,status:string){
+export async function transition(id:string,status:string,resolution?:{reason?:string;actorEmail?:string;actorRole?:string}){
  if(!['payment_pending','confirmed','rejected','cancelled'].includes(status))throw new Error('Invalid booking status');
  const from=status==='confirmed'?'payment_pending':'pending';
+ await ensureTenancy();
  const db=database();
  const row=status==='rejected'
   ?await db.prepare("SELECT * FROM bookings WHERE id=? AND status IN ('pending','payment_pending')").bind(id).first<BookingMail>()
@@ -31,6 +32,7 @@ export async function transition(id:string,status:string){
  const result=await db.batch([
   db.prepare('UPDATE bookings SET status=?,updated_at=? WHERE id=? AND status=?').bind(status,new Date().toISOString(),id,previous),
   mailJob(db,booking,emailKind,row.email,true),
+  ...(['cancelled','rejected'].includes(status)?[db.prepare('INSERT INTO booking_resolutions(booking_id,status,reason,actor_email,actor_role,created_at) SELECT ?,?,?,?,?,? WHERE changes()>0 ON CONFLICT(booking_id) DO NOTHING').bind(id,status,resolution?.reason?.trim().slice(0,500)||'',resolution?.actorEmail||'',resolution?.actorRole||'host',Date.now())]:[]),
   db.prepare("DELETE FROM nights WHERE booking_id=? AND EXISTS(SELECT 1 FROM bookings WHERE id=? AND status IN ('rejected','cancelled'))").bind(id,id)
  ]);
  return result[0].meta.changes>0;

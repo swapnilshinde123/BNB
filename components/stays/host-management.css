@@ -42,3 +42,54 @@
 .host-shell .host-layout{box-sizing:border-box;width:100%;padding-top:28px}
 .host-shell .host-sidebar{top:24px}
 @media(max-width:760px){.host-shell>.header{height:76px;min-height:76px;padding:14px 20px;gap:16px}.host-shell>.header .brand-logo{width:180px}.host-shell .host-layout{padding-top:20px}}
+.host-company-filter{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:24px 26px;margin-bottom:24px;border:1px solid #dce5d8;border-radius:20px;background:#eef3e9}
+.host-company-filter h2{font-size:23px;line-height:1.3;margin:8px 0}
+.host-company-filter p{font-size:14px;color:#70816d;line-height:1.6;margin:0;max-width:510px}
+.host-company-picker{flex:0 1 410px;min-width:240px;display:grid;gap:8px}
+.host-company-picker label{font-size:13px;display:flex;align-items:center;gap:8px;font-weight:600}
+.host-company-picker .stay-select-trigger{width:100%;height:auto;min-height:48px;padding:12px 14px;background:#fff;font-size:14px;white-space:normal;text-align:left;line-height:1.5}
+.host-company-picker .stay-select-trigger>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.host-company-picker small{font-size:12px;color:#6c7d67;line-height:1.5;overflow-wrap:anywhere}
+.host-performance{margin-bottom:24px}
+.host-performance-heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin:6px 0 20px}
+.host-performance-heading h2{font-size:23px;margin:0 0 6px}
+.host-performance-heading p{font-size:14px;color:#7b8578;margin:0}
+.performance-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:24px}
+.performance-stat{min-width:0;background:#fff;border:1px solid #e1e6dc;border-radius:18px;padding:22px}
+.performance-stat>div{display:flex;align-items:center;justify-content:space-between;gap:12px;color:#667b63;font-size:13px;font-weight:600}
+.performance-stat svg{flex-shrink:0}
+.performance-stat strong{display:block;font-size:32px;letter-spacing:-1px;line-height:1.2;margin:18px 0 10px;color:#243d2e;overflow-wrap:anywhere}
+.performance-stat small{font-size:12px;line-height:1.6;color:#7d8877}
+.performance-panels{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px}
+.host-layout .performance-panels>.panel{min-width:0;margin-bottom:20px}
+.performance-panel-title{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.performance-panel-title h3,.performance-reasons h3{font-size:18px;margin:7px 0 0;line-height:1.5}
+.performance-panel-title .eyebrow{font-size:10px;letter-spacing:1.5px}
+.performance-bars{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;align-items:end;margin:16px 0 22px}
+.performance-bar-column{text-align:center;min-width:0;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px}
+.performance-bar-column>b{font-size:14px}
+.performance-bar-track{width:100%;max-width:46px;height:120px;display:flex;align-items:flex-end;background:#f3f5ee;border-radius:8px;overflow:hidden}
+.performance-bar-track>div{width:100%;background:#69845c;border-radius:8px;min-height:0}
+.performance-bar-column>small{font-size:10px;color:#77866e;overflow-wrap:anywhere;max-width:100%}
+.performance-note{font-size:12px;line-height:1.7;color:#7d8975;margin:0}
+.performance-status-row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid #edf0e8;font-size:14px}
+.performance-status>small,.performance-reasons>small{display:block;margin-top:18px;font-size:12px;color:#7b8873;line-height:1.7}
+.performance-reason{display:flex;align-items:start;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid #edf0e8}
+.performance-reason p{margin:0;font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.performance-reason>span{min-width:28px;height:28px;border-radius:50%;background:#f0f3e9;display:grid;place-items:center;font-size:12px;font-weight:600}
+.performance-reasons>.muted{font-size:14px;line-height:1.7;margin-bottom:0}
+.host-layout .booking-host-cell{min-width:180px;max-width:240px}
+.host-layout .booking-host-cell>b{font-size:14px}
+.host-layout .booking-host-cell>small{margin-top:8px;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.host-admin-email{display:block;color:#8a9482;font-size:11px}
+.host-layout .booking-resolution-note{max-width:200px;margin-top:8px;font-size:12px;line-height:1.6;overflow-wrap:anywhere}
+.booking-resolution-dialog textarea{width:100%;box-sizing:border-box;border:1px solid #dce3d5;border-radius:12px;padding:12px 14px;font:inherit;resize:vertical;background:#f8faf5;color:#233c30}
+@media(max-width:1100px){.host-company-filter{align-items:stretch;flex-direction:column;gap:18px}.host-company-picker{flex:auto;min-width:0}.performance-panels{grid-template-columns:1fr}.performance-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.host-company-filter{padding:20px}.performance-stat{padding:16px}.performance-stat strong{font-size:27px}.performance-stat>div{font-size:12px;align-items:flex-start}.host-performance-heading{align-items:stretch;flex-direction:column}.host-performance-heading h2{font-size:21px}.performance-bars{gap:8px}.performance-bar-column{font-size:10px}.performance-bar-column>small{font-size:9px}}
+.host-performance-heading>div{flex:1;min-width:0}
+.host-performance-heading>.month-picker-trigger{flex:0 0 220px;width:220px;min-height:46px;padding:12px 14px;font-size:14px}
+.host-layout .booking-feed-controls .month-picker-trigger{width:180px;min-height:44px;padding:10px 14px;font-size:14px}
+.host-company-menu{max-width:min(540px,calc(100vw - 28px))}
+.host-company-menu .stay-select-option{white-space:normal;line-height:1.6;overflow-wrap:anywhere}
+.host-company-menu .stay-select-option>span:nth-child(2){min-width:0;flex:1}
+@media(max-width:600px){.host-performance-heading>.month-picker-trigger{flex:auto;width:100%}.host-layout .booking-feed-controls .month-picker-trigger{width:100%}}
