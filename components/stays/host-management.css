@@ -93,3 +93,12 @@
 .host-company-menu .stay-select-option{white-space:normal;line-height:1.6;overflow-wrap:anywhere}
 .host-company-menu .stay-select-option>span:nth-child(2){min-width:0;flex:1}
 @media(max-width:600px){.host-performance-heading>.month-picker-trigger{flex:auto;width:100%}.host-layout .booking-feed-controls .month-picker-trigger{width:100%}}
+.host-layout .availability-panel .availability-grid{box-sizing:border-box;width:100%;max-width:none;margin:0;padding:8px 4px}
+.host-layout .availability-panel .availability-weekdays,.host-layout .availability-panel .availability-dates{width:100%;gap:12px}
+.host-layout .availability-panel .availability-dates{grid-auto-rows:minmax(110px,auto)}
+.host-layout .availability-panel .availability-blank{min-height:110px}
+.host-layout .availability-panel .availability-day{min-width:0;padding:14px;border-radius:12px}
+.host-layout .availability-panel .availability-day b{font-size:18px}
+.host-layout .availability-panel .availability-day small{font-size:13px;line-height:1.4}
+@media(max-width:1050px){.host-layout .availability-panel .availability-weekdays,.host-layout .availability-panel .availability-dates{gap:8px}.host-layout .availability-panel .availability-day{padding:10px}}
+@media(max-width:760px){.host-layout .availability-panel .availability-weekdays,.host-layout .availability-panel .availability-dates{gap:6px}.host-layout .availability-panel .availability-dates{grid-auto-rows:minmax(78px,auto)}.host-layout .availability-panel .availability-blank{min-height:78px}.host-layout .availability-panel .availability-day{padding:8px 6px;border-radius:8px}.host-layout .availability-panel .availability-day b{font-size:16px}.host-layout .availability-panel .availability-day small{font-size:12px}}
