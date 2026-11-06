@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import ts from 'typescript';
 const encode=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
-const compile=p=>ts.transpileModule(readFileSync(new URL(p,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText.replace(/import .* from ['"]@\/lib\/tenancy['"];?/g,'const canManageProperty=async()=>true;const canManageBooking=async()=>true;const hostAccess=async()=>({role:"super_admin"});const sameOrigin=req=>req.headers.get("origin")===new URL(req.url).origin;').replace(/import .* from ['"]@\/lib\/email\/platform['"];?/g,'const platformJob=()=>{};const platformMessage=()=>{};const companyRecipients=async()=>[];');
+const compile=p=>ts.transpileModule(readFileSync(new URL(p,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022}}).outputText.replace(/([\"'])\.\/holiday-calendar\1/g,()=>JSON.stringify(encode(compile('../lib/holiday-calendar.ts')))).replace(/import .* from ['"]@\/lib\/tenancy['"];?/g,'const canManageProperty=async()=>true;const canManageBooking=async()=>true;const hostAccess=async()=>({role:"super_admin"});const sameOrigin=req=>req.headers.get("origin")===new URL(req.url).origin;').replace(/import .* from ['"]@\/lib\/email\/platform['"];?/g,'const platformJob=()=>{};const platformMessage=()=>{};const companyRecipients=async()=>[];');
 const pricing=encode(compile('../lib/pricing.ts'));
 const {bookingPrice}=await import(pricing);
 test('GST replaces the flat fee and scales with nights',()=>{

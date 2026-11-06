@@ -38,3 +38,6 @@
 
 /* Supplied Aangan Stay PNG wordmark */
 .brand .brand-logo{display:block;width:240px;height:auto;max-width:100%;object-fit:contain;flex-shrink:0}.header .brand{padding:8px 0;flex-shrink:0}.footer-brand .brand-logo{width:200px}.wizard-brand img{display:block;width:170px;height:auto;object-fit:contain;background:#fffaf1;padding:10px;border-radius:10px}.wizard-brand small{font-size:12px;letter-spacing:2px}.wizard-brand{gap:12px;flex-wrap:wrap}@media(max-width:700px){.brand .brand-logo{width:190px}.footer-brand .brand-logo{width:180px}}@media(max-width:380px){.brand .brand-logo{width:165px}}
+.stay-select-option>.select-option-dot{flex-shrink:0;margin-left:0}
+.stay-select-option>span:nth-child(2){margin-left:0;flex:1;min-width:0;text-align:left}
+.stay-select-option>span:nth-child(3){margin-left:auto;flex-shrink:0;display:grid;place-items:center}
