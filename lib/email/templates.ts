@@ -1,7 +1,7 @@
 export type BookingMail = {id:string;name:string;email:string;phone:string;property_id:string;property_name:string;check_in:string;check_out:string;guests:number;total:number;status:string};
 export type MailKind = 'admin-request'|'guest-request'|'payment-pending'|'confirmed'|'rejected'|'cancelled';
-export const guestOrigin='https://aangan-stays.aangan-pune.workers.dev';
-export const adminOrigin='https://aangan-stays-admin.aangan-pune.workers.dev';
+export const guestOrigin='https://gomzo.co';
+export const adminOrigin='https://admin.gomzo.co';
 export function escapeHtml(value:unknown){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!))}
 export function reviewPath(id:string,action:string){return '/api/bookings/email-action?'+new URLSearchParams({id,action})}
 export function bookingEmail(b:BookingMail,kind:MailKind){
