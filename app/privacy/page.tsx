@@ -1,6 +1,6 @@
-import type {Metadata} from 'next';
+import {pageMetadata} from '@/lib/seo';
 
-export const metadata:Metadata={title:'Privacy · Gomzo'};
+export const metadata=pageMetadata('Privacy at GOMZO','How GOMZO uses account, booking and signed-in activity information. Contact GOMZO about your information.','/privacy');
 
 export default function PrivacyPage(){
  return <main style={{maxWidth:780,margin:'0 auto',padding:'64px 24px 96px',lineHeight:1.8}}>

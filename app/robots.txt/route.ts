@@ -1,0 +1,2 @@
+import {origin} from '@/lib/seo';
+export function GET(req:Request){const host=new URL(req.url).hostname;const privateHost=host.startsWith('admin.')||host.endsWith('.workers.dev');return new Response(privateHost?'User-agent: *\nDisallow: /\n':`User-agent: *\nAllow: /\nDisallow: /api/\nDisallow: /host\nDisallow: /login\nDisallow: /join\nDisallow: /my-bookings\nDisallow: /saved-homes\nSitemap: ${origin}/sitemap.xml\n`,{headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'public, max-age=300'}})}

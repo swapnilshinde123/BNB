@@ -1,4 +1,6 @@
 import type {Metadata} from 'next';
 import './globals.css';
-export const metadata:Metadata={title:'Gomzo · A little Pune. A lot like home.',icons:{icon:[{url:'/brand/gomzo-mark.png',type:'image/png'}],apple:'/brand/gomzo-mark.png'},description:'Discover thoughtful homes across Pune. Find your neighbourhood, choose your dates, and request your stay.'};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
+import {headers} from 'next/headers';
+import {homeTitle,homeDescription,pageMetadata,brandSchema,jsonLd} from '@/lib/seo';
+export async function generateMetadata():Promise<Metadata>{const host=(await headers()).get('host')||'';return {...pageMetadata(homeTitle,homeDescription,'/'),metadataBase:new URL('https://gomzo.co'),applicationName:'GOMZO',robots:host.startsWith('admin.')||host.endsWith('.workers.dev')?{index:false,follow:false}:{index:true,follow:true},icons:{icon:[48,96,192].map(size=>({url:`/brand/favicon-${size}.png`,type:'image/png',sizes:`${size}x${size}`})),apple:'/brand/favicon-192.png'}}}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><head><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous"/><link rel="preconnect" href="https://images.unsplash.com"/></head><body><script type="application/ld+json" dangerouslySetInnerHTML={{__html:jsonLd(brandSchema())}}/>{children}</body></html>}

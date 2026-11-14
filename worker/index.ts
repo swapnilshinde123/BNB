@@ -3,6 +3,7 @@ import {drainEmails} from '../lib/email/service';
 import handler from "vinext/server/fetch-handler";
 import { runWithConnectorBinding } from "../lib/connector-context";
 import type { ConnectorBinding } from "../lib/connector-contract.mjs";
+import {isPrivateSurface,publicPages} from '../lib/seo';
 
 const worker = {
   async scheduled() {
@@ -11,6 +12,8 @@ const worker = {
     const failure=results.find(r=>r.status==='rejected');if(failure?.status==='rejected')throw failure.reason;
   },
   fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext<{ CONNECTORS?: ConnectorBinding }>) {
+    const url=new URL(request.url);
+    if(['GET','HEAD'].includes(request.method)&&url.hostname==='www.gomzo.co'&&(publicPages.includes(url.pathname)||url.pathname.startsWith('/stays/'))&&!(request.headers.get('cookie')||'').includes('aangan_google_session='))return Response.redirect('https://gomzo.co'+url.pathname+url.search,308);
     let binding = ctx.props?.CONNECTORS;
     // Local preview emulates the same request-scoped capability. This branch and
     // the auxiliary service binding are absent from production builds.
@@ -32,7 +35,11 @@ const worker = {
     }
     const response = runWithConnectorBinding(binding, () => handler.fetch(request, env, ctx));
     ctx.waitUntil(Promise.resolve(response).then(() => Promise.allSettled([drainEmails(),drainPlatformEmails()])).catch(() => console.error('Booking email delivery unavailable')));
-    return response;
+    return Promise.resolve(response).then(result=>{
+      if(!isPrivateSurface(url.hostname,url.pathname,url.search)&&result.status!==404)return result;
+      const headers=new Headers(result.headers);headers.set('X-Robots-Tag','noindex, nofollow');
+      return new Response(result.body,{status:result.status,statusText:result.statusText,headers});
+    });
   },
 };
 
