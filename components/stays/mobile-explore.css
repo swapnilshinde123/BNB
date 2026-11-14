@@ -16,7 +16,7 @@
 @media(max-width:760px){
  .mobile-search-header{display:grid;grid-template-columns:minmax(0,1fr) 44px;gap:12px 10px;padding:14px 18px 12px}
  .mobile-brand{grid-column:1;grid-row:1;justify-self:start;display:flex;align-items:center;min-height:44px;padding:4px 0;max-width:100%}
- .mobile-brand img{width:184px;height:auto;max-width:100%}
+ .mobile-brand img{width:166px;height:auto;max-width:100%}
  .mobile-filter-icon{grid-column:2;grid-row:1;width:44px;border:1px solid #e1e5dd}
  .mobile-search-pill{grid-column:1/-1;grid-row:2;width:100%;min-height:62px;padding:12px 18px;flex:none}
  .mobile-category-row{top:144px}
@@ -41,7 +41,7 @@
  .mobile-host-note{padding-bottom:112px}
  .guest-shell{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
 }
-@media(max-width:350px){.mobile-brand img{width:166px}.mobile-bottom-nav{left:10px;right:10px;padding:7px;gap:2px}.mobile-bottom-nav>button{gap:5px;font-size:11px}.mobile-bottom-nav>button svg{width:21px;height:21px}}
+@media(max-width:350px){.mobile-brand img{width:149px}.mobile-bottom-nav{left:10px;right:10px;padding:7px;gap:2px}.mobile-bottom-nav>button{gap:5px;font-size:11px}.mobile-bottom-nav>button svg{width:21px;height:21px}}
 @media(prefers-reduced-motion:reduce){.mobile-bottom-nav>button{transition:none}}
 /* Let mobile guests see more of the Pune map and keep search details on one line. */
 @media(max-width:760px){
@@ -67,7 +67,7 @@
 }
 @media(max-width:350px){
  .mobile-search-header{padding-inline:10px}
- .mobile-brand img{width:166px}
+ .mobile-brand img{width:149px}
  .mobile-search-pill{padding-inline:10px}
  .mobile-search-pill b{font-size:12px;max-width:41%}
  .mobile-search-pill small{font-size:9px;gap:4px}
