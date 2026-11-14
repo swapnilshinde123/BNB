@@ -6,7 +6,7 @@ import {LockKeyhole,ScanLine} from 'lucide-react';
 const UPI_ID='swapnil69011@ybl';
 
 export function UpiPayment({amount,bookingId}:{amount:number;bookingId:string}){
- const value=new URLSearchParams({pa:UPI_ID,pn:'Aangan Stays',am:amount.toFixed(2),cu:'INR',tn:`Aangan ${bookingId}`});
+ const value=new URLSearchParams({pa:UPI_ID,pn:'Gomzo',am:amount.toFixed(2),cu:'INR',tn:`Gomzo ${bookingId}`});
  const uri=`upi://pay?${value.toString()}`;
  return <aside className="upi-payment" aria-label="UPI payment details">
   <div className="upi-payment-heading"><span><ScanLine size={16}/></span><div><b>Payment pending</b><small>Scan to pay securely</small></div></div>

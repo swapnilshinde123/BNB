@@ -21,5 +21,5 @@ export function GoogleSignIn({clientId,returnTo}:{clientId?:string;returnTo:stri
   }).catch(reason=>{if(active)setError(reason instanceof Error?reason.message:'Google sign-in is not ready yet.')});
   return()=>{active=false;observer?.disconnect();cancelAnimationFrame(resizeFrame)};
  },[clientId,returnTo]);
- return <div className="google-signin-wrap"><div ref={container} className="google-signin-button" aria-label="Sign in with Google"/>{!clientId?<span className="google-signin-loading">Google sign-in is being connected.</span>:!ready&&!error&&<span className="google-signin-loading">Loading secure Google sign-in…</span>}{error&&<p className="error" role="alert">{error}</p>}<small className="google-signin-trust"><ShieldCheck size={14}/> Google verifies your sign-in; Aangan never sees your password.</small></div>
+ return <div className="google-signin-wrap"><div ref={container} className="google-signin-button" aria-label="Sign in with Google"/>{!clientId?<span className="google-signin-loading">Google sign-in is being connected.</span>:!ready&&!error&&<span className="google-signin-loading">Loading secure Google sign-in…</span>}{error&&<p className="error" role="alert">{error}</p>}<small className="google-signin-trust"><ShieldCheck size={14}/> Google verifies your sign-in; Gomzo never sees your password.</small></div>
 }
