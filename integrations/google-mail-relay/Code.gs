@@ -24,7 +24,7 @@ function doPost(event) {
   if(MailApp.getRemainingDailyQuota()<1)return reply_({ok:false,error:'daily_quota_reached'});
   var all=properties.getProperties();Object.keys(all).forEach(function(k){if(k.startsWith('mail_')&&all[k].startsWith('sent:')&&now-Number(all[k].slice(5))>30*86400000)properties.deleteProperty(k);});
   properties.setProperty(key,'sending:'+now);
-  MailApp.sendEmail({to:m.to,subject:m.subject,body:m.text,htmlBody:m.html,name:'Gomzo',replyTo:'swapnil690123@gmail.com'});
+  MailApp.sendEmail({to:m.to,subject:m.subject,body:m.text,htmlBody:m.html,name:'Gomzo',replyTo:'customer@gomzo.co'});
   properties.setProperty(key,'sent:'+now);
   return reply_({ok:true,id:'gmail:'+m.id});
  } catch(error) { return reply_({ok:false,error:'send_failed'}); }
