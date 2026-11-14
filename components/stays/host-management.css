@@ -41,6 +41,31 @@
 .host-shell>.header .header-right{margin-left:auto;flex-shrink:0}
 .host-shell .host-layout{box-sizing:border-box;width:100%;padding-top:28px}
 .host-shell .host-sidebar{top:24px}
+.host-mobile-menu-trigger{display:none}
+@media(max-width:760px){
+ .host-shell>.header.host-header-authorized>.brand{display:none}
+ .host-shell>.header .host-mobile-menu-trigger{display:grid;place-items:center;flex-shrink:0;width:46px;height:46px;padding:0;border:1px solid #dce4d6;border-radius:14px;background:#fff;color:#294737;cursor:pointer}
+ .host-shell>.header .host-mobile-menu-trigger:hover{background:#edf3e8}
+ .host-shell .host-layout>.host-sidebar{display:none}
+ .host-mobile-menu-overlay{position:fixed;inset:0;z-index:180;background:#14251b80;backdrop-filter:blur(3px);animation:host-menu-fade .18s ease-out}
+ .host-mobile-menu-drawer{position:fixed;inset:0 auto 0 0;z-index:181;display:flex;flex-direction:column;box-sizing:border-box;width:min(330px,88vw);height:100dvh;max-height:100dvh;padding:max(24px,env(safe-area-inset-top)) 18px max(20px,env(safe-area-inset-bottom));background:#fffefa;color:#294436;border-right:1px solid #e1e7d9;box-shadow:14px 0 60px #14271b24;overflow-y:auto;overscroll-behavior:contain;animation:host-menu-slide .22s ease-out}
+ .host-mobile-menu-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 4px 24px;border-bottom:1px solid #e6eadd;flex-shrink:0}
+ .host-mobile-menu-heading img{display:block;width:164px;height:auto;max-width:calc(100% - 56px)}
+ .host-mobile-menu-heading button{display:grid;place-items:center;flex-shrink:0;width:40px;height:40px;border:1px solid #e1e7d9;border-radius:50%;background:#f4f6ef;color:#52694e;padding:0;cursor:pointer}
+ .host-mobile-menu-title{font-size:17px;font-weight:650;line-height:1.4;margin:24px 12px 4px;overflow-wrap:anywhere}
+ .host-mobile-menu-description{font-size:12px;line-height:1.6;color:#819076;margin:0 12px 22px}
+ .host-mobile-menu-drawer nav{display:grid;gap:5px;margin-bottom:24px}
+ .host-mobile-menu-drawer nav button{display:flex;align-items:center;gap:13px;min-height:49px;padding:12px 14px;border:0;border-radius:12px;background:transparent;color:#6d7d64;text-align:left;font:inherit;font-size:14px;line-height:1.4;cursor:pointer}
+ .host-mobile-menu-drawer nav button svg{flex-shrink:0}
+ .host-mobile-menu-drawer nav button:hover{background:#f0f4e9}
+ .host-mobile-menu-drawer nav button[aria-current=page]{background:#284d39;color:#fff}
+ .host-mobile-menu-drawer nav button i{width:6px;height:6px;border-radius:50%;background:#bbd6a8;margin-left:auto;flex-shrink:0}
+ .host-mobile-menu-drawer .host-mobile-guest-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin-top:auto;padding:16px 14px 0;border-top:1px solid #e3e9dc;font-size:13px;color:#5c7554;text-decoration:none}
+ .host-mobile-menu-trigger:focus-visible,.host-mobile-menu-drawer button:focus-visible,.host-mobile-menu-drawer a:focus-visible{outline:2px solid #799b68;outline-offset:3px}
+}
+@keyframes host-menu-slide{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@keyframes host-menu-fade{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.host-mobile-menu-overlay,.host-mobile-menu-drawer{animation:none}}
 @media(max-width:760px){.host-shell>.header{height:76px;min-height:76px;padding:14px 20px;gap:16px}.host-shell>.header .brand-logo{width:180px}.host-shell .host-layout{padding-top:20px}}
 .host-company-filter{display:flex;align-items:center;justify-content:space-between;gap:28px;padding:24px 26px;margin-bottom:24px;border:1px solid #dce5d8;border-radius:20px;background:#eef3e9}
 .host-company-filter h2{font-size:23px;line-height:1.3;margin:8px 0}

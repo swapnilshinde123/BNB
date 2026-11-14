@@ -2,11 +2,15 @@
 import {useEffect,useState} from 'react';
 import {Dialog} from 'radix-ui';
 import {FancySelect} from './controls';
-import {LayoutDashboard,CalendarDays,ChartNoAxesCombined,Home,ClipboardCheck,Mail,Users,IndianRupee,ArrowUpRight,Plus,X} from 'lucide-react';
+import {LayoutDashboard,CalendarDays,ChartNoAxesCombined,Home,ClipboardCheck,Mail,Users,IndianRupee,ArrowUpRight,Plus,X,Menu} from 'lucide-react';
 import {Property,photo,money} from '@/lib/properties';
 import './host-management.css';
 export const hostMenus=[['dashboard','Dashboard',LayoutDashboard],['availability','Availability',CalendarDays],['pricing','Pricing',IndianRupee],['reports','Booking value',ChartNoAxesCombined],['properties','Your properties',Home],['requests','Property requests',ClipboardCheck],['bookings','Bookings',Users],['invitations','Invitations',Mail],['community','Hosts & Users',Users]] as const;
 export function HostNavigation({section,onChange,superAdmin}:{section:string;onChange:(s:string)=>void;superAdmin:boolean;company?:string}){return <aside className="host-sidebar"><nav aria-label="Host navigation">{hostMenus.filter(([id])=>superAdmin||!['requests','invitations','community'].includes(id)).map(([id,label,Icon])=><button key={id} aria-current={section===id?'page':undefined} onClick={()=>onChange(id)}><Icon size={20}/>{label}</button>)}</nav><a href="https://gomzo.co/" target="_blank" rel="noreferrer">View guest website <ArrowUpRight size={16}/></a></aside>}
+export function HostMobileNavigation({section,onChange,superAdmin,company}:{section:string;onChange:(s:string)=>void;superAdmin:boolean;company?:string}){
+ const [open,setOpen]=useState(false);
+ return <Dialog.Root open={open} onOpenChange={setOpen}><Dialog.Trigger asChild><button type="button" className="host-mobile-menu-trigger" aria-label="Open admin menu"><Menu size={25} strokeWidth={1.8}/></button></Dialog.Trigger><Dialog.Portal><Dialog.Overlay className="host-mobile-menu-overlay"/><Dialog.Content className="host-mobile-menu-drawer"><div className="host-mobile-menu-heading"><img src="/brand/gomzo-logo.svg" alt="Gomzo" width={170} height={32}/><Dialog.Close asChild><button type="button" aria-label="Close admin menu"><X size={21}/></button></Dialog.Close></div><Dialog.Title className="host-mobile-menu-title">{superAdmin?'Super Admin':company||'Host workspace'}</Dialog.Title><Dialog.Description className="host-mobile-menu-description">Manage your homes and bookings</Dialog.Description><nav aria-label="Mobile host navigation">{hostMenus.filter(([id])=>superAdmin||!['requests','invitations','community'].includes(id)).map(([id,label,Icon])=><button type="button" key={id} aria-current={section===id?'page':undefined} onClick={()=>{onChange(id);setOpen(false)}}><Icon size={21} strokeWidth={1.8}/><span>{label}</span>{section===id&&<i aria-hidden="true"/>}</button>)}</nav><a className="host-mobile-guest-link" href="https://gomzo.co/" target="_blank" rel="noreferrer">View guest website <ArrowUpRight size={17}/></a></Dialog.Content></Dialog.Portal></Dialog.Root>
+}
 export function Invitations(){
  const [open,setOpen]=useState(false);
  const [data,setData]=useState<any>(null),[email,setEmail]=useState(''),[company,setCompany]=useState(''),[companyId,setCompanyId]=useState(''),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false);
