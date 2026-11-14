@@ -19,8 +19,6 @@ const deployments = [
     "admin",
     "--keep-vars",
     "--var",
-    "ADMIN_EMAIL:swapnil690123@gmail.com",
-    "--var",
     "GOOGLE_CLIENT_ID:920464920544-eiedfl354bjk5nc4i945c9r0r0t6ch57.apps.googleusercontent.com",
     "--var",
     "OWNER_WHATSAPP:917083834078",
