@@ -25,7 +25,7 @@ export async function drainEmails(){
    const message=bookingEmail(JSON.parse(job.payload),job.kind);
    let providerId:string;
    if(policy.gmailReady&&job.kind!=='admin-request'){providerId=await sendGmail(c,job.id,job.recipient,message)}else{
-   const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${c.RESEND_API_KEY}`,'Content-Type':'application/json','Idempotency-Key':job.id},body:JSON.stringify({from:c.EMAIL_FROM,to:[job.recipient],reply_to:c.ADMIN_EMAIL,...message}),signal:AbortSignal.timeout(10000)});
+   const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${c.RESEND_API_KEY}`,'Content-Type':'application/json','Idempotency-Key':job.id},body:JSON.stringify({from:c.EMAIL_FROM.replace(/^Aangan(?: Stays?)?(?=\s*<)/i,'Gomzo'),to:[job.recipient],reply_to:c.ADMIN_EMAIL,...message}),signal:AbortSignal.timeout(10000)});
    if(!r.ok)throw new Error(`Email provider returned ${r.status}`);
    const result=await r.json() as {id?:string};if(!result.id)throw new Error('Email provider did not acknowledge message');
    providerId=result.id;}
