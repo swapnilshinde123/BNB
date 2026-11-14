@@ -1,0 +1,93 @@
+/* Admin and company-host layouts only; guest layouts keep their existing behaviour. */
+@media(max-width:760px){
+ .host-shell .host-layout{padding:18px 12px 32px;min-width:0}
+ .host-layout .admin-heading>div:last-child{display:grid;grid-template-columns:1fr 1fr;width:100%;gap:8px;margin-top:0}
+ .host-layout .admin-heading>div:last-child>.primary{grid-column:1/-1}
+ .host-layout .admin-heading>div:last-child>button{min-width:0;min-height:44px;justify-content:center;padding:11px 9px;font-size:13px}
+ .host-layout .panel{padding:18px 14px;border-radius:18px;box-sizing:border-box;min-width:0}
+ .host-layout .host-company-filter{padding:20px 16px;gap:20px;flex-direction:column;align-items:stretch}
+ .host-layout .host-company-picker{width:100%;min-width:0;flex:auto}
+ .host-layout .performance-stats{gap:10px}
+ .host-layout .performance-stat{padding:17px 13px}
+ .host-layout .performance-stat strong{font-size:28px}
+ .host-layout .performance-panels{grid-template-columns:minmax(0,1fr)}
+ .host-layout .performance-bar-column{min-width:0}
+ .host-layout .performance-bar-column small{font-size:9px;overflow-wrap:anywhere}
+ .host-layout .availability-panel .availability-grid{overflow:visible;padding:8px 0;width:100%}
+ .host-layout .availability-panel .availability-weekdays,.host-layout .availability-panel .availability-dates{min-width:0;width:100%;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+ .host-layout .availability-panel .availability-dates{grid-auto-rows:minmax(72px,auto)}
+ .host-layout .availability-panel .availability-blank{min-height:72px}
+ .host-layout .availability-panel .availability-day{padding:8px 2px;min-height:72px;min-width:0;align-items:center;gap:9px;border-radius:8px}
+ .host-layout .availability-panel .availability-day b{font-size:15px}
+ .host-layout .availability-panel .availability-day small{font-size:10px;line-height:1.3;white-space:normal;overflow-wrap:normal;max-width:100%}
+ .host-layout .availability-panel .availability-weekdays span{font-size:11px;text-align:center}
+ .host-layout .availability-controls{display:grid;grid-template-columns:34px minmax(0,1fr) 34px auto;gap:6px;width:100%}
+ .host-layout .availability-controls h3{min-width:0;font-size:16px;text-align:center;margin:0}
+ .host-layout .availability-controls button{min-width:0;min-height:38px;padding:7px;font-size:12px}
+ .host-layout .availability-legend{font-size:11px;gap:10px 12px;justify-content:flex-start}
+ .host-layout .availability-heading{align-items:stretch;flex-direction:column;gap:18px}
+ .host-layout .availability-property{width:100%;min-width:0}
+ .host-layout .booking-feed-controls{grid-template-columns:minmax(0,1fr)}
+ .host-layout .booking-feed-controls>*{width:100%;min-width:0}
+ .host-layout .booking-feed-controls>.outline{grid-column:auto}
+ .host-layout .booking-feed-freshness{font-size:11px;padding:10px 12px}
+ .host-layout .table-wrap:has(>.host-data-table){overflow:visible}
+ .host-layout table.host-data-table{display:block;min-width:0!important;width:100%;border:0;background:transparent}
+ .host-data-table thead{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+ .host-data-table tbody{display:grid;gap:14px;width:100%}
+ .host-data-table tbody tr{display:block;border:1px solid #e0e7d9;border-radius:15px;background:#fafbf7;padding:12px 14px;min-width:0}
+ .host-layout .host-data-table tbody td{display:block;position:relative;box-sizing:border-box;padding:9px 0 9px 102px!important;min-width:0!important;width:100%;border:0!important;white-space:normal;overflow-wrap:anywhere;font-size:13px!important;line-height:1.6;min-height:36px}
+ .host-data-table td::before{content:attr(data-label);position:absolute;left:0;top:10px;width:90px;font-size:11px;font-weight:600;line-height:1.5;color:#7c8b73;overflow-wrap:normal}
+ .host-layout .host-data-table td small{font-size:11px!important;line-height:1.6}
+ .host-data-table .row-actions{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+ .host-data-table .row-actions button,.host-data-table .community-history-button{white-space:normal;min-height:42px;justify-content:center;font-size:12px}
+ .host-layout .team-invite-toolbar>.primary{width:100%;justify-content:center}
+ .host-layout .team-space>.panel>h2{font-size:22px;margin:0 0 20px}
+ .host-layout .pricing-title{display:grid;gap:16px}
+ .host-layout .pricing-title>label{width:100%;min-width:0}
+ .host-layout .pricing-title h2{font-size:22px;line-height:1.4}
+ .host-layout .pricing-summary{grid-template-columns:minmax(0,1fr);gap:9px;margin:22px 0}
+ .host-layout .pricing-summary>div{padding:16px;gap:8px}
+ .host-layout .pricing-summary small{font-size:10px}
+ .host-layout .pricing-summary strong{font-size:25px}
+ .host-layout .pricing-summary span{font-size:12px}
+ .host-layout .pricing-workspace{display:grid;grid-template-columns:minmax(0,1fr);min-width:0;padding:0;margin:0;border:0;gap:20px}
+ .host-layout .pricing-calendar,.host-layout .pricing-editor,.host-layout .pricing-rule-editor{min-width:0;max-width:100%;box-sizing:border-box}
+ .host-layout .pricing-calendar{padding:9px}
+ .host-layout .pricing-days,.host-layout .pricing-weekdays{grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;min-width:0}
+ .host-layout .pricing-days button{min-width:0;min-height:77px;padding:8px 1px;gap:6px}
+ .host-layout .pricing-days button b{font-size:10px;letter-spacing:-.4px;white-space:nowrap}
+ .host-layout .pricing-days button span{font-size:13px}
+ .host-layout .pricing-days button i{font-size:8px;white-space:normal;line-height:1.3}
+ .host-layout .pricing-form-grid{grid-template-columns:minmax(0,1fr)}
+ .host-layout .pricing-editor input:not([type=checkbox]),.host-layout .pricing-editor textarea{box-sizing:border-box;width:100%;max-width:100%;font-size:16px;min-height:46px}
+ .host-layout .pricing-editor .stay-select-trigger,.host-layout .pricing-editor .stay-date-trigger{width:100%;min-height:46px;font-size:14px;padding:12px}
+ .host-layout .weekend-setting{flex-wrap:wrap;gap:16px;padding:16px}
+ .host-layout .pricing-rule-actions,.host-layout .pricing-footer{display:flex;flex-direction:column;gap:10px;align-items:stretch}
+ .host-layout .pricing-rule-actions>button,.host-layout .pricing-footer>button{width:100%;justify-content:center;min-height:46px;white-space:normal}
+ .host-layout .pricing-rule-row{flex-wrap:wrap;gap:12px;min-width:0;padding:16px}
+ .host-layout .monthly-auto-pricing{padding:16px;min-width:0}
+ .host-layout .monthly-auto-pricing header .primary{width:100%;white-space:normal;justify-content:center}
+ .host-layout .monthly-auto-percentages{grid-template-columns:minmax(0,1fr);gap:14px}
+ .host-layout .monthly-auto-active{align-items:flex-start;flex-wrap:wrap;overflow-wrap:anywhere}
+ .host-layout .monthly-auto-dates{overscroll-behavior:contain}
+ .host-layout .monthly-auto-dates table{min-width:430px}
+ .host-layout .property-request-filter{width:100%}
+ .host-invite-dialog,.host-review-dialog,.community-history-dialog{max-height:calc(100dvh - 28px);max-width:calc(100vw - 24px);padding:26px 20px;overflow-x:hidden;overscroll-behavior:contain}
+ .calendar-booking-facts{grid-template-columns:minmax(0,1fr);padding:16px}
+ .calendar-booking-company{grid-column:auto}
+ .calendar-booking-guest a{min-width:0;word-break:break-word}
+ .host-review-dialog .review-photos{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .host-layout input,.host-layout textarea{max-width:100%;min-width:0}
+ .host-layout .community-toolbar .stay-select-trigger{width:100%}
+ .host-layout .community-table{min-width:0}
+}
+@media(max-width:350px){
+ .host-layout .availability-controls h3{font-size:14px}
+ .host-layout .availability-panel .availability-day small{font-size:9px}
+ .host-layout .availability-panel .availability-day{min-height:68px}
+ .host-layout .pricing-days button b{font-size:9px}
+ .host-layout .host-data-table tbody td{padding-left:86px!important}
+ .host-data-table td::before{width:76px;font-size:10px}
+ .host-layout .community-stats,.host-layout .performance-stats{grid-template-columns:minmax(0,1fr)}
+}
