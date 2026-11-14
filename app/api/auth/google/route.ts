@@ -1,5 +1,6 @@
 import {config,json} from '@/lib/server';
 import {cookieName,cookieValue,verifyGoogleToken} from '@/app/google-auth';
+import {recordWebsiteUser} from '@/lib/user-registry';
 
 const RETURN_COOKIE='aangan_google_return';
 // Google returns with a cross-site POST. Only the short-lived, validated return
@@ -20,6 +21,7 @@ export async function POST(request:Request){
  if(!cookieCsrf||typeof formCsrf!=='string'||cookieCsrf!==formCsrf||typeof credential!=='string')return json({error:'Google sign-in could not be verified. Please try again.'},400);
  const claims=await verifyGoogleToken(credential,clientId);
  if(!claims||!(claims.email_verified===true||claims.email_verified==='true'))return json({error:'Google account verification failed. Please try again.'},401);
+ try{await recordWebsiteUser({userId:'google:'+claims.sub,email:claims.email,displayName:claims.name||claims.email},request.url)}catch{console.error('Could not record website sign-in activity')}
  const maxAge=Math.max(60,Math.min(3600,claims.exp-Math.floor(Date.now()/1000)));
  const returnTo=safeReturn(cookieValue(cookies,RETURN_COOKIE));
  const headers=new Headers({'Location':new URL(returnTo,url.origin).toString(),'Cache-Control':'no-store'});
