@@ -1,4 +1,5 @@
 'use client';
+import {HostRequests} from './host-requests';
 import {HostTable} from '@/components/stays/host-table';
 import {useEffect,useState} from 'react';
 import {Dialog} from 'radix-ui';
@@ -22,7 +23,7 @@ export function CommunityDashboard({homes}:{homes:{id:string;name:string}[]}){
  const hostRows=(data?.hosts||[]).filter(h=>(!query||(h.name+' '+h.email+' '+h.company).toLowerCase().includes(query))&&(filter==='all'||filter==='active'&&h.active||filter==='revoked'&&!h.active));
  const total=tab==='users'?userRows.length:hostRows.length,pages=Math.max(1,Math.ceil(total/12)),currentPage=Math.min(page,pages),offset=(currentPage-1)*12;
  const peak=Math.max(1,...(data?.trend.flatMap(t=>[t.hosts,t.users,t.bookings])||[])),propertyPeak=Math.max(1,...(data?.companies.map(c=>c.properties)||[]));
- return <div className="community-space">
+ return <div className="community-space"><HostRequests/>
   <section className="community-intro"><div><span className="eyebrow">PEOPLE BEHIND THE STAYS</span><h2>Your growing community</h2><p>Every host, every signed-in guest and their journey with Gomzo.</p></div><button className="outline" disabled={busy} onClick={()=>setRevision(x=>x+1)}><RefreshCw size={16} className={busy?'community-spin':''}/>{busy?'Refreshing…':'Refresh data'}</button></section>
   {error&&<p className="error" role="alert">{error} {data&&'Showing the last successful report.'} <button className="text-button" onClick={()=>setRevision(x=>x+1)}>Try again</button></p>}
   {!data?<div className="panel community-loading" role="status">{busy?'Loading your hosts, users and bookings…':'Statistics are unavailable. Please retry.'}</div>:<>
