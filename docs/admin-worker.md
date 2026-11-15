@@ -1,5 +1,6 @@
-# Aangan Stays admin site
+/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
+# Gomzo admin site
 
-The host dashboard is published separately at `https://aangan-stays-admin.aangan-pune.workers.dev/`.
+The company and super admin dashboard is published separately at `https://admin.gomzo.co/`.
 
-Guest booking site: `https://aangan-stays.aangan-pune.workers.dev/`.
+Guest booking site: `https://gomzo.co/`.

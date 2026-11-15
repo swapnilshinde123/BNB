@@ -1,3 +1,4 @@
+/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {pageMetadata} from '@/lib/seo';
 
 export const metadata=pageMetadata('Privacy at GOMZO','How GOMZO uses account, booking and signed-in activity information. Contact GOMZO about your information.','/privacy');
@@ -7,7 +8,7 @@ export default function PrivacyPage(){
   <a href="/" style={{display:'inline-block',marginBottom:36,fontWeight:700}}>← Gomzo</a>
   <span className="eyebrow">YOUR INFORMATION, EXPLAINED</span>
   <h1 style={{fontSize:'clamp(32px,6vw,48px)',margin:'16px 0'}}>Privacy at Gomzo.</h1>
-  <p style={{marginBottom:32}}>Updated 15 November 2026. This notice explains how this Pune stay-booking website uses information when you browse, sign in or request a booking.</p>
+  <p style={{marginBottom:32}}>Updated 15 November 2026. This notice explains how the GOMZO accommodation platform uses information when you browse, sign in or request a booking.</p>
   <section style={{display:'grid',gap:24}}>
    <div><h2>Sign-in and booking details</h2><p>Google sign-in provides your name, verified email address and Google account identifier. Gomzo does not receive your Google password or request access to Gmail or Drive. A booking request also includes the guest name, WhatsApp number, selected property, dates, guest count and booking status.</p></div>
    <div><h2>How we use information</h2><p>We use these details to identify your account, show your booking history, hold requested dates, let the host review bookings and contact you about your stay. The host can manage property availability and booking records. This website does not collect card details or process payments.</p></div>

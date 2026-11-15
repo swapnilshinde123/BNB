@@ -1,3 +1,4 @@
+/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 # Dependencies
 /node_modules/
 /.pnp
@@ -34,6 +35,7 @@ yarn-error.log*
 # Checkout-local tool state
 /.wrangler/
 /.sites-runtime/
+/.tmp/
 
 # Workspace scaffolding and publication archives
 /.agents/

@@ -1,15 +1,17 @@
-# Aangan — Pune stays
+/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
+# Gomzo — stays across cities
 
-Responsive property booking app with host approval, guest history, map search and an owner dashboard.
+Responsive stay-booking platform for guests, company hosts and a super admin, with property approval, guest history, map search and separate host dashboards.
 
 ## What works
 
 - React/Vinext guest interface and server API routes.
 - Creative responsive design, complementary fonts, animated photo collage, map motion graphics, scroll reveals and reduced-motion support.
-- Admin property management with photo upload, map pin selection, nightly rates, amenities and listing visibility.
+- Admin property management with JPG, PNG and WebP photo uploads (maximum 1 MB each), map pin selection, nightly rates, amenities and listing visibility.
+- Hosts can remove their own listings; removed homes stop accepting requests while existing booking history is retained.
 - Cloudflare D1 booking storage and unique property-night reservations.
 - Pending requests hold dates; cancellation or rejection releases them.
-- Owner-only confirmation, manual bookings, monthly booking-value reports and CSV export.
+- Role-scoped booking management, manual bookings, monthly booking-value reports and CSV export.
 - Verified WhatsApp webhook and optional Meta template notifications.
 
 ## Current launch status
@@ -29,15 +31,10 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 npm run dev
 ```
 
-Set `ADMIN_EMAIL=seedy@sites.test` in an ignored `.dev.vars` file for the local test identity, and set `OWNER_WHATSAPP` to the intended owner number in international digits-only format. Local sign-in is simulated by the starter.
+Set `ADMIN_EMAIL=seedy@sites.test` in an ignored `.dev.vars` file for the local test identity, and set `OWNER_WHATSAPP` to the intended owner number in international digits-only format. Local sign-in is simulated by the starter; production authentication is provided by Sites dispatch.
 
 ## Hosting
 
-The application is deployed as separate Cloudflare Workers for the guest site and host dashboard. Both Workers use the same Cloudflare D1 database binding named DB. Production OAuth and host-only access are configured on both Workers. The admin Worker deploys from the `admin` Wrangler environment, which creates the separate `aangan-stays-admin` address; both environments bind the same D1 database. The `.openai/hosting.json` file preserves the selected Sites project identity.
+The guest site and company admin run as separate Cloudflare Workers and share the D1 binding named DB. Run `npm run build`, then `npm run deploy:workers` to publish both workers. The `.openai/hosting.json` file preserves the selected Sites project identity. Production authentication must remain behind the trusted identity provider.
 
 See [OPERATIONS.md](OPERATIONS.md) and [.env.example](.env.example) for configuration and WhatsApp setup. Never commit runtime secrets or local databases.
-
-
-## Cloudflare deployment
-
-The GitHub build runs `npm run build`, then `npm run deploy:workers` to publish the customer site and the admin environment as separate Workers.

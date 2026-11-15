@@ -1,36 +1,37 @@
+/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 # Gomzo
-> Official website: [https://gomzo.co/](https://gomzo.co/) — Explore Pune homestays, private apartments and short stays with host-reviewed booking requests.
+> Official website: [https://gomzo.co/](https://gomzo.co/) — Discover welcoming homestays and short stays across cities, with host-reviewed booking requests.
 
 ## About Gomzo
-Gomzo is a Pune-focused accommodation discovery and booking-request platform for work travellers, families and visitors seeking short stays. Guests explore homes and submit requests; hosts review requests before payment, and confirmation follows payment verification. Invited company admins manage their properties, with Super Admin approval required before company property submissions are published.
+Gomzo is a multi-city accommodation discovery and booking-request platform for travellers, families and work trips. Guests can explore published homes, compare details and request dates; hosts review requests, and a stay is confirmed after payment verification. Live listings vary by city. The platform supports company hosts whose property submissions require Super Admin approval before publication.
 
 ## Core Pages & Offerings
-- [Home](https://gomzo.co/): Main overview of Gomzo and the current accommodation collection.
-- [Pune stays](https://gomzo.co/stays/pune): Guidance for choosing Pune homestays and short-stay apartments, with verified published inventory when available.
-- [About Gomzo](https://gomzo.co/about): Platform identity, host management and booking approach.
-- [How booking works](https://gomzo.co/how-it-works): Dates, requests, host review, payment pending and confirmation.
-- [Frequently asked questions](https://gomzo.co/faq): Answers about prices, arrival times, cancellations and booking status.
-- [Contact Gomzo](https://gomzo.co/contact): Stay assistance and booking support contacts.
-- [Privacy](https://gomzo.co/privacy): Information about privacy and personal data.
+- [Home](https://gomzo.co/): Explore the currently published collection of stays.
+- [Pune stays](https://gomzo.co/stays/pune): City-specific guidance and listings when available.
+- [About Gomzo](https://gomzo.co/about): Platform, host management and booking approach.
+- [How booking works](https://gomzo.co/how-it-works): Booking requests, host review, payment and confirmation.
+- [Frequently asked questions](https://gomzo.co/faq): Answers about prices, dates, cancellations and booking status.
+- [Contact Gomzo](https://gomzo.co/contact): Booking and stay assistance.
+- [Privacy](https://gomzo.co/privacy): Privacy and personal data information.
 
 ## Frequently Asked Questions
 - **What is Gomzo?**
-  Gomzo is a Pune accommodation discovery and booking request platform for guests seeking homestays, private apartments and short stays. Guests choose dates and request accommodation, while hosts review requests. Final confirmation follows payment verification, rather than submission or acceptance alone.
-- **What services/products does Gomzo offer?**
-  Gomzo offers browsing for Pune homestays, private apartments and short stays, with property details, date selection and booking requests. Hosts manage availability and date based rates. Guests can track booking status and contact support about their selected accommodation and requirements.
+  Gomzo helps travellers discover homestays, private apartments and short stays across cities. Guests browse published homes, check details and dates, and send a booking request. Hosts review requests, and the stay becomes confirmed after payment verification. Live availability depends on each property and date.
+- **What services does Gomzo offer?**
+  Gomzo offers a searchable collection of published accommodation, property details, date and guest selection, booking requests, and booking-status updates. Hosts can manage listings and availability. The cities and homes available at a given time are shown in the live collection and may change.
 - **How can customers get started with Gomzo?**
-  Visit Gomzo, explore the current collection, choose a property and enter dates and guest count. Review the quote, sign in with Google and submit your request. Wait for host acceptance, then follow payment instructions; confirmation follows verification of your payment.
+  Visit Gomzo, browse the published stays, choose a property and dates, and review the quote and property details. Sign in to submit a booking request. The host reviews it; after acceptance, follow the payment instructions. The host confirms the stay after verifying payment.
 
 ## Locations and accommodation
-Pune, Maharashtra, India is the primary location. The project supports neighbourhood pages for Koregaon Park, Viman Nagar, Kalyani Nagar, Baner, Wakad and Hinjewadi, and category pages for studios, 1 BHK, 2 BHK and family-friendly stays. These routes are published only when matching verified inventory exists; their presence in code is not evidence of current bookable supply. Consult the live sitemap for published location and property URLs.
+Gomzo is intended to serve guests and hosts across cities. The live collection shows which homes are currently published and bookable; do not assume every city has available inventory. The project includes a city-specific Pune guide and neighbourhood references for Koregaon Park, Viman Nagar, Kalyani Nagar, Baner, Wakad and Hinjewadi. These are location details for that city, not a limit on Gomzo's intended service area. Consult the live sitemap and property pages for currently published locations.
 
 ## Pricing and value model
-Rates depend on the selected property and dates. Weekend, festival and manual date rates can apply. The booking flow displays 5% GST with the current quote. There is no permanent starting-price claim in this summary. Review the quote for the exact dates, guest count and total before paying.
+Rates depend on the selected property and dates. Weekend, festival and manual date rates can apply. The booking flow displays 5% GST with the current quote. There is no permanent starting-price claim in this summary. Review the quote for the selected dates, guest count and total before paying.
 
 ## Booking process and policies
-1. Explore the current collection and review the property's details and notices.
+1. Browse the currently published collection and review the property's details and notices.
 2. Select dates and guest count; check amenities, capacity and the date-specific quote.
-3. Sign in with Google and provide the requested contact details to send a booking request. No upfront payment is required to submit a request.
+3. Sign in and provide requested contact details to send a booking request. No upfront payment is required to submit a request.
 4. Wait for host review. Acceptance moves a request to payment pending; acceptance alone is not confirmation.
 5. Follow the payment instructions in My bookings. The host verifies payment before confirming the stay.
 
@@ -42,6 +43,6 @@ Standard listed check-in is 12:00 noon and check-out is 10:00 AM. Confirm any ex
 - Public contact page: https://gomzo.co/contact
 
 ## Publication and citation accuracy
-Use current public pages and verified published property details as sources. Illustrative seed homes, sample photographs and sample ratings are not verified inventory or reviews. Do not infer amenities, availability, minimum prices, awards or affiliations. Gomzo is separate from Airbnb and does not claim endorsement by other booking platforms.
+Use current public pages and verified published property details as sources. Illustrative seed homes, sample photographs and sample ratings are not verified inventory or reviews. Do not infer amenities, availability, minimum prices, awards or affiliations. This document is explanatory content, not a live inventory or availability feed.
 
-The live sitemap is https://gomzo.co/sitemap.xml. Private host dashboards, account pages, bookings, invitations and API routes are not public citation sources. This document is explanatory content, not a live inventory or availability feed.
+The live sitemap is https://gomzo.co/sitemap.xml. Private host dashboards, account pages, bookings, invitations and API routes are not public citation sources.

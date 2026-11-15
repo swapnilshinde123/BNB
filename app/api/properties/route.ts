@@ -1,3 +1,4 @@
+/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {hostAccess,ensureTenancy,canManageProperty,sameOrigin} from '@/lib/tenancy';
 import {platformJob,platformMessage,companyRecipients} from '@/lib/email/platform';
 import {config} from '@/lib/server';
@@ -41,6 +42,7 @@ export async function GET(req:Request){
  if(new URL(req.url).searchParams.get('admin')==='1'&&!admin)return json({error:'Host access required.'},403);
  const pastHomes=user?await database().prepare('SELECT DISTINCT property_id FROM bookings WHERE user_id=? OR lower(email)=lower(?)').bind(user.userId,user.email).all<{property_id:string}>():null;
  const bookedIds=new Set(pastHomes?.results.map(row=>row.property_id)||[]);
+ if(!admin&&bookedIds.size){const allWithArchived=await allProperties(true,true);const known=new Set(all.map(p=>p.id));for(const p of allWithArchived)if(bookedIds.has(p.id)&&!known.has(p.id))all.push(p)}
  const visible=admin?(access.role==='super_admin'?all:all.filter(p=>p.companyId===access.companyId)):all.filter(p=>p.active!==false||bookedIds.has(p.id));
  const payload=visible.map(p=>{if(admin)return p;const {address,companyId,companyName,reviewStatus,reviewReason,reviewVersion,requestedActive,...publicProperty}=p;return publicProperty});
  return json(payload);
@@ -62,6 +64,21 @@ export async function PATCH(req:Request){
  const previous=(await allProperties(true)).find(p=>p.id===input.id);if(!previous)return json({error:'Home not found.'},404);
  const issue=validate(input);if(issue)return json({error:issue},400);
  const data=normalize(input,input.id,previous),extra=await submission(data,access);try{return json({property:await saveProperty(data,extra)})}catch{return json({error:'Could not save this home. Try fewer or smaller photos.'},413)}
+}
+
+export async function DELETE(req:Request){
+ const user=await identity();if(!user)return json({error:'Sign in required.'},401);const access=await hostAccess();if(access.role==='guest')return json({error:'Host access required.'},403);if(!sameOrigin(req))return json({error:'Open the host dashboard.'},403);await ensureTenancy();
+ let input:{id?:unknown};try{input=await req.json() as {id?:unknown}}catch{return json({error:'Choose a property to remove.'},400)}
+ if(typeof input.id!=='string'||input.id.length>100)return json({error:'Choose a valid property.'},400);
+ if(!await canManageProperty(input.id,access))return json({error:'Property not found or already removed.'},404);
+ const db=database(),hasBookings=!!await db.prepare('SELECT 1 FROM bookings WHERE property_id=? LIMIT 1').bind(input.id).first();
+ await db.batch([
+  db.prepare('INSERT OR IGNORE INTO property_deletions(property_id,deleted_by,deleted_at) VALUES(?,?,?)').bind(input.id,access.email,Date.now()),
+  db.prepare('UPDATE properties SET active=0,updated_at=? WHERE id=?').bind(new Date().toISOString(),input.id),
+  db.prepare('DELETE FROM blocked_dates WHERE property_id=?').bind(input.id),
+  db.prepare('DELETE FROM property_rate_plans WHERE property_id=?').bind(input.id),
+ ]);
+ return json({ok:true,hasBookingHistory:hasBookings});
 }
 
 async function submission(data:ReturnType<typeof normalize>,access:Awaited<ReturnType<typeof hostAccess>>){if(access.role==='super_admin')return [];const requested=data.active;data.active=0;const db=database();const row=await db.prepare('SELECT version FROM property_governance WHERE property_id=?').bind(data.id).first<{version:number}>();const version=(row?.version||0)+1;const detail={Home:data.name,Company:access.companyName||'',Area:data.area};const recipients=await companyRecipients(access.companyId!);return [db.prepare("INSERT INTO property_governance(property_id,company_id,status,requested_active,reason,version,submitted_at) VALUES(?,?,'pending',?,'',?,?) ON CONFLICT(property_id) DO UPDATE SET status='pending',requested_active=excluded.requested_active,reason='',version=property_governance.version+1,submitted_at=excluded.submitted_at,reviewed_at=NULL,reviewed_by=NULL").bind(data.id,access.companyId,requested,version,Date.now()),platformJob((config().CONTACT_EMAIL||config().ADMIN_EMAIL),platformMessage('Property approval requested','A partner submitted a home for your review. It remains hidden until approved.',detail,'/host?section=requests')),...recipients.map(email=>platformJob(email,platformMessage('Property submitted for review','Your property is waiting for super-admin approval. We’ll email you when it is reviewed.',detail,'/host?section=properties')))]}
