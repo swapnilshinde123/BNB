@@ -189,3 +189,5 @@
 .host-admin-select-menu .stay-select-option[data-state=checked]{background:#e8efdf;color:#2b4d34;font-weight:600}
 .host-admin-select-menu .select-option-dot{background:#a8b99a}
 @media(max-width:600px){.host-layout .property-request-heading{align-items:stretch;flex-direction:column;gap:18px}.property-request-filter{width:100%}}
+
+.host-layout .managed-property-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:auto;width:100%}.host-layout .managed-property-actions>.outline{width:100%;min-width:0;min-height:44px;margin:0;padding:10px 8px;font-size:13px;line-height:1.35;border-radius:12px;justify-content:center;gap:6px;white-space:nowrap}.host-layout .managed-property-actions>.property-delete{color:#9a594d;border-color:#ead8d2}.host-layout .managed-property-actions svg{width:14px;height:14px;flex-shrink:0}
