@@ -1,3 +1,4 @@
+import {homepageFaqs,homepageIntroduction,homepageReviewedDate} from './homepage-content';
 import type {Metadata} from 'next';
 export const origin='https://gomzo.co';
 export const homeTitle='GOMZO | Homestays & Short Stays Across Cities';
@@ -11,3 +12,5 @@ export function breadcrumbs(items:{name:string;path:string}[]){return {'@context
 export function isPrivateSurface(host:string,path:string,query=''){
  return host.startsWith('admin.')||host.includes('stays-admin.')||host.endsWith('.workers.dev')||/^\/(api(?:\/|$)|host(?:\/|$)|login(?:\/|$)|join(?:\/|$)|my-bookings(?:\/|$)|saved-homes(?:\/|$))/.test(path)||['section','property','resume','search','checkIn','checkOut','guests','sort','category'].some(key=>new URLSearchParams(query).has(key));
 }
+
+export function homepageSchema(){const base=brandSchema();return {'@context':base['@context'],'@graph':[...base['@graph'].map(node=>node['@type']==='Organization'?{...node,description:homepageIntroduction,contactPoint:{'@type':'ContactPoint',telephone:'+917083834078',contactType:'customer service',email:'customer@gomzo.co'}}:node),{'@type':'WebPage','@id':origin+'/#webpage',url:origin+'/',name:homeTitle,isPartOf:{'@id':origin+'/#website'},about:{'@id':origin+'/#organization'},author:{'@id':origin+'/#organization'},dateModified:homepageReviewedDate},{'@type':'FAQPage','@id':origin+'/#faq',isPartOf:{'@id':origin+'/#webpage'},mainEntity:homepageFaqs.map(item=>({'@type':'Question',name:item.question,acceptedAnswer:{'@type':'Answer',text:item.answer}}))}]}}
