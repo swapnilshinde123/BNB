@@ -41,3 +41,6 @@
 .stay-select-option>.select-option-dot{flex-shrink:0;margin-left:0}
 .stay-select-option>span:nth-child(2){margin-left:0;flex:1;min-width:0;text-align:left}
 .stay-select-option>span:nth-child(3){margin-left:auto;flex-shrink:0;display:grid;place-items:center}
+
+/* Keep the rounded search action clear of the outer edge. */
+@media(min-width:701px){.search-bar{padding:10px 16px 10px 10px!important}.search-bar .search-button{flex-shrink:0;margin-right:0}}
