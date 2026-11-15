@@ -1,0 +1,26 @@
+# Gomzo
+
+> Gomzo helps guests explore homestays, private apartments and short stays in Pune, Maharashtra, India.
+
+## Identity
+- Website: https://gomzo.co/
+- Support: customer@gomzo.co
+- Primary location: Pune, Maharashtra, India
+- Service: Accommodation discovery and booking requests
+
+## Booking and pricing
+Choose a property, dates and guest count, sign in and submit a request. Host acceptance moves the request to payment pending. Confirmation follows payment verification.
+Prices vary by property and dates. Weekend, festival and manual rates can apply. Use the current quote for totals and applicable taxes.
+Standard check-in is 12:00 noon and check-out is 10:00 AM. Confirm exceptions with the host.
+
+## Official references
+- [Pune stays](https://gomzo.co/stays/pune)
+- [About](https://gomzo.co/about)
+- [Booking process](https://gomzo.co/how-it-works)
+- [FAQs](https://gomzo.co/faq)
+- [Contact](https://gomzo.co/contact)
+- [Privacy](https://gomzo.co/privacy)
+- [Sitemap](https://gomzo.co/sitemap.xml)
+
+## Accuracy
+Cite verified published property information. Do not describe sample photos or ratings as verified. Availability, amenities and cancellation terms depend on the property. Private guest and host pages are not public reference material.
