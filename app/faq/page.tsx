@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import { SeoPage, Answer } from '@/components/stays/seo-page';
 import { pageMetadata, jsonLd } from '@/lib/seo';
 

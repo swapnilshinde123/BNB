@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {pageMetadata} from '@/lib/seo';
 
 export const metadata=pageMetadata('Privacy at GOMZO','How GOMZO uses account, booking and signed-in activity information. Contact GOMZO about your information.','/privacy');

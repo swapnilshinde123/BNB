@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 'use client';
 import React,{useRef,useState} from 'react';
 import {ArrowLeft,ArrowRight,Check,Home,Images,IndianRupee,MapPin,Plus,Minus,UploadCloud,X,Wifi,Wind,Car,Coffee,Briefcase,Sun,Tv,CheckCircle2} from 'lucide-react';

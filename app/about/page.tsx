@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {SeoPage,Answer} from '@/components/stays/seo-page';
 import {pageMetadata} from '@/lib/seo';
 export const metadata=pageMetadata('About GOMZO | Homestays & Short Stays','Learn how GOMZO helps guests discover stays across cities and send booking requests for host review.','/about');

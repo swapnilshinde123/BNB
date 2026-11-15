@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 # Gomzo
 > Official website: [https://gomzo.co/](https://gomzo.co/) — Discover welcoming homestays and short stays across cities, with host-reviewed booking requests.
 

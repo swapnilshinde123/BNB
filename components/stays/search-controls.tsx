@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 'use client';
 import {useState,useEffect} from 'react';
 import {Popover} from 'radix-ui';

@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {config,database,identity} from './server';
 export type HostAccess={role:'super_admin'|'company_admin'|'guest';email:string;companyId:string|null;companyName:string|null};
 let ready=false;

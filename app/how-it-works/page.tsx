@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {SeoPage,Answer} from '@/components/stays/seo-page';
 import {pageMetadata} from '@/lib/seo';
 export const metadata=pageMetadata('How GOMZO Booking Works | Request, payment and confirmation','Understand GOMZO booking requests, host approval, payment pending and final confirmation before reserving a stay.','/how-it-works');

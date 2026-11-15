@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import type {Metadata} from 'next';
 export const origin='https://gomzo.co';
 export const homeTitle='GOMZO | Homestays & Short Stays Across Cities';

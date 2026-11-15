@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 'use client';
 import {HostTable} from '@/components/stays/host-table';
 import {FancySelect,StayDatePicker,MonthPicker,nextDate} from '@/components/stays/controls';

@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 'use client';
 import {useEffect,useRef,useState,type ReactNode} from 'react';
 import {Dialog} from 'radix-ui';

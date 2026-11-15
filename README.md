@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 # Gomzo — stays across cities
 
 Responsive stay-booking platform for guests, company hosts and a super admin, with property approval, guest history, map search and separate host dashboards.

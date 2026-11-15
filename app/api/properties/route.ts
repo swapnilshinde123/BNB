@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {hostAccess,ensureTenancy,canManageProperty,sameOrigin} from '@/lib/tenancy';
 import {platformJob,platformMessage,companyRecipients} from '@/lib/email/platform';
 import {config} from '@/lib/server';

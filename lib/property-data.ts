@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {ensureTenancy} from './tenancy';
 import {database} from '@/lib/server';
 import {properties,Property} from '@/lib/properties';

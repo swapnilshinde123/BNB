@@ -1,4 +1,3 @@
-/Users/swapnilshinde/.rvm/scripts/rvm:29: operation not permitted: ps
 import {breadcrumbs,jsonLd} from '@/lib/seo';
 export function SeoPage({title,description,path,children}:{title:string;description:string;path:string;children:React.ReactNode}){return <>
  <header className="header"><a className="brand" href="/" aria-label="GOMZO home"><img className="brand-logo" src="/brand/gomzo-wordmark.png" alt="GOMZO" width={240} height={61}/></a><a className="outline" href="/">Explore stays</a></header>
