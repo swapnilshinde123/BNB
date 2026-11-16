@@ -14,10 +14,10 @@ export function PropertyWizard({property,form,setForm,photos,setPhotos,onPhotos,
  const [locationMessage,setLocationMessage]=useState('');
  const locatedAddress=useRef(property?.address?.trim()||'');
  useEffect(()=>{
-  const address=form.address.trim();if(step!==3||address.length<8||address===locatedAddress.current)return;
+  const address=form.address.trim();if(step!==3||address.length<3||address===locatedAddress.current)return;
   const controller=new AbortController();setLocationMessage('Finding your address on the map…');
   const timer=setTimeout(async()=>{try{
-   const response=await fetch('/api/geocode',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address}),signal:controller.signal});
+   const response=await fetch('/api/geocode',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({address,lat:Number(form.lat),lng:Number(form.lng)}),signal:controller.signal});
    const result=await response.json();if(!response.ok)throw new Error(result.error||'Location search is unavailable. Place the pin on the map.');
    if(controller.signal.aborted||locatedAddress.current===address)return;
    locatedAddress.current=address;setForm(current=>current.address.trim()===address?{...current,lat:result.lat.toFixed(6),lng:result.lng.toFixed(6)}:current);
