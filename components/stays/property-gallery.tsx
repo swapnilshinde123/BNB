@@ -1,0 +1,15 @@
+'use client';
+import {useRef,useState} from 'react';
+import {Dialog} from 'radix-ui';
+import {ChevronLeft,ChevronRight,Expand,X} from 'lucide-react';
+import {photo,type Property} from '@/lib/properties';
+import './property-gallery.css';
+
+export function PropertyGallery({home,index,onIndexChange}:{home:Property;index:number;onIndexChange:(index:number)=>void}){
+ const [open,setOpen]=useState(false),start=useRef<{x:number;y:number}|null>(null);
+ const images=home.photos?.length?home.photos:[home.image],current=Math.min(index,images.length-1);
+ function move(step:number){onIndexChange((current+step+images.length)%images.length)}
+ const arrows=images.length>1?<><button type="button" className="gallery-arrow gallery-prev" aria-label="Previous property photo" onClick={()=>move(-1)}><ChevronLeft size={23}/></button><button type="button" className="gallery-arrow gallery-next" aria-label="Next property photo" onClick={()=>move(1)}><ChevronRight size={23}/></button></>:null;
+ const swipe={onTouchStart:(e:React.TouchEvent)=>{const t=e.touches[0];start.current={x:t.clientX,y:t.clientY}},onTouchEnd:(e:React.TouchEvent)=>{const t=e.changedTouches[0],s=start.current;start.current=null;if(s&&Math.abs(t.clientX-s.x)>45&&Math.abs(t.clientX-s.x)>Math.abs(t.clientY-s.y))move(t.clientX<s.x?1:-1)}};
+ return <><div className="modal-photo property-gallery-hero" {...swipe}><button type="button" className="gallery-open" aria-label={'View full-size photos of '+home.name} onClick={()=>setOpen(true)}><img src={photo(images[current],1400)} alt={home.name+' · photo '+(current+1)}/><span className="gallery-expand"><Expand size={16}/>View photos</span></button><span className="property-tag">{home.tag}</span>{arrows}<span className="photo-counter">{current+1} / {images.length}</span></div>{images.length>1&&<div className="guest-gallery">{images.map((image,i)=><button type="button" className={current===i?'selected':''} aria-label={'View property photo '+(i+1)} aria-pressed={current===i} onClick={()=>onIndexChange(i)} key={i}><img src={photo(image,250)} alt={'Home photo '+(i+1)}/></button>)}</div>}<Dialog.Root open={open} onOpenChange={setOpen}><Dialog.Portal><Dialog.Overlay className="gallery-lightbox-overlay"/><Dialog.Content className="gallery-lightbox" onKeyDown={e=>{if(e.key==='ArrowLeft'){e.preventDefault();move(-1)}if(e.key==='ArrowRight'){e.preventDefault();move(1)}}}><header><Dialog.Title>{home.name}</Dialog.Title><Dialog.Description>Photo {current+1} of {images.length}</Dialog.Description><Dialog.Close aria-label="Close full-size photos"><X size={25}/></Dialog.Close></header><div className="gallery-full-photo" {...swipe}><img src={photo(images[current],2000)} alt={home.name+' · photo '+(current+1)}/>{arrows}</div><div className="gallery-lightbox-thumbs">{images.map((image,i)=><button key={i} type="button" aria-label={'Show full-size photo '+(i+1)} aria-pressed={current===i} onClick={()=>onIndexChange(i)}><img src={photo(image,160)} alt=""/></button>)}</div></Dialog.Content></Dialog.Portal></Dialog.Root></>
+}
