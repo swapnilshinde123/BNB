@@ -4,13 +4,13 @@ const recent=new Map<string,number>();
 export async function POST(request:Request){
  if(!sameOrigin(request))return json({error:'Invalid request.'},403);
  const access=await hostAccess();if(access.role==='guest')return json({error:'Sign in to your host account to locate an address.'},401);
- let address:string;
- try{const body=await request.json();if(typeof body.address!=='string')throw Error();address=body.address.trim();if(address.length<8||address.length>240)throw Error()}catch{return json({error:'Enter a building, street and city to locate your home.'},400)}
+ let address:string;let lat:number|undefined,lng:number|undefined;
+ try{const body=await request.json();if(typeof body.address!=='string')throw Error();address=body.address.trim();lat=body.lat;lng=body.lng;if(address.length<3||address.length>240)throw Error()}catch{return json({error:'Enter a building, street and city to locate your home.'},400)}
  const now=Date.now();for(const [key,time] of recent)if(now-time>60000)recent.delete(key);
  if(now-(recent.get(access.email)||0)<1000)return json({error:'Please wait a moment before searching again.'},429);
  recent.set(access.email,now);
  try{
-  const url=new URL('https://photon.komoot.io/api/');url.searchParams.set('q',address);url.searchParams.set('limit','1');url.searchParams.set('lang','en');
+  const url=new URL('https://photon.komoot.io/api/');url.searchParams.set('q',address);url.searchParams.set('limit','1');if(Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat!)<=90&&Math.abs(lng!)<=180){url.searchParams.set('lat',String(lat));url.searchParams.set('lon',String(lng))}url.searchParams.set('lang','en');
   const response=await fetch(url,{headers:{'User-Agent':'Gomzo/1.0 (https://gomzo.co; customer@gomzo.co)'},signal:AbortSignal.timeout(8000)});
   if(!response.ok)throw Error();const result=await response.json() as {features?:{geometry?:{coordinates?:number[]};properties?:Record<string,string>}[]};
   const match=result.features?.[0],coords=match?.geometry?.coordinates;
