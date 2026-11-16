@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import ts from 'typescript';
+const code=ts.transpile(readFileSync(new URL('../lib/guest-id-state.ts',import.meta.url),'utf8'),{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext});
+const {guestIdUploaded}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
+const row={ordinal:1,status:'pending',expires_at:Date.now()+60000,files:[{kind:'front'},{kind:'back'}]};
+test('green upload indicator requires complete saved documents, not host approval',()=>{assert.equal(guestIdUploaded({enabled:true,items:[row]}),true);for(const status of ['rejected','reupload_requested'])assert.equal(guestIdUploaded({enabled:true,items:[{...row,status}]}),false);assert.equal(guestIdUploaded({enabled:true,items:[{...row,files:[{kind:'front'}]}]}),false);assert.equal(guestIdUploaded(null),false)});
+test('expired, purged and missing visa documents never show upload completion',()=>{assert.equal(guestIdUploaded({enabled:true,items:[{...row,expires_at:1}]}),false);assert.equal(guestIdUploaded({enabled:true,items:[{...row,purged_at:1}]}),false);assert.equal(guestIdUploaded({enabled:true,items:[{...row,foreign_guest:1}]}),false)});
+test('verified primary profile can be reused but does not cover another guest or a foreign visa',()=>{const profile={status:'approved',foreign_guest:0};assert.equal(guestIdUploaded({enabled:true,profile}),true);assert.equal(guestIdUploaded({enabled:true,profile},2),false);assert.equal(guestIdUploaded({enabled:true,profile:{...profile,foreign_guest:1}}),false)});
