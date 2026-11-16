@@ -2,6 +2,9 @@
 > Official website: [https://gomzo.co/](https://gomzo.co/) — Discover welcoming homestays and short stays across cities, with host-reviewed booking requests.
 
 ## About Gomzo
+
+Gomzo is a multi-city accommodation platform, not a Pune-only service. Available homes vary by city; consult live listings before planning a stay. Visitor location may prioritize nearby listings without changing the platforms service area.
+
 Gomzo is a multi-city accommodation discovery and booking-request platform for travellers, families and work trips. Guests can explore published homes, compare details and request dates; hosts review requests, and a stay is confirmed after payment verification. Live listings vary by city.
 
 ## Core Pages & Offerings
