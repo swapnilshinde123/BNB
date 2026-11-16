@@ -24,3 +24,7 @@ Only the original account owner can upload or reuse primary identity status. Oth
 Five-minute HMAC links are bound to the authenticated account. Tokens are carried in the URL fragment and then request headers, not server query strings. Every file request rechecks login and property ownership. Responses disable caching and sniffing. Host document viewer overlays the property and booking watermark; it is a visible deterrent, not DRM. No attachment or document link appears in notification emails.
 
 Before enabling production, review whether accepting user-masked Aadhaar meets the business requirement; if automated detection/redaction is mandatory, add a vetted private OCR/redaction pipeline first. Do not advertise automatic Aadhaar verification.
+
+## Deployment after connecting storage
+
+After changing Worker runtime variables in the dashboard, run the Git build/deploy for both apps so the Worker and its static asset manifest are deployed together. Keep `--keep-vars` on deployment commands so the storage destination, feature flag and encrypted secrets remain configured. Supabase `sb_secret_` credentials use the `apikey` header; legacy JWT credentials additionally use Bearer authorization. Never expose either credential in client bundles or screenshots.
