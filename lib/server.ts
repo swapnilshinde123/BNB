@@ -16,6 +16,7 @@ export async function isAdmin(){return (await hostAccess()).role!=='guest'}
 export function database(){if(!env.DB)throw new Error('Database unavailable');return env.DB}
 export function json(data:unknown,status=200){return Response.json(data,{status,headers:{'Cache-Control':'no-store'}})}
 export async function transition(id:string,status:string,resolution?:{reason?:string;actorEmail?:string;actorRole?:string}){
+ const {idReady,bookingIdsApproved}=await import('./guest-id');if(status==='confirmed'&&idReady()&&!await bookingIdsApproved(id))return false;
  if(!['payment_pending','confirmed','rejected','cancelled'].includes(status))throw new Error('Invalid booking status');
  const from=status==='confirmed'?'payment_pending':'pending';
  await ensureTenancy();
