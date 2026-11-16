@@ -8,7 +8,8 @@ type Bucket={put:(key:string,value:ArrayBuffer,options?:unknown)=>Promise<unknow
 export function idBucket(){return (env as unknown as {GUEST_IDS?:Bucket}).GUEST_IDS||supabaseIdBucket()}
 export function idPhase(){return config().ID_VERIFICATION_PHASE==='after_payment'?'after_payment':'before_booking'}
 export function idReady(){return !!idBucket()&&(config().ID_FILE_SIGNING_KEY||"").length>=32&&config().ID_VERIFICATION_ENABLED==='true'}
-export async function ensureIds(){await ensureTenancy();await database().batch([
+let idsReady:Promise<void>|null=null;
+export function ensureIds(){if(!idsReady)idsReady=(async()=>{await ensureTenancy();await database().batch([
  database().prepare('CREATE TABLE IF NOT EXISTS guest_ids(id TEXT PRIMARY KEY,user_id TEXT NOT NULL,property_id TEXT NOT NULL,booking_id TEXT,ordinal INTEGER NOT NULL,full_name TEXT NOT NULL,id_type TEXT NOT NULL,last_four TEXT NOT NULL,foreign_guest INTEGER NOT NULL,status TEXT NOT NULL,reason TEXT NOT NULL DEFAULT \'\',created_at INTEGER NOT NULL,expires_at INTEGER NOT NULL,purged_at INTEGER,version INTEGER NOT NULL DEFAULT 1)'),
  database().prepare('CREATE UNIQUE INDEX IF NOT EXISTS guest_ids_slot ON guest_ids(user_id,property_id,ifnull(booking_id,\'draft\'),ordinal)'),
  database().prepare('CREATE TABLE IF NOT EXISTS guest_id_files(id TEXT PRIMARY KEY,submission_id TEXT NOT NULL,kind TEXT NOT NULL,object_key TEXT NOT NULL,mime TEXT NOT NULL,size INTEGER NOT NULL)'),
@@ -17,11 +18,12 @@ export async function ensureIds(){await ensureTenancy();await database().batch([
  database().prepare('CREATE TABLE IF NOT EXISTS guest_id_audit(id TEXT PRIMARY KEY,actor_id TEXT NOT NULL,booking_id TEXT,submission_id TEXT NOT NULL,action TEXT NOT NULL,created_at INTEGER NOT NULL)'),
  database().prepare('CREATE TABLE IF NOT EXISTS guest_id_profiles(user_id TEXT PRIMARY KEY,status TEXT NOT NULL,reviewed_at INTEGER NOT NULL,reviewer_id TEXT NOT NULL,submission_id TEXT NOT NULL,foreign_guest INTEGER NOT NULL DEFAULT 0)'),
  database().prepare('CREATE TABLE IF NOT EXISTS booking_id_requirements(booking_id TEXT PRIMARY KEY,adults INTEGER NOT NULL,reused_primary INTEGER NOT NULL DEFAULT 0)'),
- ])}
+ ])})().catch(error=>{idsReady=null;throw error});return idsReady}
 export function auditId(actor:string,row:IdRow,action:string,conditional=false){return database().prepare('INSERT INTO guest_id_audit SELECT ?,?,?,?,?,?'+(conditional?' WHERE changes()>0':'')).bind(crypto.randomUUID(),actor,row.booking_id,row.id,action,Date.now())}
-export async function idAccess(row:IdRow){const u=await identity();if(!u)return null;if(row.user_id===u.userId)return {u,host:false};if(row.booking_id&&await canManageBooking(row.booking_id))return {u,host:true};return null}
+export async function idAccess(row:IdRow,authenticatedUser?:Awaited<ReturnType<typeof identity>>){const u=authenticatedUser===undefined?await identity():authenticatedUser;if(!u)return null;if(row.user_id===u.userId)return {u,host:false};if(row.booking_id&&await canManageBooking(row.booking_id))return {u,host:true};return null}
 export async function idProfile(userId:string){await ensureIds();return database().prepare('SELECT status,reviewed_at,foreign_guest FROM guest_id_profiles WHERE user_id=?').bind(userId).first<{status:string;reviewed_at:number;foreign_guest:number}>()}
 export async function signingValue(value:string){const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(config().ID_FILE_SIGNING_KEY),{name:'HMAC',hash:'SHA-256'},false,['sign']);return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(value))),b=>b.toString(16).padStart(2,'0')).join('')}
+export async function idFileGrant(fileId:string,userId:string,now=Date.now()){const expires=now+300000,signature=await signingValue(fileId+':'+userId+':'+expires);return '/api/guest-id/file?id='+encodeURIComponent(fileId)+'#expires='+expires+'&signature='+signature}
 export async function attachGuestIds(userId:string,propertyId:string,bookingId:string,checkout:string,adults:number){
  await ensureIds();const profile=await idProfile(userId),reused=profile?.status==='approved'&&profile.foreign_guest===0;
  const rows=(await database().prepare("SELECT * FROM guest_ids WHERE user_id=? AND property_id=? AND booking_id IS NULL AND expires_at>? AND purged_at IS NULL AND status='pending' ORDER BY ordinal").bind(userId,propertyId,Date.now()).all<IdRow>()).results;

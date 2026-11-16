@@ -1,12 +1,12 @@
 import {identity,database,json,config} from '@/lib/server';
 import {sameOrigin,canManageBooking,canManageProperty} from '@/lib/tenancy';
 import {findProperty} from '@/lib/property-data';
-import {ensureIds,idReady,idPhase,idProfile,idAccess,idBucket,validFile,ID_LIMIT,auditId,IdRow} from '@/lib/guest-id';
+import {ensureIds,idReady,idPhase,idProfile,idAccess,idFileGrant,idBucket,validFile,ID_LIMIT,auditId,IdRow} from '@/lib/guest-id';
 import {companyRecipients,platformJob,platformMessage} from '@/lib/email/platform';
 export async function GET(request:Request){const u=await identity();if(!u)return json({error:'Sign in first.'},401);await ensureIds();const q=new URL(request.url).searchParams,booking=q.get('booking'),property=q.get('property');if(!booking&&!property)return json({profile:await idProfile(u.userId),enabled:idReady(),phase:idPhase()});let host=false;
  if(booking){const b=await database().prepare('SELECT user_id FROM bookings WHERE id=?').bind(booking).first<{user_id:string}>();if(!b)return json({error:'Booking not found.'},404);host=await canManageBooking(booking);if(b.user_id!==u.userId&&!host)return json({error:'Access denied.'},403)}
  const rows=(await (booking?database().prepare('SELECT * FROM guest_ids WHERE booking_id=? ORDER BY ordinal').bind(booking):database().prepare('SELECT * FROM guest_ids WHERE user_id=? AND property_id=? AND booking_id IS NULL AND expires_at>? ORDER BY ordinal').bind(u.userId,property,Date.now())).all<IdRow>()).results;
- const items=await Promise.all(rows.map(async row=>({...row,files:row.purged_at?[]:(await database().prepare('SELECT id,kind,mime FROM guest_id_files WHERE submission_id=?').bind(row.id).all()).results})));
+ const items=await Promise.all(rows.map(async row=>{const files=row.purged_at||row.expires_at<=Date.now()?[]:(await database().prepare('SELECT id,kind,mime FROM guest_id_files WHERE submission_id=?').bind(row.id).all<{id:string;kind:string;mime:string}>()).results;return {...row,files:await Promise.all(files.map(async file=>({...file,...(idReady()?{url:await idFileGrant(file.id,u.userId)}:{})})))}}));
  const requirement=booking?await database().prepare('SELECT * FROM booking_id_requirements WHERE booking_id=?').bind(booking).first():null;
  return json({items,host,profile:await idProfile(u.userId),enabled:idReady(),phase:idPhase(),requirement})}
 export async function POST(request:Request){if(!sameOrigin(request))return json({error:'Invalid request.'},403);const u=await identity();if(!u)return json({error:'Sign in before uploading ID.'},401);if(!idReady())return json({error:'Private ID upload is not activated yet.'},503);await ensureIds();if(Number(request.headers.get('content-length')||0)>21*1024*1024)return json({error:'Upload each document under 5 MB.'},413);
