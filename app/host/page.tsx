@@ -1,4 +1,4 @@
 import {privateMetadata} from '@/lib/seo';
-import StayApp from '../stay-app';
+import {AdminApp} from '@/components/stays/admin-app';
 export const metadata={...privateMetadata,title:'Host workspace | GOMZO'};
-export default function HostPage(){return <StayApp/>}
+export default function HostPage(){return <AdminApp/>}
