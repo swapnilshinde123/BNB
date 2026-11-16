@@ -1,0 +1,1 @@
+export async function GET(request:Request){const cf=(request as Request & {cf?:{latitude?:string;longitude?:string}}).cf;const lat=Number(cf?.latitude),lng=Number(cf?.longitude);return Response.json(cf?.latitude&&cf?.longitude&&Number.isFinite(lat)&&Number.isFinite(lng)?{lat,lng}:null,{headers:{"Cache-Control":"private, no-store"}})}
