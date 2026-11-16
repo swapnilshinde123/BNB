@@ -19,3 +19,10 @@ test('expired document cleanup deletes objects and personal metadata but preserv
  mockDb={prepare(sql){queries.push(sql);const statement={bind(){return statement},run:async()=>({}),all:async()=>({results:sql.includes('FROM guest_ids WHERE expires_at')?[{id:'expired-id',booking_id:'booking-1'}]:sql.includes('FROM guest_id_objects')?[{object_key:'orphan'}]:sql.includes('FROM guest_id_files')?[{object_key:'expired-file'}]:[]})};return statement},batch:async()=>[]};
  await module.purgeGuestIds();assert.deepEqual(deleted,['orphan','expired-file']);assert.ok(queries.some(q=>q.includes("full_name='',last_four=''")));assert.equal(queries.some(q=>/DELETE FROM guest_id_profiles|UPDATE guest_id_profiles/.test(q)),false);assert.ok(queries.some(q=>q.includes("NOT EXISTS(SELECT 1 FROM guest_id_kept")));mockDb=undefined;
 });
+test('booking attachment extends both document and object retention past checkout',async()=>{
+ settings.ID_VERIFICATION_PHASE='before_booking';
+ mockDb={prepare(sql){const statement={sql,args:[],bind(...args){statement.args=args;return statement},first:async()=>null,all:async()=>({results:sql.includes('FROM guest_ids WHERE user_id')?[{id:'draft-1',ordinal:1}]:[]})};return statement},batch:async()=>[]};
+ const commands=await module.attachGuestIds('guest-1','home-1','booking-1','2026-12-20',1),expiry=Date.parse('2026-12-20T10:00:00+05:30')+7*86400000;
+ const objectUpdate=commands.find(s=>s.sql.startsWith('UPDATE guest_id_objects'));
+ assert.ok(objectUpdate);assert.equal(objectUpdate.args[0],expiry);assert.ok(objectUpdate.sql.includes('booking_id=? AND user_id=?'));assert.equal(commands.find(s=>s.sql.startsWith('UPDATE guest_ids')).args[1],expiry);mockDb=undefined;
+});
