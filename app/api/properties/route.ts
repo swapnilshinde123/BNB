@@ -11,11 +11,11 @@ const categories=['Design-led','Work-friendly','Family friendly','City views'];
 
 function validate(input:PropertyInput){
  const {name,area,address,type,guests,beds,baths,price,tag,category,description,lat,lng}=input;
- if(typeof name!=='string'||name.trim().length<3||name.length>90||typeof area!=='string'||area.trim().length<2||area.length>80||typeof address!=='string'||address.trim().length<5||address.length>240)return 'Add the home name, Pune area and full address.';
+ if(typeof name!=='string'||name.trim().length<3||name.length>90||typeof area!=='string'||area.trim().length<2||area.length>80||typeof address!=='string'||address.trim().length<5||address.length>240)return 'Add the home name, area and city and full address.';
  if(typeof type!=='string'||type.trim().length<2||type.length>30||!Number.isInteger(guests)||Number(guests)<1||Number(guests)>20||!Number.isInteger(beds)||Number(beds)<0||Number(beds)>20||!Number.isInteger(baths)||Number(baths)<1||Number(baths)>20)return 'Check the home type, guest capacity, bedrooms and bathrooms.';
  if(!Number.isInteger(price)||Number(price)<500||Number(price)>300000||!Number.isInteger(input.cleaningFee??500)||Number(input.cleaningFee??500)<0||Number(input.cleaningFee??500)>50000)return 'Enter valid nightly and cleaning rates.';
  if(typeof tag!=='string'||tag.trim().length<2||tag.length>45||typeof category!=='string'||!categories.includes(category)||typeof description!=='string'||description.trim().length<20||description.length>2000)return 'Add a category, short highlight and a description of at least 20 characters.';
- if(typeof lat!=='number'||!Number.isFinite(lat)||lat<18.3||lat>18.8||typeof lng!=='number'||!Number.isFinite(lng)||lng<73.5||lng>74.1)return 'Set a valid Pune map location.';
+ if(typeof lat!=='number'||!Number.isFinite(lat)||lat< -90||lat>90||typeof lng!=='number'||!Number.isFinite(lng)||lng< -180||lng>180)return 'Set a valid map location.';
  if(!Array.isArray(input.amenities)||input.amenities.length>18||input.amenities.some(x=>typeof x!=='string'||x.trim().length<2||x.length>50))return 'Choose valid amenities.';
  if(!Array.isArray(input.photos)||input.photos.length<1||input.photos.length>6||input.photos.some(x=>typeof x!=='string'||x.length>210000||!(x.startsWith('https://')||/^data:image\/(webp|jpeg|png);base64,[A-Za-z0-9+/=]+$/.test(x))))return 'Add 1 to 6 photos. Uploaded photos are compressed before saving.';
  if(input.active!==undefined&&typeof input.active!=='boolean')return 'Invalid listing visibility.';
