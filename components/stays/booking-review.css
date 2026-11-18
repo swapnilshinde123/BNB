@@ -16,3 +16,16 @@
 .booking-review-dialog .booking-review-note{font-size:12px;background:#edf1e7;border-radius:12px;padding:12px 14px}
 .booking-review-actions{display:flex;gap:10px;margin-top:20px}.booking-review-actions button{min-height:48px;font-size:13px;justify-content:center;padding:12px 15px}.booking-review-actions .primary{flex:1}
 @media(max-width:480px){.booking-review-dialog{padding:26px 20px;border-radius:22px}.booking-review-dialog>h2{font-size:24px}.booking-review-actions{flex-direction:column-reverse}.booking-review-actions button{width:100%}.booking-review-total dd{font-size:22px}}
+
+.booking-review-pricing{border-top:1px solid #e0e5da;padding-top:18px;margin-bottom:18px}
+.booking-review-pricing h3{font-size:15px;font-weight:650;margin:0 0 12px}
+.booking-review-nights{list-style:none;padding:0;margin:0;max-height:148px;overflow-y:auto;overscroll-behavior:contain}
+.booking-review-nights li{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;padding:7px 0;font-size:13px;line-height:1.5}
+.booking-review-nights small{display:block;font-size:11px;color:#758070;overflow-wrap:anywhere}
+.booking-review-nights b{font-size:13px;font-weight:600;white-space:nowrap}
+.booking-review-pricing dl{display:flex;flex-direction:column;gap:12px;margin:14px 0 0;padding-top:14px;border-top:1px solid #e0e5da}
+.booking-review-pricing dl>div{display:flex;justify-content:space-between;align-items:center;gap:14px}
+.booking-review-pricing dt{margin:0;font-size:13px}
+.booking-review-pricing dd{font-size:14px;white-space:nowrap}
+.booking-review-pricing .booking-review-total dt{font-weight:650;color:#263f33}
+.booking-review-pricing .booking-review-total dd{font-size:24px}
