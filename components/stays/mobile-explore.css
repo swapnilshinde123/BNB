@@ -34,7 +34,7 @@
  .grid-card .mobile-photo-dots button{padding:0;width:16px;height:22px;display:grid;place-items:center}
  .grid-card .mobile-photo-dots span{width:4px;height:4px;display:block;margin:0}
  .grid-card .mobile-photo-dots .active{width:5px;height:5px}
- .grid-card .mobile-home-title{align-items:flex-start;padding:9px 2px 3px;min-height:45px;gap:0}
+ .grid-card .mobile-home-title{align-items:flex-start;padding:9px 2px 3px;min-height:29px;gap:0}
  .grid-card .mobile-home-title h2{font-size:13px;line-height:1.45;font-weight:700;letter-spacing:-.2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
  .grid-card .mobile-home-price{margin:0;padding:0 2px;min-height:25px;font-size:11px;line-height:1.4;color:#737d74}
  .grid-card .mobile-home-price>span{display:block;white-space:nowrap}
