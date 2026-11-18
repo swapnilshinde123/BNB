@@ -1,0 +1,3 @@
+footer.site-footer .footer-links .footer-social-link{display:inline-flex;align-items:center;gap:6px;min-height:26px;padding:2px 0;color:#405246;font-size:13px;line-height:normal;transition:color .18s ease,transform .18s ease}
+footer.site-footer .footer-links .footer-social-link:hover{color:#b86140;transform:translateX(3px)}
+@media(prefers-reduced-motion:reduce){footer.site-footer .footer-links .footer-social-link{transition:none}}

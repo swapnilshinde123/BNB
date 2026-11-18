@@ -1,6 +1,8 @@
 'use client';
 import {BookingReview,type BookingReviewData} from '@/components/stays/booking-review';
 import {countLabel} from '@/lib/count-label';
+import {gomzoLinkedIn} from '@/lib/brand-links';
+import '@/components/stays/social-links.css';
 import {PropertyGallery} from "@/components/stays/property-gallery";
 import {PropertyShare} from '@/components/stays/property-share';
 import {GuestIdStep,BookingIdButton} from "@/components/stays/guest-id";
@@ -148,7 +150,7 @@ export default function StayApp({initialPage='explore'}:{initialPage?:'explore'|
   <div className="footer-topline"><span className="footer-sun" aria-hidden="true">✳</span><p>Good stays start with a little hello.</p><a href={wa('Hi Gomzo! I’d love to plan a stay.')} target="_blank" rel="noreferrer">Talk to your host <ArrowUpRight size={16}/></a></div>
   <div className="footer-main">
    <div className="footer-story"><button className="brand footer-brand" onClick={()=>navigate('explore')} aria-label="Gomzo home"><img className="brand-logo" src="/brand/gomzo-wordmark.png" alt="Gomzo" width={240} height={43}/></button><p>Thoughtful stays across cities, with a real host just a message away.</p><span className="footer-location"><MapPin size={15}/> Made for your next getaway</span></div>
-   <nav className="footer-links" aria-label="Explore Gomzo"><span className="footer-label">EXPLORE</span><button onClick={()=>navigate('explore')}>Find a stay</button><button onClick={()=>navigate('saved')}>Saved homes</button></nav>
+   <nav className="footer-links" aria-label="Explore Gomzo"><span className="footer-label">EXPLORE</span><button onClick={()=>navigate('explore')}>Find a stay</button><button onClick={()=>navigate('saved')}>Saved homes</button><a className="footer-social-link" href={gomzoLinkedIn} target="_blank" rel="noopener noreferrer" aria-label="Gomzo on LinkedIn">LinkedIn <ArrowUpRight size={13}/></a></nav>
    <nav className="footer-links" aria-label="Your account"><span className="footer-label">YOUR STAYS</span><button onClick={()=>navigate('bookings')}>My bookings</button><button onClick={()=>navigate('login','/my-bookings')}>Sign in</button></nav>
    <div className="footer-note"><span className="footer-label">A LITTLE ESCAPE. A LOT LIKE HOME.</span><p>Find a place that feels like yours.</p><span className="footer-coordinate">18.5204° N <i>·</i> 73.8567° E</span></div>
   </div>
