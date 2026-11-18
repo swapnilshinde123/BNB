@@ -2,13 +2,17 @@
 import {countLabel} from '@/lib/count-label';
 import {useEffect,useRef,useState,type ReactNode} from 'react';
 import {Dialog} from 'radix-ui';
+import {createPortal} from 'react-dom';
 import {Search,Heart,Clock,UserCircle,Map,Grid2X2,SlidersHorizontal,ChevronLeft,ChevronRight,ChevronUp,ChevronDown,MapPin,Star,Users,BedDouble,X,ArrowUpRight,ShieldCheck} from 'lucide-react';
 import {PropertyShare} from './property-share';
 import {FancySelect} from './controls';
 import {Property,money,photo} from '@/lib/properties';
 import './mobile-explore.css';
-export function MobileNavigation({page,onNavigate,onAccount,accountOpen}:{page:string;onNavigate:(page:string)=>void;onAccount:()=>void;accountOpen:boolean}){
- return <nav className="mobile-bottom-nav" aria-label="Main navigation">{[{id:'explore',label:'Explore',Icon:Search},{id:'saved',label:'Saved',Icon:Heart},{id:'bookings',label:'Bookings',Icon:Clock},{id:'account',label:'Account',Icon:UserCircle}].map(({id,label,Icon})=><button key={id} type="button" aria-label={label} aria-current={(id==='account'?accountOpen:page===id&&!accountOpen)?'page':undefined} onClick={()=>id==='account'?onAccount():onNavigate(id)}><Icon size={26} strokeWidth={1.9}/><span>{label}</span></button>)}</nav>
+export function MobileNavigation({page,onNavigate,onAccount,accountOpen,hidden=false}:{page:string;onNavigate:(page:string)=>void;onAccount:()=>void;accountOpen:boolean;hidden?:boolean}){
+ const [mounted,setMounted]=useState(false);
+ useEffect(()=>setMounted(true),[]);
+ if(!mounted||hidden)return null;
+ return createPortal(<nav className="mobile-bottom-nav" aria-label="Main navigation">{[{id:'explore',label:'Explore',Icon:Search},{id:'saved',label:'Saved',Icon:Heart},{id:'bookings',label:'Bookings',Icon:Clock},{id:'account',label:'Account',Icon:UserCircle}].map(({id,label,Icon})=><button key={id} type="button" aria-label={label} aria-current={(id==='account'?accountOpen:page===id&&!accountOpen)?'page':undefined} onClick={()=>id==='account'?onAccount():onNavigate(id)}><Icon size={26} strokeWidth={1.9}/><span>{label}</span></button>)}</nav>,document.body)
 }
 function MobileHomeCard({home,saved,onSave,onOpen,compact=false,grid=false}:{home:Property;saved:boolean;onSave:()=>void;onOpen:()=>void;compact?:boolean;grid?:boolean}){
  const [index,setIndex]=useState(0),touchStart=useRef<{x:number;y:number}|null>(null);const images=home.photos?.length?home.photos:[home.image];

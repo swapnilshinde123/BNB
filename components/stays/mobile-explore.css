@@ -104,7 +104,6 @@
 }
 @media(max-width:760px){
  .mobile-explore.is-map{inset:0}
- .guest-shell:has(.mobile-explore.is-map)>.mobile-bottom-nav{display:none}
  .mobile-map-sheet{bottom:0;height:min(42dvh,390px);max-height:min(42dvh,390px);padding-bottom:env(safe-area-inset-bottom)}
  .mobile-map-sheet.expanded{bottom:0;height:calc(100% - 16px);max-height:calc(100% - 16px)}
  .mobile-sheet-content{padding-bottom:max(18px,env(safe-area-inset-bottom))}
@@ -136,3 +135,5 @@
  .mobile-map-stage .leaflet-marker-icon{cursor:pointer;touch-action:manipulation}
  .mobile-map-stage .leaflet-control-zoom a{touch-action:manipulation}
 }
+
+@media(max-width:760px){.mobile-bottom-nav{position:fixed;top:auto;z-index:90;isolation:isolate;transform:translateZ(0)}}
