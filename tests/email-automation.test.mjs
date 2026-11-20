@@ -11,6 +11,7 @@ test('scheduled delivery runs without a website request and reports failures',as
   if(line.includes('email/service'))return `const drainEmails=async()=>{const s=globalThis.__scheduledMail;s.calls++;if(s.fail)throw Error('delivery unavailable')};`;
   if(line.includes('fetch-handler'))return 'const handler={fetch(){throw Error("HTTP handler must not run")}};';
   if(line.includes('connector-context'))return 'const runWithConnectorBinding=()=>{};';
+  if(line.includes('guest-id'))return 'const purgeGuestIds=async()=>{};';
   return '';
  });
  const {default:worker}=await import(encode(source));
