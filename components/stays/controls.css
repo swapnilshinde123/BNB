@@ -44,3 +44,5 @@
 
 /* Keep the rounded search action clear of the outer edge. */
 @media(min-width:701px){.search-bar{padding:10px 16px 10px 10px!important}.search-bar .search-button{flex-shrink:0;margin-right:0}}
+.destination-group{margin:14px 4px 6px;font-size:12px;font-weight:600;letter-spacing:.4px;color:#6f7d68;text-transform:uppercase}.destination-group:first-child{margin-top:4px}
+.destination-input input{flex:1;min-width:0}.destination-clear{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#e9eee4;color:#4f5f49;flex-shrink:0}

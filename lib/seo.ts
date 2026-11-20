@@ -2,9 +2,9 @@ import {homepageFaqs,homepageIntroduction,homepageReviewedDate} from './homepage
 import {gomzoLinkedIn} from './brand-links';
 import type {Metadata} from 'next';
 export const origin='https://gomzo.co';
-export const homeTitle='Gomzo | Homestays & Short Stays Across Cities';
-export const homeDescription='Discover homestays, private apartments and short stays with Gomzo. Explore live listings by city, compare homes and send a booking request directly to the host.';
-export const publicPages=['/','/stays/pune','/about','/contact','/how-it-works','/faq','/privacy'];
+export const homeTitle='Gomzo | Curated Homestays & Short Stays in Pune';
+export const homeDescription='Book curated homestays and short-stay apartments in Pune with Gomzo: Koregaon Park, Viman Nagar, Kalyani Nagar, Baner, Wakad and Pashan. Compare live homes and send a booking request directly to the host.';
+export const publicPages=['/','/stays/pune','/list-your-property','/about','/contact','/how-it-works','/faq','/privacy'];
 export function pageMetadata(title:string,description:string,path:string):Metadata{return {title,description,alternates:{canonical:origin+path},openGraph:{type:'website',siteName:'Gomzo',title,description,url:origin+path,locale:'en_IN',images:[{url:origin+'/brand/gomzo-social.png',width:1200,height:630,alt:'GOMZO — Stay a Little. Live a Lot.'}]},twitter:{card:'summary_large_image',title,description,images:[origin+'/brand/gomzo-social.png']}}}
 export const privateMetadata:Metadata={robots:{index:false,follow:false}};
 export function jsonLd(value:unknown){return JSON.stringify(value).replace(/</g,'\\u003c')}

@@ -5,13 +5,14 @@ import {identity,isAdmin,database,json} from '@/lib/server';
 import {Property} from '@/lib/properties';
 import {allProperties,fromPropertyRow} from '@/lib/property-data';
 
-type PropertyInput={id?:unknown;name?:unknown;area?:unknown;address?:unknown;type?:unknown;guests?:unknown;beds?:unknown;baths?:unknown;price?:unknown;tag?:unknown;category?:unknown;description?:unknown;lat?:unknown;lng?:unknown;amenities?:unknown;photos?:unknown;active?:unknown;cleaningFee?:unknown};
+type PropertyInput={id?:unknown;name?:unknown;area?:unknown;city?:unknown;state?:unknown;address?:unknown;type?:unknown;guests?:unknown;beds?:unknown;baths?:unknown;price?:unknown;tag?:unknown;category?:unknown;description?:unknown;lat?:unknown;lng?:unknown;amenities?:unknown;photos?:unknown;active?:unknown;cleaningFee?:unknown};
 type Row={id:string;name:string;area:string;address:string;type:string;guests:number;beds:number;baths:number;price:number;rating:string;reviews:number;tag:string;category:string;image:string;lat:string;lng:string;description:string;amenities_json:string;photos_json:string;cleaning_fee:number;active:number};
 const categories=['Design-led','Work-friendly','Family friendly','City views'];
 
 function validate(input:PropertyInput){
  const {name,area,address,type,guests,beds,baths,price,tag,category,description,lat,lng}=input;
- if(typeof name!=='string'||name.trim().length<3||name.length>90||typeof area!=='string'||area.trim().length<2||area.length>80||typeof address!=='string'||address.trim().length<5||address.length>240)return 'Add the home name, area and city and full address.';
+ if(typeof name!=='string'||name.trim().length<3||name.length>90||typeof area!=='string'||area.trim().length<2||area.length>80||typeof address!=='string'||address.trim().length<5||address.length>240)return 'Add the home name, area / neighbourhood and full address.';
+ if(typeof input.city!=='string'||input.city.trim().length<2||input.city.length>60||typeof input.state!=='string'||input.state.trim().length<2||input.state.length>60)return 'Add the city and state of the home.';
  if(typeof type!=='string'||type.trim().length<2||type.length>30||!Number.isInteger(guests)||Number(guests)<1||Number(guests)>20||!Number.isInteger(beds)||Number(beds)<0||Number(beds)>20||!Number.isInteger(baths)||Number(baths)<1||Number(baths)>20)return 'Check the home type, guest capacity, bedrooms and bathrooms.';
  if(!Number.isInteger(price)||Number(price)<500||Number(price)>300000||!Number.isInteger(input.cleaningFee??500)||Number(input.cleaningFee??500)<0||Number(input.cleaningFee??500)>50000)return 'Enter valid nightly and cleaning rates.';
  if(typeof tag!=='string'||tag.trim().length<2||tag.length>45||typeof category!=='string'||!categories.includes(category)||typeof description!=='string'||description.trim().length<20||description.length>2000)return 'Add a category, short highlight and a description of at least 20 characters.';
@@ -28,6 +29,8 @@ function normalize(input:PropertyInput,id:string,previous?:Property){
  const extraPhotos=photos.slice(1);
  return {id,name:(input.name as string).trim(),area:(input.area as string).trim(),address:(input.address as string).trim(),type:(input.type as string).trim(),guests:Number(input.guests),beds:Number(input.beds),baths:Number(input.baths),price:Number(input.price),rating:previous?.managed?previous.rating:'New',reviews:previous?.managed?previous.reviews:0,tag:(input.tag as string).trim(),category:input.category as string,image,lat:String(input.lat),lng:String(input.lng),description:(input.description as string).trim(),amenities_json:JSON.stringify(amenities),photos_json:JSON.stringify(extraPhotos),cleaning_fee:Number(input.cleaningFee??previous?.cleaningFee??500),active:input.active===undefined?(previous?.active===false?0:1):input.active?1:0};
 }
+
+function locationStatement(id:string,input:PropertyInput){const clean=(v:unknown)=>String(v).trim().replace(/\s+/g,' ');return database().prepare('INSERT INTO property_locations(property_id,city,state,updated_at) VALUES(?,?,?,?) ON CONFLICT(property_id) DO UPDATE SET city=excluded.city,state=excluded.state,updated_at=excluded.updated_at').bind(id,clean(input.city),clean(input.state),Date.now())}
 
 async function saveProperty(data:ReturnType<typeof normalize>,extra:D1PreparedStatement[]=[]){
  const db=database(),now=new Date().toISOString();
@@ -52,7 +55,7 @@ export async function POST(req:Request){
  let input:PropertyInput;try{input=await req.json() as PropertyInput}catch{return json({error:'Invalid property details.'},400)}
  const issue=validate(input);if(issue)return json({error:issue},400);
  const id='home-'+crypto.randomUUID().slice(0,12),data=normalize(input,id);
- const extra=await submission(data,access);try{return json({property:await saveProperty(data,extra)},201)}catch{return json({error:'Could not save this home. Try fewer or smaller photos.'},413)}
+ const extra=[...await submission(data,access),locationStatement(id,input)];try{return json({property:await saveProperty(data,extra)},201)}catch{return json({error:'Could not save this home. Try fewer or smaller photos.'},413)}
 }
 
 export async function PATCH(req:Request){
@@ -62,7 +65,7 @@ export async function PATCH(req:Request){
  if(!await canManageProperty(input.id,access))return json({error:'Home not found.'},404);
  const previous=(await allProperties(true)).find(p=>p.id===input.id);if(!previous)return json({error:'Home not found.'},404);
  const issue=validate(input);if(issue)return json({error:issue},400);
- const data=normalize(input,input.id,previous),extra=await submission(data,access);try{return json({property:await saveProperty(data,extra)})}catch{return json({error:'Could not save this home. Try fewer or smaller photos.'},413)}
+ const data=normalize(input,input.id,previous),extra=[...await submission(data,access),locationStatement(input.id,input)];try{return json({property:await saveProperty(data,extra)})}catch{return json({error:'Could not save this home. Try fewer or smaller photos.'},413)}
 }
 
 export async function DELETE(req:Request){

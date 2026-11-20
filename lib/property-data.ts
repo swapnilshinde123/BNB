@@ -1,6 +1,7 @@
 import {ensureTenancy} from './tenancy';
 import {database} from '@/lib/server';
 import {properties,Property} from '@/lib/properties';
+import {DEFAULT_CITY,DEFAULT_STATE} from '@/lib/location';
 
 type PropertyRow={id:string;name:string;area:string;address:string;type:string;guests:number;beds:number;baths:number;price:number;rating:string;reviews:number;tag:string;category:string;image:string;lat:string;lng:string;description:string;amenities_json:string;photos_json:string;cleaning_fee:number;active:number};
 
@@ -13,9 +14,11 @@ export async function allProperties(includeInactive=false,includeDeleted=false):
  const deletedIds=new Set(deleted.results.map(row=>row.property_id));
  const governance=await database().prepare('SELECT g.*,c.name AS company_name FROM property_governance g JOIN host_companies c ON c.id=g.company_id').all<{property_id:string;company_id:string;company_name:string;status:string;requested_active:number;reason:string;version:number}>();
  const rows=await database().prepare('SELECT * FROM properties').all<PropertyRow>();
+ const locations=await database().prepare('SELECT property_id,city,state FROM property_locations').all<{property_id:string;city:string;state:string}>();
+ const place=new Map(locations.results.map(l=>[l.property_id,l]));
  const merged=new Map<string,Property>(properties.map(p=>[p.id,{...p,active:true}]));
  for(const row of rows.results)merged.set(row.id,fromPropertyRow(row));
- return [...merged.values()].map(p=>{const g=governance.results.find(g=>g.property_id===p.id);return g?{...p,companyId:g.company_id,companyName:g.company_name,reviewStatus:g.status,reviewReason:g.reason,reviewVersion:g.version,requestedActive:g.requested_active===1,active:p.active!==false&&g.status==='approved'}:p}).filter(p=>(includeDeleted||!deletedIds.has(p.id))&&(includeInactive||p.active!==false));
+ return [...merged.values()].map(p=>({...p,city:place.get(p.id)?.city||DEFAULT_CITY,state:place.get(p.id)?.state||DEFAULT_STATE})).map(p=>{const g=governance.results.find(g=>g.property_id===p.id);return g?{...p,companyId:g.company_id,companyName:g.company_name,reviewStatus:g.status,reviewReason:g.reason,reviewVersion:g.version,requestedActive:g.requested_active===1,active:p.active!==false&&g.status==='approved'}:p}).filter(p=>(includeDeleted||!deletedIds.has(p.id))&&(includeInactive||p.active!==false));
 }
 
 export async function findProperty(id:string,includeInactive=false):Promise<Property|undefined>{return (await allProperties(includeInactive)).find(p=>p.id===id)}

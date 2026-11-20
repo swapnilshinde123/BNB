@@ -1,0 +1,19 @@
+/* A property opened at /rooms/<id> renders as a full page instead of a pop-up. */
+.modal-backdrop.room-page{position:static;inset:auto;z-index:auto;display:block;padding:0 5% 64px;background:none;backdrop-filter:none;-webkit-backdrop-filter:none;overflow:visible;animation:none}
+.modal-backdrop.room-page .booking-modal{max-width:1180px;width:100%;margin:8px auto 0;max-height:none;overflow:visible;border-radius:0;box-shadow:none;background:transparent;animation:none;overscroll-behavior:auto}
+.room-page .room-back{display:inline-flex;align-items:center;gap:6px;margin:0 0 16px;padding:8px 14px 8px 10px;border-radius:999px;background:#fff;color:var(--ink);font-size:14px;font-weight:600;box-shadow:0 2px 12px #14221b14}
+.room-page .room-back:hover{background:#f4f6ef}
+.room-page .property-gallery,.room-page .modal-gallery{border-radius:20px;overflow:hidden}
+.room-page .modal-body{grid-template-columns:minmax(0,1fr) 360px;gap:48px;padding:32px 0 0;align-items:start}
+.room-page .modal-about h2{font-size:clamp(28px,3.2vw,40px)}
+.room-page .reservation{position:sticky;top:24px;background:#fff;border-radius:20px;box-shadow:0 10px 40px #14221b1a;padding:24px}
+.room-page .success-content{background:#fff;border-radius:20px;padding:40px 24px;margin-top:8px}
+.room-loading{min-height:50vh}
+@media(max-width:760px){
+ .modal-backdrop.room-page{padding:0 0 96px}
+ .modal-backdrop.room-page .booking-modal{margin:0;border-radius:0;max-height:none}
+ .room-page .room-back{margin:0 4% 12px}
+ .room-page .property-gallery,.room-page .modal-gallery{border-radius:0}
+ .room-page .modal-body{grid-template-columns:1fr;gap:24px;padding:20px 5% 0}
+ .room-page .reservation{position:static;box-shadow:0 4px 24px #14221b14}
+}
