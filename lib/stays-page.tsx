@@ -1,4 +1,6 @@
 import {countLabel} from '@/lib/count-label';
+import {DestinationDirectory} from '@/components/stays/destination-directory';
+import {destinationGroups} from '@/lib/destinations';
 import {notFound} from 'next/navigation';
 import {SeoPage,Answer} from '@/components/stays/seo-page';
 import {pageMetadata,areaPath} from '@/lib/seo';
@@ -22,4 +24,5 @@ export async function StaysPage({slug}:{slug:string}){
   <Answer question="How do I choose a Pune stay?">Start with the neighbourhood, your dates and the number of guests. Check the home’s listed amenities, capacity and date-specific quote. Ask the host about special requirements, arrival arrangements and cancellation conditions before paying.</Answer>
   <Answer question="What happens after I request?">A request is pending until reviewed. If the host accepts, payment is pending; the stay becomes confirmed after the host verifies payment. Learn more about <a href="/how-it-works">how booking works</a>.</Answer>
   <a className="primary" href="/">Explore current stays</a>
+  <DestinationDirectory groups={destinationGroups(all)}/>
  </SeoPage>}
