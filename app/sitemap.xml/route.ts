@@ -12,7 +12,7 @@ type Entry={path:string;lastmod:string;images?:string[]};
 export async function GET(){try{
  const homes=await seoHomes(),homeDate=(p:Property)=>day(p.version)||PAGES_REVIEWED,newest=(list:Property[])=>latest(...list.map(homeDate));
  const entries:Entry[]=[
-  {path:'/',lastmod:latest(homepageReviewedDate,newest(homes))},
+  {path:'/',lastmod:latest(homepageReviewedDate,PAGES_REVIEWED,newest(homes))},
   {path:'/stays/pune',lastmod:latest(PAGES_REVIEWED,newest(homes))},
   ...publicPages.filter(p=>p!=='/'&&p!=='/stays/pune').map(path=>({path,lastmod:PAGES_REVIEWED})),
   ...Object.keys(areaPages).map(slug=>({slug,list:matchingHomes(homes,slug)})).filter(x=>x.list.length).map(({slug,list})=>({path:'/stays/'+slug,lastmod:latest(PAGES_REVIEWED,newest(list))})),
