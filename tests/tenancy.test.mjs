@@ -66,5 +66,8 @@ test('host UPI settings, guest UTR submission and host review stay isolated per 
  state.email='e@example.com';const row=(await (await bookings.GET(req('/api/bookings?admin=1',null,'GET'))).json()).find(b=>b.id==='ANG-PAY00001');assert.equal(row.payment_utr,'412345678901');
  assert.equal((await payment.DELETE(req('/api/bookings/payment',{id:'ANG-PAY00001'},'DELETE'))).status,200);
  state.email='guest2@example.com';mine=(await (await bookings.GET(req('/api/bookings',null,'GET'))).json()).find(b=>b.id==='ANG-PAY00001');assert.equal(mine.payment_utr,null);
+ state.email='e@example.com';assert.equal((await bookings.PATCH(req('/api/bookings',{id:'ANG-PAY00001',status:'confirmed'},'PATCH'))).status,409);
+ state.email='guest2@example.com';assert.equal((await payment.POST(req('/api/bookings/payment',{id:'ANG-PAY00001',utr:'412345678902'}))).status,200);
+ state.email='e@example.com';assert.equal((await bookings.PATCH(req('/api/bookings',{id:'ANG-PAY00001',status:'confirmed'},'PATCH'))).status,200);state.email='guest2@example.com';
  sql.prepare("UPDATE bookings SET status='confirmed' WHERE id='ANG-PAY00001'").run();assert.equal((await payment.POST(req('/api/bookings/payment',{id:'ANG-PAY00001',utr:'412345678901'}))).status,409);
 });
