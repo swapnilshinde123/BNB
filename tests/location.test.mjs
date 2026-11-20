@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import ts from 'typescript';
 const source=ts.transpileModule(readFileSync(new URL('../lib/location.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022,target:ts.ScriptTarget.ES2022}}).outputText;
-const L=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
+const places=ts.transpileModule(readFileSync(new URL('../lib/india-places.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022,target:ts.ScriptTarget.ES2022}}).outputText;
+const L=await import('data:text/javascript;base64,'+Buffer.from(source.replace("'./india-places'",JSON.stringify('data:text/javascript;base64,'+Buffer.from(places).toString('base64')))).toString('base64'));
 const homes=[{name:'The Palm House',area:'Koregaon Park',city:'Pune',state:'Maharashtra'},{name:'The Skyline Studio',area:'Baner'},{name:'Garden vila',area:'Viman nagar',city:'Pune',state:'Maharashtra'},{name:'Sea Breeze',area:'Bandra',city:'Mumbai',state:'Maharashtra'}];
 test('search URLs read like Airbnb and round-trip to the same place',()=>{
  const pune=L.cityKey('Pune','Maharashtra');
@@ -33,6 +34,16 @@ test('suggestions list cities first, then neighbourhoods, ranked by what was typ
  const all=L.locationSuggestions(homes);assert.deepEqual(all.slice(0,2).map(s=>s.title),['Pune, Maharashtra','Mumbai, Maharashtra']);
  assert.equal(all.filter(s=>s.title==='Viman Nagar').length,1);
  assert.deepEqual(L.locationSuggestions(homes,'pu').map(s=>s.title)[0],'Pune, Maharashtra');
- assert.deepEqual(L.locationSuggestions(homes,'ban').map(s=>s.title),['Baner','Bandra']);
- assert.deepEqual(L.locationSuggestions(homes,'zzz'),[]);
+ assert.deepEqual(L.locationSuggestions(homes,'ban').map(s=>s.title).slice(0,2),['Baner','Bandra']);
+ assert.deepEqual(L.locationSuggestions(homes,'zzzq'),[]);
+});
+test('any Indian place can be searched, with typos, and places without homes are marked coming soon',()=>{
+ const typo=L.locationSuggestions(homes,'ahmedngar');assert.equal(typo[0].title,'Ahmednagar, Maharashtra');assert.equal(typo[0].homes,0);
+ assert.equal(L.locationSuggestions(homes,'bangalore')[0].title,'Bengaluru, Karnataka');
+ assert.equal(L.locationSuggestions(homes,'pune')[0].homes,3);
+ assert.equal(L.knownPlace('ahmedngar'),L.cityKey('Ahmednagar','Maharashtra'));
+ assert.equal(L.keyFromSlug('ahmednagar',homes),L.cityKey('Ahmednagar','Maharashtra'));
+ assert.equal(L.keyFromSlug('Ahmednagar--Maharashtra',homes),L.cityKey('Ahmednagar','Maharashtra'));
+ assert.deepEqual(homes.filter(h=>L.matchesLocation(h,L.cityKey('Ahmednagar','Maharashtra'))),[]);
+ assert.equal(L.locationSuggestions(homes,'').every(s=>s.homes>0),true);
 });

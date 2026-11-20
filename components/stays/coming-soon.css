@@ -1,0 +1,7 @@
+.coming-soon{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:56px 20px;max-width:620px;margin:0 auto}
+.coming-soon-icon{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;background:#edf2e6;color:#5c7951}
+.coming-soon-badge{font-size:12px;font-weight:700;letter-spacing:1.2px;color:#a0522d;background:#fbeee6;border-radius:999px;padding:5px 12px}
+.coming-soon h3{font-size:clamp(22px,3vw,30px);margin:4px 0 0}
+.coming-soon p{color:#6f7d68;line-height:1.7;margin:0}
+.coming-soon-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px}
+.coming-soon-actions a,.coming-soon-actions button{display:inline-flex;align-items:center;gap:8px}

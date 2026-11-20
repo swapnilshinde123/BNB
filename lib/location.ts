@@ -4,6 +4,7 @@
 //   'city|Pune|Maharashtra'            → a city
 //   'area|Baner|Pune|Maharashtra'      → a neighbourhood in a city
 //   'text|<words>'                     → free text typed by the guest
+import {INDIA_CITIES, PUNE_AREAS} from './india-places';
 export const DEFAULT_CITY = 'Pune';
 export const DEFAULT_STATE = 'Maharashtra';
 export const ALL_PLACES = 'All neighbourhoods';
@@ -11,7 +12,7 @@ export const ALL_PLACES = 'All neighbourhoods';
 export const INDIAN_STATES = ['Andhra Pradesh','Arunachal Pradesh','Assam','Bihar','Chhattisgarh','Goa','Gujarat','Haryana','Himachal Pradesh','Jharkhand','Karnataka','Kerala','Madhya Pradesh','Maharashtra','Manipur','Meghalaya','Mizoram','Nagaland','Odisha','Punjab','Rajasthan','Sikkim','Tamil Nadu','Telangana','Tripura','Uttar Pradesh','Uttarakhand','West Bengal','Andaman and Nicobar Islands','Chandigarh','Dadra and Nagar Haveli and Daman and Diu','Delhi','Jammu and Kashmir','Ladakh','Lakshadweep','Puducherry'];
 
 export type Locatable = {area: string; city?: string; state?: string; name?: string};
-export type Suggestion = {key: string; title: string; subtitle: string; kind: 'city' | 'area'};
+export type Suggestion = {key: string; title: string; subtitle: string; kind: 'city' | 'area'; homes?: number};
 
 const tidy = (v: string) => v.trim().replace(/\s+/g, ' ');
 const same = (a: string, b: string) => tidy(a).toLowerCase() === tidy(b).toLowerCase();
@@ -51,30 +52,67 @@ export function matchesLocation(home: Locatable, key: string) {
   return words.every(w => hay.includes(w));
 }
 
-/** Cities first, then neighbourhoods, matching what the guest typed (empty query lists everything). */
+/** Edit distance, used so small typos ("ahmedngar") still find the place. */
+function distance(a: string, b: string) {
+  const row = Array.from({length: b.length + 1}, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = row[0]; row[0] = i;
+    for (let j = 1; j <= b.length; j++) { const tmp = row[j]; row[j] = Math.min(row[j] + 1, row[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = tmp; }
+  }
+  return row[b.length];
+}
+function nameScore(q: string, names: string[]) {
+  let best = 0;
+  for (const raw of names) {
+    const n = raw.toLowerCase();
+    if (n.startsWith(q)) best = Math.max(best, 4);
+    else if (n.split(/[\s,()-]+/).some(w => w.startsWith(q))) best = Math.max(best, 3);
+    else if (q.length >= 4) {
+      const allowed = q.length >= 7 ? 2 : 1;
+      const d = Math.min(distance(q, n), distance(q, n.slice(0, q.length)), distance(q, n.slice(0, q.length + 1)));
+      if (d <= allowed) best = Math.max(best, 2);
+    }
+  }
+  return best;
+}
+
+/**
+ * Places with Gomzo homes first (cities, then neighbourhoods), then any other Indian city or
+ * Pune neighbourhood so guests can search anywhere; those show "coming soon".
+ * An empty query lists only places that have homes.
+ */
 export function locationSuggestions(homes: Locatable[], query = '', limit = 8): Suggestion[] {
   const q = tidy(query).toLowerCase();
-  const cities = new Map<string, Suggestion>(), areas = new Map<string, Suggestion>();
+  type Entry = Suggestion & {names: string[]};
+  const entries = new Map<string, Entry>();
+  const add = (e: Entry) => { const id = e.key.toLowerCase(); const old = entries.get(id); if (old) { old.homes = (old.homes || 0) + (e.homes || 0); old.names.push(...e.names); } else entries.set(id, e); };
   for (const h of homes) {
     const city = cityOf(h), state = stateOf(h), area = titleCase(h.area);
-    const ck = `${city}|${state}`.toLowerCase();
-    if (!cities.has(ck)) cities.set(ck, {key: cityKey(city, state), title: `${city}, ${state}`, subtitle: 'City', kind: 'city'});
-    const ak = `${area}|${city}`.toLowerCase();
-    if (area && !areas.has(ak)) areas.set(ak, {key: areaKey(area, city, state), title: area, subtitle: `Neighbourhood · ${city}, ${state}`, kind: 'area'});
+    add({key: cityKey(city, state), title: `${city}, ${state}`, subtitle: 'City', kind: 'city', homes: 1, names: [city]});
+    if (area) add({key: areaKey(area, city, state), title: area, subtitle: `Neighbourhood · ${city}, ${state}`, kind: 'area', homes: 1, names: [area]});
   }
-  const score = (s: Suggestion) => {
-    if (!q) return 1;
-    const t = s.title.toLowerCase(), full = (s.title + ' ' + s.subtitle).toLowerCase();
-    if (t.startsWith(q)) return 3;
-    if (t.split(/[\s,]+/).some(w => w.startsWith(q))) return 2;
-    return full.includes(q) ? 1 : 0;
-  };
-  return [...cities.values(), ...areas.values()]
-    .map((s, i) => ({s, i, score: score(s)}))
-    .filter(x => x.score > 0)
-    .sort((a, b) => b.score - a.score || a.i - b.i)
+  if (q) {
+    for (const [name, state, aliases = []] of INDIA_CITIES) add({key: cityKey(name, state), title: `${name}, ${state}`, subtitle: 'City', kind: 'city', homes: 0, names: [name, ...aliases]});
+    for (const area of PUNE_AREAS) add({key: areaKey(area, DEFAULT_CITY, DEFAULT_STATE), title: area, subtitle: `Neighbourhood · ${DEFAULT_CITY}, ${DEFAULT_STATE}`, kind: 'area', homes: 0, names: [area]});
+  }
+  const list = [...entries.values()].map((e, i) => ({e, i, score: q ? nameScore(q, e.names) : 1})).filter(x => x.score > 0);
+  return list
+    .sort((a, b) => b.score - a.score || Number(!!b.e.homes) - Number(!!a.e.homes) || Number(b.e.kind === 'city') - Number(a.e.kind === 'city') || a.i - b.i)
     .slice(0, limit)
-    .map(x => x.s);
+    .map(({e}) => ({key: e.key, title: e.title, kind: e.kind, homes: e.homes || 0,
+      subtitle: e.homes ? `${e.subtitle} · ${e.homes} ${e.homes === 1 ? 'home' : 'homes'}` : e.subtitle}));
+}
+
+/** Matches a typed place against the cities Gomzo knows, tolerating small typos. */
+export function knownPlace(text: string): string | null {
+  const q = tidy(text).toLowerCase();
+  if (q.length < 3) return null;
+  let best: {key: string; score: number} | null = null;
+  for (const [name, state, aliases = []] of INDIA_CITIES) {
+    const score = [name, ...aliases].some(n => n.toLowerCase() === q) ? 5 : nameScore(q, [name, ...aliases]);
+    if (score >= 2 && (!best || score > best.score)) best = {key: cityKey(name, state), score};
+  }
+  return best?.key || null;
 }
 
 const slugPart = (v: string) => tidy(v).replace(/-/g, '~').replace(/ /g, '-');
@@ -97,7 +135,9 @@ export function keyFromSlug(slug: string, homes: Locatable[] = []) {
   if (!parts.length) return ALL_PLACES;
   if (parts.length === 2) {
     const home = homes.find(h => same(cityOf(h), parts[0]) && same(stateOf(h), parts[1]));
-    return cityKey(home ? cityOf(home) : titleCase(parts[0]), home ? stateOf(home) : titleCase(parts[1]));
+    if (home) return cityKey(cityOf(home), stateOf(home));
+    const known = INDIA_CITIES.find(([n, st]) => same(n, parts[0]) && same(st, parts[1]));
+    return cityKey(known ? known[0] : titleCase(parts[0]), known ? known[1] : titleCase(parts[1]));
   }
   if (parts.length === 3) {
     const home = homes.find(h => same(h.area, parts[0]) && same(cityOf(h), parts[1]));
@@ -108,7 +148,7 @@ export function keyFromSlug(slug: string, homes: Locatable[] = []) {
   if (city) return cityKey(cityOf(city), stateOf(city));
   const area = homes.find(h => same(h.area, text));
   if (area) return areaKey(titleCase(area.area), cityOf(area), stateOf(area));
-  return textKey(text);
+  return knownPlace(text) || textKey(text);
 }
 
 export type StayQuery = {checkIn?: string; checkOut?: string; guests?: number};
