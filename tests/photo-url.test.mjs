@@ -1,0 +1,20 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import ts from 'typescript';
+const encode=s=>'data:text/javascript;base64,'+Buffer.from(s).toString('base64');
+const compile=p=>ts.transpileModule(readFileSync(new URL(p,import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022,target:ts.ScriptTarget.ES2022}}).outputText;
+const props=encode(compile('../lib/properties.ts'));
+const P=await import(props);
+const L=await import(encode(compile('../lib/photo-url.ts').replace("'./properties'",JSON.stringify(props))));
+const webp='data:image/webp;base64,UklGRg==',png='data:image/png;base64,iVBORw==';
+test('guest payload links to /photos URLs instead of embedding image data',()=>{
+ const home={id:'home-1',name:'Palm',area:'Baner',type:'Studio',image:webp,photos:[webp,png],version:'2026-11-16T05:23:14.470Z'};
+ const lite=L.withPhotoLinks(home);
+ assert.deepEqual(lite.photos,['/photos/home-1/1.webp?v=20261116T052314470Z','/photos/home-1/2.png?v=20261116T052314470Z']);
+ assert.equal(lite.image,lite.photos[0]);
+ assert.ok(!JSON.stringify(lite).includes('base64'));
+ assert.equal(P.photo(lite.photos[0]),lite.photos[0]);
+ const seed={id:'p9',name:'Seed',area:'Wakad',type:'1 BHK',image:'photo-123',photos:['photo-123']};
+ assert.equal(L.withPhotoLinks(seed),seed);
+});
