@@ -70,3 +70,9 @@
 .availability-day .stay-who{display:block;width:100%;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .availability-day.join-left{overflow:visible}
 .availability-day.join-left>small{overflow:hidden}
+
+/* Days before today are history: greyed out (past bookings can still be opened). */
+.availability-dates .availability-day.past{background:#f1f1ef!important;border-color:#e4e4e0!important;color:#a3a6a2!important;filter:grayscale(1);opacity:.7;box-shadow:none}
+.availability-dates .availability-day.past small,.availability-dates .availability-day.past .stay-who{color:#9a9d99!important}
+.availability-dates .availability-day.past:disabled{cursor:default}
+.availability-dates .availability-day.past:hover{transform:none}
