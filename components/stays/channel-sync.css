@@ -62,3 +62,9 @@
 @media(max-width:760px){.availability-day.join-left::before{left:-5px;width:5px}}
 .source-badge.airbnb{overflow:hidden;background:#ff385c}.source-badge.airbnb img{width:100%;height:100%;object-fit:cover;display:block}
 .stay-who{font-size:12.5px}
+/* Keep long guest names inside the day box: trim with "…" (full text in the tooltip). */
+.availability-day{min-width:0;overflow:hidden}
+.availability-day>small{display:block;align-self:stretch;min-width:0;max-width:100%;overflow:hidden}
+.availability-day .stay-who{display:block;width:100%;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.availability-day.join-left{overflow:visible}
+.availability-day.join-left>small{overflow:hidden}
