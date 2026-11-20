@@ -70,7 +70,7 @@ export function ChannelBookingDialog({night,homeName,onClose}:{night:ChannelNigh
  const n=night,reservation=n?.kind!=='blocked',nights=n?.start_date&&n.end_date?Math.round((Date.parse(n.end_date)-Date.parse(n.start_date))/86400000):0;
  return <Dialog.Root open={!!n} onOpenChange={o=>{if(!o)onClose()}}><Dialog.Portal><Dialog.Overlay className="host-invite-overlay"/><Dialog.Content className="host-invite-dialog calendar-booking-dialog">
   <Dialog.Close className="host-invite-close" aria-label="Close booking details"><X size={20}/></Dialog.Close>
-  <span className={'source-badge source-badge-lg '+(n?.platform||'')} aria-hidden="true">{n?.platformName.charAt(0)}</span>
+  <span className={'source-badge source-badge-lg '+(n?.platform||'')} aria-hidden="true">{n?.platform==='airbnb'?<img src="/brand/airbnb-badge.png" alt="" width={48} height={48}/>:n?.platformName.charAt(0)}</span>
   <Dialog.Title>{reservation?'Booking details':'Blocked night'}</Dialog.Title>
   <Dialog.Description>{homeName} · {n?longDay(n.date):''}</Dialog.Description>
   {n&&<><div className="calendar-booking-summary"><span className="badge external">{reservation?'Booked on ':'Blocked on '}{n.platformName}</span>{n.reference&&<span>{n.reference}</span>}</div>

@@ -60,3 +60,5 @@
 .stay-who{display:block;font-weight:700;color:#2c3d33;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .availability-day.channel .stay-who{color:#a3112a}
 @media(max-width:760px){.availability-day.join-left::before{left:-5px;width:5px}}
+.source-badge.airbnb{overflow:hidden;background:#ff385c}.source-badge.airbnb img{width:100%;height:100%;object-fit:cover;display:block}
+.stay-who{font-size:12.5px}
