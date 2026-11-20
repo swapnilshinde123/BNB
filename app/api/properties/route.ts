@@ -41,7 +41,7 @@ async function saveProperty(data:ReturnType<typeof normalize>,extra:D1PreparedSt
 }
 
 export async function GET(req:Request){
- const all=await allProperties(true),user=await identity(),access=await hostAccess(),admin=new URL(req.url).searchParams.get('admin')==='1'&&access.role!=='guest';
+ const user=await identity(),access=await hostAccess(),admin=new URL(req.url).searchParams.get('admin')==='1'&&access.role!=='guest',all=await allProperties(true,false,admin);
  if(new URL(req.url).searchParams.get('admin')==='1'&&!admin)return json({error:'Host access required.'},403);
  const pastHomes=user?await database().prepare('SELECT DISTINCT property_id FROM bookings WHERE user_id=? OR lower(email)=lower(?)').bind(user.userId,user.email).all<{property_id:string}>():null;
  const bookedIds=new Set(pastHomes?.results.map(row=>row.property_id)||[]);
@@ -64,7 +64,7 @@ export async function PATCH(req:Request){
  let input:PropertyInput;try{input=await req.json() as PropertyInput}catch{return json({error:'Invalid property details.'},400)}
  if(typeof input.id!=='string')return json({error:'Choose a home to update.'},400);
  if(!await canManageProperty(input.id,access))return json({error:'Home not found.'},404);
- const previous=(await allProperties(true)).find(p=>p.id===input.id);if(!previous)return json({error:'Home not found.'},404);
+ const previous=(await allProperties(true,false,true)).find(p=>p.id===input.id);if(!previous)return json({error:'Home not found.'},404);
  const issue=validate(input);if(issue)return json({error:issue},400);
  const data=normalize(input,input.id,previous),extra=[...await submission(data,access),locationStatement(input.id,input)];try{return json({property:await saveProperty(data,extra)})}catch{return json({error:'Could not save this home. Try fewer or smaller photos.'},413)}
 }
