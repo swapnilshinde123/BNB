@@ -1,8 +1,8 @@
 import {homepageFaqs,homepageIntroduction,homepageReviewedDate} from './homepage-content';
-import {gomzoLinkedIn} from './brand-links';
+import {gomzoProfiles} from './brand-links';
 import type {Metadata} from 'next';
 export const origin='https://gomzo.co';
-export const homeTitle='Gomzo | Curated Homestays & Short Stays in Pune';
+export const homeTitle='GOMZO | Curated Homestays & Short Stays in Pune';
 export const homeDescription='Book curated homestays and short-stay apartments in Pune with Gomzo: Koregaon Park, Viman Nagar, Kalyani Nagar, Baner, Wakad and Pashan. Compare live homes and send a booking request directly to the host.';
 // Area and use-case landing pages, served at /stays/pune/<slug>.
 export const areaPages:Record<string,{title:string;area?:string;type?:string;category?:string}>={
@@ -13,7 +13,7 @@ export const publicPages=['/','/stays/pune','/list-your-property','/about','/con
 export function pageMetadata(title:string,description:string,path:string):Metadata{return {title,description,alternates:{canonical:origin+path},openGraph:{type:'website',siteName:'Gomzo',title,description,url:origin+path,locale:'en_IN',images:[{url:origin+'/brand/gomzo-social.png',width:1200,height:630,alt:'GOMZO — Stay a Little. Live a Lot.'}]},twitter:{card:'summary_large_image',title,description,images:[origin+'/brand/gomzo-social.png']}}}
 export const privateMetadata:Metadata={robots:{index:false,follow:false}};
 export function jsonLd(value:unknown){return JSON.stringify(value).replace(/</g,'\\u003c')}
-export function brandSchema(){return {'@context':'https://schema.org','@graph':[{'@type':'Organization','@id':origin+'/#organization',name:'Gomzo',alternateName:['GOMZO','Gomzo.co'],url:origin+'/',description:homepageIntroduction,logo:{'@type':'ImageObject',url:origin+'/brand/gomzo-wordmark.png'},email:'customer@gomzo.co',sameAs:[gomzoLinkedIn]},{'@type':'WebSite','@id':origin+'/#website',name:'Gomzo',alternateName:['GOMZO','Gomzo.co'],url:origin+'/',description:homeDescription,publisher:{'@id':origin+'/#organization'},inLanguage:'en-IN'},{'@type':'Service','@id':origin+'/#accommodation-service',name:'Multi-city accommodation discovery and booking requests',serviceType:'Homestays and short-stay accommodation',provider:{'@id':origin+'/#organization'},areaServed:{'@type':'Country',name:'India'},url:origin+'/'}]}}
+export function brandSchema(){return {'@context':'https://schema.org','@graph':[{'@type':'Organization','@id':origin+'/#organization',name:'GOMZO',alternateName:['Gomzo','Gomzo Stays','Gomzo.co'],url:origin,description:homepageIntroduction,logo:{'@type':'ImageObject',url:origin+'/brand/gomzo-wordmark.png'},email:'customer@gomzo.co',sameAs:gomzoProfiles},{'@type':'WebSite','@id':origin+'/#website',name:'GOMZO',alternateName:['Gomzo','Gomzo Stays','Gomzo.co'],url:origin,description:homeDescription,publisher:{'@id':origin+'/#organization'},inLanguage:'en-IN'},{'@type':'Service','@id':origin+'/#accommodation-service',name:'Multi-city accommodation discovery and booking requests',serviceType:'Homestays and short-stay accommodation',provider:{'@id':origin+'/#organization'},areaServed:{'@type':'Country',name:'India'},url:origin+'/'}]}}
 export function breadcrumbs(items:{name:string;path:string}[]){return {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:items.map((i,index)=>({'@type':'ListItem',position:index+1,name:i.name,item:origin+i.path}))}}
 // Crawlers sometimes lift fragments out of JS bundles (e.g. "/about:1bcz2a9", "/$", "/&")
 // and request them as pages. Send those to the real public page with a permanent redirect.
