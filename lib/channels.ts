@@ -15,7 +15,10 @@ export async function ensureChannels(){await ensureTenancy();const db=database()
  db.prepare('CREATE TABLE IF NOT EXISTS channel_events(id TEXT PRIMARY KEY,calendar_id TEXT NOT NULL,property_id TEXT NOT NULL,platform TEXT NOT NULL,uid TEXT NOT NULL,start_date TEXT NOT NULL,end_date TEXT NOT NULL,summary TEXT NOT NULL,kind TEXT NOT NULL,reference TEXT NOT NULL DEFAULT \'\',link TEXT NOT NULL DEFAULT \'\',first_seen INTEGER NOT NULL)'),
  db.prepare('CREATE INDEX IF NOT EXISTS channel_events_property ON channel_events(property_id,start_date)'),
  db.prepare('CREATE TABLE IF NOT EXISTS channel_exports(property_id TEXT PRIMARY KEY,token TEXT NOT NULL UNIQUE,created_at INTEGER NOT NULL)'),
-])}
+]);
+ // Added later: last 4 digits of the guest phone that Airbnb puts in its calendar feed.
+ if(!contactColumn){try{await db.prepare("ALTER TABLE channel_events ADD COLUMN contact TEXT NOT NULL DEFAULT ''").run()}catch{}contactColumn=true}}
+let contactColumn=false;
 export function validImportUrl(v:unknown):v is string{if(typeof v!=='string'||v.length>2000)return false;try{const u=new URL(v.trim().replace(/^webcal:/i,'https:'));return u.protocol==='https:'&&!!u.hostname.includes('.')&&!/^(localhost|127\.|10\.|192\.168\.|169\.254\.)/.test(u.hostname)}catch{return false}}
 export const normaliseUrl=(v:string)=>v.trim().replace(/^webcal:/i,'https:');
 /** Minimal RFC 5545 reader: unfolds lines and returns all-day or timed VEVENTs as date ranges. */
@@ -29,7 +32,7 @@ export function parseIcs(text:string):ChannelEvent[]{
 }
 export function nextDay(d:string){return new Date(Date.parse(d+'T00:00:00Z')+86400000).toISOString().slice(0,10)}
 export function nightsOf(start:string,end:string,from:string,to:string){const out:string[]=[];for(let d=start<from?from:start;d<end&&d<to;d=nextDay(d))out.push(d);return out}
-export function classify(e:ChannelEvent){const s=e.summary.toLowerCase();const blocked=/not available|unavailable|blocked|closed/.test(s)&&!/reserved|booked|reservation/.test(s);const link=(e.description.match(/https:\/\/\S+/)||[''])[0];const reference=(link.match(/details\/([A-Z0-9]{6,})/i)||e.description.match(/\b(HM[A-Z0-9]{6,})\b/)||[,''])[1]||'';return {kind:blocked?'blocked':'reservation',reference,link}}
+export function classify(e:ChannelEvent){const s=e.summary.toLowerCase();const blocked=/not available|unavailable|blocked|closed/.test(s)&&!/reserved|booked|reservation/.test(s);const link=(e.description.match(/https:\/\/\S+/)||[''])[0];const reference=(link.match(/details\/([A-Z0-9]{6,})/i)||e.description.match(/\b(HM[A-Z0-9]{6,})\b/)||[,''])[1]||'';const contact=(e.description.match(/Last 4 Digits\)?\s*:?\s*(\d{4})/i)||[,''])[1]||'';return {kind:blocked?'blocked':'reservation',reference,link,contact}}
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 export async function syncCalendar(c:ChannelCalendar,fetcher:typeof fetch=fetch){
  const db=database(),now=Date.now();
@@ -42,7 +45,7 @@ export async function syncCalendar(c:ChannelCalendar,fetcher:typeof fetch=fetch)
   const existing=new Map((await db.prepare('SELECT id,first_seen FROM channel_events WHERE calendar_id=?').bind(c.id).all<{id:string;first_seen:number}>()).results.map(x=>[x.id,x.first_seen]));
   const cmds:D1PreparedStatement[]=[db.prepare('DELETE FROM channel_events WHERE calendar_id=?').bind(c.id),db.prepare("DELETE FROM blocked_dates WHERE id LIKE ? AND date>=?").bind('CH-'+c.id+'-%',from)];
   const dates=new Set<string>();
-  for(const e of events){const {kind,reference,link}=classify(e);const id=c.id+':'+e.uid;cmds.push(db.prepare('INSERT OR REPLACE INTO channel_events VALUES(?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,c.id,c.property_id,c.platform,e.uid.slice(0,300),e.start,e.end,e.summary.slice(0,200),kind,reference,link.slice(0,500),existing.get(id)||now));for(const d of nightsOf(e.start,e.end,from,to))dates.add(d)}
+  for(const e of events){const {kind,reference,link,contact}=classify(e);const id=c.id+':'+e.uid;cmds.push(db.prepare('INSERT OR REPLACE INTO channel_events(id,calendar_id,property_id,platform,uid,start_date,end_date,summary,kind,reference,link,first_seen,contact) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)').bind(id,c.id,c.property_id,c.platform,e.uid.slice(0,300),e.start,e.end,e.summary.slice(0,200),kind,reference,link.slice(0,500),existing.get(id)||now,contact));for(const d of nightsOf(e.start,e.end,from,to))dates.add(d)}
   // Only open nights are blocked; a night Gomzo already holds is reported as a conflict instead.
   for(const d of dates)cmds.push(db.prepare('INSERT INTO blocked_dates(id,property_id,date,created_at) SELECT ?,?,?,? WHERE NOT EXISTS(SELECT 1 FROM nights WHERE property_id=? AND date=?) AND NOT EXISTS(SELECT 1 FROM blocked_dates WHERE property_id=? AND date=?)').bind(`CH-${c.id}-${d}`,c.property_id,d,new Date().toISOString(),c.property_id,d,c.property_id,d));
   for(let i=0;i<cmds.length;i+=90)await db.batch(cmds.slice(i,i+90));

@@ -49,3 +49,4 @@
 .source-badge.vrbo{background:#1d3c8f}
 .source-badge.google{background:#1a73e8}
 @media(max-width:760px){.source-badge{width:18px;height:18px;font-size:10px}.source-badge.gomzo img{width:13px;height:13px}}
+.source-badge-lg{width:48px;height:48px;font-size:20px;margin-bottom:6px}.channel-contact{display:inline-flex;gap:8px;align-items:center;font-size:14px;color:#3d453f}.channel-open-link{display:inline-flex;gap:8px;align-items:center;justify-content:center;text-decoration:none;margin-top:4px}

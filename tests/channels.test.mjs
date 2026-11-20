@@ -18,7 +18,7 @@ function booking(id,from,to){const row={id,user_id:'u',name:'G',email:'g@x.com',
 test('parses Airbnb iCal (folded lines, reservations vs blocks)',()=>{
  const ev=m.parseIcs('BEGIN:VCALENDAR\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:20270105\r\nDTEND;VALUE=DATE:20270108\r\nSUMMARY:Reserved\r\nDESCRIPTION:Reservation URL: https://www.airbnb.com/hosting/reservations/details/HMABC12345\\nPhone Number (Last 4 Digits): 12\r\n 34\r\nUID:1418fb94e984-abc@airbnb.com\r\nEND:VEVENT\r\nBEGIN:VEVENT\r\nDTSTART;VALUE=DATE:20270110\r\nDTEND;VALUE=DATE:20270111\r\nSUMMARY:Airbnb (Not available)\r\nUID:x2\r\nEND:VEVENT\r\nEND:VCALENDAR');
  assert.equal(ev.length,2);assert.deepEqual([ev[0].start,ev[0].end],['2027-01-05','2027-01-08']);
- assert.deepEqual(m.classify(ev[0]),{kind:'reservation',reference:'HMABC12345',link:'https://www.airbnb.com/hosting/reservations/details/HMABC12345'});
+ assert.deepEqual(m.classify(ev[0]),{kind:'reservation',reference:'HMABC12345',link:'https://www.airbnb.com/hosting/reservations/details/HMABC12345',contact:'1234'});
  assert.equal(m.classify(ev[1]).kind,'blocked');assert.ok(ev[0].description.includes('1234'));
 });
 test('sync blocks Airbnb nights, never double-blocks Gomzo nights, reports the clash, and resyncs cleanly',async()=>{

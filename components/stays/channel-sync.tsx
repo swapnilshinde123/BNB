@@ -1,6 +1,7 @@
 'use client';
 import {useCallback,useEffect,useState} from 'react';
-import {Copy,Check,RefreshCcw,Trash2,AlertTriangle,CheckCircle2,ExternalLink,Link2} from 'lucide-react';
+import {Copy,Check,RefreshCcw,Trash2,AlertTriangle,CheckCircle2,ExternalLink,Link2,X,CalendarDays,Phone,Moon} from 'lucide-react';
+import {Dialog} from 'radix-ui';
 import {FancySelect} from './controls';
 import './channel-sync.css';
 
@@ -60,4 +61,30 @@ export function ChannelSync({homes}:{homes:Home[]}){
    </div>
   </div>
  </section>
+}
+
+export type ChannelNight={date:string;platform:string;platformName:string;kind:string|null;reference:string|null;link:string|null;start_date:string|null;end_date:string|null;summary:string|null;contact:string|null;first_seen:number|null};
+const longDay=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+/** Calendar → click an Airbnb (or other platform) night: everything the platform shares, in the same layout as a Gomzo booking. */
+export function ChannelBookingDialog({night,homeName,onClose}:{night:ChannelNight|null;homeName:string;onClose:()=>void}){
+ const n=night,reservation=n?.kind!=='blocked',nights=n?.start_date&&n.end_date?Math.round((Date.parse(n.end_date)-Date.parse(n.start_date))/86400000):0;
+ return <Dialog.Root open={!!n} onOpenChange={o=>{if(!o)onClose()}}><Dialog.Portal><Dialog.Overlay className="host-invite-overlay"/><Dialog.Content className="host-invite-dialog calendar-booking-dialog">
+  <Dialog.Close className="host-invite-close" aria-label="Close booking details"><X size={20}/></Dialog.Close>
+  <span className={'source-badge source-badge-lg '+(n?.platform||'')} aria-hidden="true">{n?.platformName.charAt(0)}</span>
+  <Dialog.Title>{reservation?'Booking details':'Blocked night'}</Dialog.Title>
+  <Dialog.Description>{homeName} · {n?longDay(n.date):''}</Dialog.Description>
+  {n&&<><div className="calendar-booking-summary"><span className="badge external">{reservation?'Booked on ':'Blocked on '}{n.platformName}</span>{n.reference&&<span>{n.reference}</span>}</div>
+   <div className="calendar-booking-guest"><h3>{reservation?n.platformName+' guest':n.summary||'Not available'}</h3>{n.contact&&<span className="channel-contact"><Phone size={16}/>Phone ends in {n.contact}</span>}</div>
+   <dl className="calendar-booking-facts">
+    {n.start_date&&<div><dt>Check in</dt><dd>{longDay(n.start_date)}</dd></div>}
+    {n.end_date&&<div><dt>Check out</dt><dd>{longDay(n.end_date)}</dd></div>}
+    {nights>0&&<div><dt><Moon size={15}/> Nights</dt><dd>{nights} {nights===1?'night':'nights'}</dd></div>}
+    <div><dt><CalendarDays size={15}/> Source</dt><dd>{n.platformName} calendar sync</dd></div>
+    {n.first_seen&&<div><dt>First seen on Gomzo</dt><dd>{new Date(n.first_seen).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</dd></div>}
+   </dl>
+   <p className="calendar-booking-note">{reservation?`${n.platformName} shares only the dates${n.reference?', reservation code':''}${n.contact?' and the last 4 phone digits':''} through calendar sync. Guest name, guest count and payout are on ${n.platformName}.`:`This night is closed on ${n.platformName}, so it is closed on Gomzo too.`} To change it, update {n.platformName}; Gomzo refreshes within 15 minutes.</p>
+   {n.link&&<a className="outline channel-open-link" href={n.link} target="_blank" rel="noopener noreferrer"><ExternalLink size={16}/>Open reservation on {n.platformName}</a>}
+  </>}
+  <Dialog.Close asChild><button type="button" className="primary calendar-booking-done">Done</button></Dialog.Close>
+ </Dialog.Content></Dialog.Portal></Dialog.Root>
 }
