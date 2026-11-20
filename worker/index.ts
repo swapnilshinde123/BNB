@@ -4,7 +4,7 @@ import {drainEmails} from '../lib/email/service';
 import handler from "vinext/server/fetch-handler";
 import { runWithConnectorBinding } from "../lib/connector-context";
 import type { ConnectorBinding } from "../lib/connector-contract.mjs";
-import {isPrivateSurface,publicPages,junkPathRedirect} from '../lib/seo';
+import {isPrivateSurface,publicPages,junkPathRedirect,areaPages} from '../lib/seo';
 
 const worker = {
   async scheduled() {
@@ -14,6 +14,8 @@ const worker = {
   },
   fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext<{ CONNECTORS?: ConnectorBinding }>) {
     const url=new URL(request.url);
+    const legacyArea=url.pathname.match(/^\/stays\/([a-z0-9-]+)\/?$/)?.[1];
+    if(['GET','HEAD'].includes(request.method)&&legacyArea&&legacyArea!=='pune'&&areaPages[legacyArea])return Response.redirect('https://gomzo.co/stays/pune/'+legacyArea+url.search,301);
     const junkTarget=['GET','HEAD'].includes(request.method)&&['gomzo.co','www.gomzo.co'].includes(url.hostname)?junkPathRedirect(url.pathname):null;
     if(junkTarget)return Response.redirect('https://gomzo.co'+junkTarget,301);
     if(['GET','HEAD'].includes(request.method)&&url.hostname==='www.gomzo.co'&&(publicPages.includes(url.pathname)||url.pathname.startsWith('/stays/'))&&!(request.headers.get('cookie')||'').includes('aangan_google_session='))return Response.redirect('https://gomzo.co'+url.pathname+url.search,308);

@@ -29,3 +29,6 @@
  .room-reserve-bar small{display:block;font-size:12px;color:#6f7d68;margin-top:2px}
  .room-reserve-bar .primary{white-space:nowrap;padding:12px 18px}
 }
+.footer-areas{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:22px 0;border-top:1px solid var(--line,#e3e8dd);font-size:14px}
+.footer-areas .footer-label{margin-right:6px}
+.footer-areas a{color:inherit;opacity:.8;text-decoration:none}.footer-areas a:hover{opacity:1;text-decoration:underline}

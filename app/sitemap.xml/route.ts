@@ -15,7 +15,7 @@ export async function GET(){try{
   {path:'/',lastmod:latest(homepageReviewedDate,PAGES_REVIEWED,newest(homes))},
   {path:'/stays/pune',lastmod:latest(PAGES_REVIEWED,newest(homes))},
   ...publicPages.filter(p=>p!=='/'&&p!=='/stays/pune').map(path=>({path,lastmod:PAGES_REVIEWED})),
-  ...Object.keys(areaPages).map(slug=>({slug,list:matchingHomes(homes,slug)})).filter(x=>x.list.length).map(({slug,list})=>({path:'/stays/'+slug,lastmod:latest(PAGES_REVIEWED,newest(list))})),
+  ...Object.keys(areaPages).map(slug=>({slug,list:matchingHomes(homes,slug)})).filter(x=>x.list.length).map(({slug,list})=>({path:'/stays/pune/'+slug,lastmod:latest(PAGES_REVIEWED,newest(list))})),
   ...homes.map(p=>({path:'/stays/pune/'+propertySlug(p),lastmod:homeDate(p),images:photoList(p).map((_,i)=>absolutePhotoUrl(p,i,1200,origin))})),
  ];
  const seen=new Set<string>();

@@ -15,7 +15,7 @@ test('admin, private account surfaces, legacy hosts and internal filter URLs are
  assert.equal(seo.isPrivateSurface('gomzo.co','/about',''),false);assert.equal(seo.isPrivateSurface('gomzo.co','/','utm_source=test'),false);
 });
 const inventorySource=compile('../lib/seo-inventory.ts').replace(/^import .*;\n/gm,'');
-const inventory=await import(encode('const allProperties=async()=>[];const config=()=>({});'+inventorySource));
+const inventory=await import(encode('const {areaPages}=await import('+JSON.stringify(encode(seoSource))+');const allProperties=async()=>[];const config=()=>({});'+inventorySource));
 test('SEO inventory requires explicit verified IDs, managed real records, publication and company approval',()=>{
  const homes=[{id:'seed',name:'Preview'}, {id:'real',name:'Real Home',managed:true,active:true}, {id:'hidden',managed:true,active:false}, {id:'pending',managed:true,companyId:'c',reviewStatus:'pending',active:true}, {id:'partner',managed:true,companyId:'c',reviewStatus:'approved',active:true}];
  assert.deepEqual(inventory.verifiedHomes(homes,[]),[]);assert.deepEqual(inventory.verifiedHomes(homes,homes.map(h=>h.id)).map(h=>h.id),['real','partner']);assert.equal(inventory.propertySlug(homes[1]),'real-home-real');assert.deepEqual(inventory.liveHomes(homes).map(h=>h.id),['real','partner']);assert.deepEqual(inventory.matchingHomes(homes,'couple-friendly'),[]);assert.deepEqual(inventory.matchingHomes(homes,'monthly'),[]);
@@ -30,5 +30,8 @@ test('worker indexing headers preserve login callbacks and signed-in www navigat
  const callback=await worker.fetch(new Request('https://www.gomzo.co/api/auth/google',{method:'POST'}),{},ctx);assert.equal(callback.status,200);assert.equal(callback.headers.get('x-robots-tag'),'noindex, nofollow');
  for(const [junk,target] of [['/about:1bcz2a9','/about'],['/$','/'],['/&','/'],['/privacy:fyucee','/privacy'],['/stays/pune:pmn2n','/stays/pune'],['/:7nyoau','/']]){const r=await worker.fetch(new Request('https://gomzo.co'+junk),{},ctx);assert.equal(r.status,301,junk);assert.equal(r.headers.get('location'),'https://gomzo.co'+target)}
  assert.equal(seo.junkPathRedirect('/about'),null);assert.equal(seo.junkPathRedirect('/api/x:1'),null);assert.equal(seo.junkPathRedirect('/about%3A1bcz2a9'),'/about');
+ const legacy=await worker.fetch(new Request('https://gomzo.co/stays/koregaon-park'),{},ctx);assert.equal(legacy.status,301);assert.equal(legacy.headers.get('location'),'https://gomzo.co/stays/pune/koregaon-park');
+ const hub=await worker.fetch(new Request('https://gomzo.co/stays/pune'),{},ctx);assert.equal(hub.status,200);
+ assert.equal(seo.junkPathRedirect('/stays/pune/baner:xyz'),'/stays/pune/baner');assert.equal(seo.areaPath('baner'),'/stays/pune/baner');
  const missing=await worker.fetch(new Request('https://gomzo.co/missing'),{},ctx);assert.equal(missing.status,404);assert.equal(missing.headers.get('x-robots-tag'),'noindex, nofollow');
 });
