@@ -1,0 +1,24 @@
+.offline-booking-dialog{max-width:560px;width:calc(100vw - 32px);max-height:calc(100vh - 40px);overflow:auto}
+.offline-choices{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.offline-choice{display:flex;gap:14px;align-items:center;text-align:left;border:1px solid var(--line,#e6e3da);background:#fff;border-radius:14px;padding:14px 16px;cursor:pointer;font:inherit;color:inherit}
+.offline-choice:hover{border-color:#2c3d33;background:#f7f8f4}
+.offline-choice b{display:block;font-size:15px}.offline-choice small{display:block;font-size:12.5px;color:var(--muted,#6b706b);margin-top:2px}
+.offline-form{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+.offline-form fieldset{border:0;padding:0;margin:0}.offline-form legend{font-size:13px;font-weight:600;margin-bottom:8px}
+.offline-form label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;min-width:0}
+.offline-form label small{font-weight:400;color:var(--muted,#6b706b)}
+.offline-form input{border:1px solid var(--line,#e6e3da);border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;background:#fff;min-width:0;width:100%}
+.offline-form input:disabled{background:#f3f2ec;color:#555}
+.offline-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.offline-sources{display:flex;flex-wrap:wrap;gap:8px}
+.offline-source{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line,#e2dfd6);background:#fff;border-radius:999px;padding:8px 12px;font:inherit;font-size:13px;cursor:pointer;color:inherit}
+.offline-source.active{background:#2c3d33;color:#fff;border-color:#2c3d33}
+.offline-status{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.offline-status button{border:1px solid var(--line,#e2dfd6);background:#fff;border-radius:12px;padding:10px;font:inherit;font-size:13.5px;cursor:pointer}
+.offline-status button.active{background:#e8efe4;border-color:#2c3d33;font-weight:700}
+.offline-summary{margin:0;font-size:13px;color:var(--muted,#6b706b)}
+.offline-actions{display:flex;justify-content:space-between;align-items:center}
+@media(max-width:520px){.offline-row{grid-template-columns:1fr}}
+/* calendar source badges for host-recorded bookings */
+.source-badge.whatsapp{background:#25a244}.source-badge.instagram{background:#c1358a}.source-badge.phone{background:#4b5563}.source-badge.walk_in{background:#8a6d3b}.source-badge.facebook{background:#1b5fd6}.source-badge.referral{background:#7c3aed}.source-badge.other{background:#6b7280}
+.platform-pill.whatsapp{background:#e3f6e8;color:#1c7a35}.platform-pill.instagram{background:#fbe6f2;color:#9b2470}.platform-pill.phone,.platform-pill.other{background:#ecebe5;color:#3d453f}.platform-pill.walk_in{background:#f3ead9;color:#6e5426}.platform-pill.facebook{background:#e4ecfb;color:#1b4fb0}.platform-pill.referral{background:#efe7fd;color:#5b2bbf}
