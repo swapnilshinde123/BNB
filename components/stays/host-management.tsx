@@ -4,10 +4,10 @@ import {HostTable} from '@/components/stays/host-table';
 import {useEffect,useState} from 'react';
 import {Dialog} from 'radix-ui';
 import {FancySelect} from './controls';
-import {LayoutDashboard,CalendarDays,ChartNoAxesCombined,Home,ClipboardCheck,Mail,Users,IndianRupee,ArrowUpRight,Plus,X,Menu} from 'lucide-react';
+import {LayoutDashboard,CalendarDays,ChartNoAxesCombined,Home,ClipboardCheck,Mail,Users,IndianRupee,ArrowUpRight,Plus,X,Menu,WalletCards} from 'lucide-react';
 import {Property,photo,money} from '@/lib/properties';
 import './host-management.css';
-export const hostMenus=[['dashboard','Dashboard',LayoutDashboard],['availability','Availability',CalendarDays],['pricing','Pricing',IndianRupee],['reports','Booking value',ChartNoAxesCombined],['properties','Your properties',Home],['requests','Property requests',ClipboardCheck],['bookings','Bookings',Users],['invitations','Invitations',Mail],['community','Hosts & Users',Users]] as const;
+export const hostMenus=[['dashboard','Dashboard',LayoutDashboard],['availability','Availability',CalendarDays],['pricing','Pricing',IndianRupee],['reports','Booking value',ChartNoAxesCombined],['properties','Your properties',Home],['requests','Property requests',ClipboardCheck],['bookings','Bookings',Users],['payments','Payments',WalletCards],['invitations','Invitations',Mail],['community','Hosts & Users',Users]] as const;
 export function HostNavigation({section,onChange,superAdmin}:{section:string;onChange:(s:string)=>void;superAdmin:boolean;company?:string}){return <aside className="host-sidebar"><nav aria-label="Host navigation">{hostMenus.filter(([id])=>superAdmin||!['requests','invitations','community'].includes(id)).map(([id,label,Icon])=><button key={id} aria-current={section===id?'page':undefined} onClick={()=>onChange(id)}><Icon size={20}/>{label}</button>)}</nav><a href="https://gomzo.co/" target="_blank" rel="noreferrer">View guest website <ArrowUpRight size={16}/></a></aside>}
 export function HostMobileNavigation({section,onChange,superAdmin,company}:{section:string;onChange:(s:string)=>void;superAdmin:boolean;company?:string}){
  const [open,setOpen]=useState(false);

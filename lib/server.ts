@@ -30,6 +30,8 @@ export async function transition(id:string,status:string,resolution?:{reason?:st
  const {properties}=await import('@/lib/properties');
  const booking={...row,status,property_name:home?.name||properties.find(p=>p.id===row.property_id)?.name||row.property_id};
  const emailKind=status==='payment_pending'?'payment-pending':status as MailKind;
+ // Never ask a guest to pay before the home's host has saved where the money should go.
+ if(status==='payment_pending'){const {paymentSettingsForProperty}=await import('./payments');const s=await paymentSettingsForProperty(row.property_id);if(!s)return false;(booking as BookingMail).upi=s.upiId}
  const result=await db.batch([
   db.prepare('UPDATE bookings SET status=?,updated_at=? WHERE id=? AND status=?').bind(status,new Date().toISOString(),id,previous),
   mailJob(db,booking,emailKind,row.email,true),

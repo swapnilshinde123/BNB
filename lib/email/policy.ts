@@ -8,4 +8,4 @@ export function deliveryPolicy(c:Record<string,string>){
  const adminEmail=(c.ADMIN_EMAIL||'').trim().toLowerCase();
  return {adminOnly,adminEmail,gmailReady,testSender,configured:!!(c.RESEND_API_KEY&&c.EMAIL_FROM&&adminEmail)};
 }
-export function canDeliver(c:Record<string,string>,kind:string,recipient:string){const p=deliveryPolicy(c);return p.configured&&(kind==='admin-request'?(!p.testSender||recipient.toLowerCase()===p.adminEmail):!p.adminOnly)}
+export function canDeliver(c:Record<string,string>,kind:string,recipient:string){const p=deliveryPolicy(c);return p.configured&&(['admin-request','payment-submitted'].includes(kind)?(!p.testSender||recipient.toLowerCase()===p.adminEmail):!p.adminOnly)}

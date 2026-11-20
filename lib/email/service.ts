@@ -12,7 +12,7 @@ export function mailJob(db:D1Database,b:BookingMail,kind:MailKind,recipient:stri
 export async function drainEmails(){
  if(!emailReady()||!env.DB)return;
  const db=env.DB,c=settings(),now=Date.now(),policy=deliveryPolicy(c);
- const restriction=policy.adminOnly?" AND kind='admin-request' AND lower(recipient)=?":'';
+ const restriction=policy.adminOnly?" AND kind IN ('admin-request','payment-submitted') AND lower(recipient)=?":'';
  const parameters: (string|number)[]=[now,now,now-7*86400000];if(policy.adminOnly)parameters.push(policy.adminEmail);
  const jobs=await db.prepare("SELECT id FROM booking_emails WHERE sent_at IS NULL AND provider_id IS NULL AND attempts<5 AND next_attempt_at<=? AND lease_until<? AND created_at>?"+restriction+" ORDER BY CASE WHEN kind IN ('payment-pending','confirmed','rejected','cancelled') THEN 0 ELSE 1 END,created_at,id LIMIT 2").bind(...parameters).all<{id:string}>();
  await Promise.all(jobs.results.map(async item=>{
@@ -24,7 +24,7 @@ export async function drainEmails(){
    if(job.kind==='guest-request'){const current=await db.prepare('SELECT status FROM bookings WHERE id=?').bind(job.id.split(':')[0]).first<{status:string}>();if(current&&current.status!=='pending'){await db.prepare("UPDATE booking_emails SET provider_id='suppressed:request-reviewed',last_error=NULL,lease_until=0 WHERE id=? AND lease=?").bind(job.id,lease).run();return}}
    const message=bookingEmail(JSON.parse(job.payload),job.kind);
    let providerId:string;
-   if(policy.gmailReady&&job.kind!=='admin-request'){providerId=await sendGmail(c,job.id,job.recipient,message)}else{
+   if(policy.gmailReady&&!['admin-request','payment-submitted'].includes(job.kind)){providerId=await sendGmail(c,job.id,job.recipient,message)}else{
    const r=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${c.RESEND_API_KEY}`,'Content-Type':'application/json','Idempotency-Key':job.id},body:JSON.stringify({from:c.EMAIL_FROM.replace(/^Aangan(?: Stays?)?(?=\s*<)/i,'Gomzo'),to:[job.recipient],reply_to:c.CONTACT_EMAIL||c.ADMIN_EMAIL,...message}),signal:AbortSignal.timeout(10000)});
    if(!r.ok)throw new Error(`Email provider returned ${r.status}`);
    const result=await r.json() as {id?:string};if(!result.id)throw new Error('Email provider did not acknowledge message');

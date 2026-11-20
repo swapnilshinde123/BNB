@@ -15,7 +15,7 @@ const built=new Map();
 function compile(file){file=resolve(root,file);if(built.has(file))return built.get(file);const target=resolve(out,file.slice(root.length+1).replaceAll('/','_')+'.mjs');built.set(file,target);let code=ts.transpileModule(readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.ES2022,target:ts.ScriptTarget.ES2022}}).outputText;code=code.replace(/from\s+(['"])([^'"]+)\1/g,(all,q,spec)=>{let dependency;if(spec==='@/lib/server'||spec==='./server'||spec==='../server')dependency=mock;else if(spec==='@/lib/email/service')dependency=mockMail;else if(spec==='@/lib/guest-id'||spec==='./guest-id')dependency=mockIds;else if(spec.startsWith('@/'))dependency=compile(spec.slice(2)+'.ts');else if(spec.startsWith('.'))dependency=compile(resolve(dirname(file),spec+'.ts'));else return all;return 'from '+JSON.stringify(pathToFileURL(dependency).href)});writeFileSync(target,code);return target}
 const load=async file=>import(pathToFileURL(compile(file)).href);
 const team=await load('app/api/team/route.ts'),accept=await load('app/api/team/accept/route.ts'),props=await load('app/api/properties/route.ts'),review=await load('app/api/properties/review/route.ts'),tenancy=await load('lib/tenancy.ts'),bookings=await load('app/api/bookings/route.ts'),availability=await load('app/api/availability/route.ts'),pricing=await load('app/api/pricing/route.ts'),emailAction=await load('app/api/bookings/email-action/route.ts');
-const directory=await load('app/api/host-directory/route.ts');
+const directory=await load('app/api/host-directory/route.ts'),paySettings=await load('app/api/payment-settings/route.ts'),payment=await load('app/api/bookings/payment/route.ts');
 const req=(path,body,method='POST',origin='https://host.test')=>new Request('https://host.test'+path,{method,headers:{origin,'Content-Type':'application/json'},...(method==='GET'?{}:{body:JSON.stringify(body)})});
 const invite=async(email,companyName)=>{state.email='owner@example.com';const r=await team.POST(req('/api/team',{email,companyName}));assert.equal(r.status,201);const row=sql.prepare('SELECT * FROM host_invitations WHERE email=? AND status=?').get(email,'pending');const mail=JSON.parse(sql.prepare('SELECT payload FROM platform_emails WHERE id=?').get('invite-'+row.id).payload);const token=new URL(mail.text.match(/https:\/\/\S+/)[0]).searchParams.get('token');return {row,token}};
 const draft={name:'Company A home',area:'Baner',city:'Pune',state:'Maharashtra',address:'A private address in Baner',type:'2 BHK',guests:4,beds:2,baths:2,price:3500,tag:'Peaceful home',category:'Design-led',description:'A comfortable home with plenty of natural light.',lat:18.55,lng:73.78,amenities:['Wi-Fi'],photos:['https://example.com/home.jpg'],active:true};
@@ -39,4 +39,32 @@ test('company onboarding, approval and tenant isolation end to end',async()=>{
  const d=await invite('d@example.com','Company D');sql.prepare('UPDATE host_invitations SET expires_at=0 WHERE id=?').run(d.row.id);state.email='d@example.com';assert.equal((await accept.POST(req('/api/team/accept',{token:d.token}))).status,409);
  state.email='owner@example.com';assert.equal((await team.POST(req('/api/team',{email:'x@example.com',companyName:'X'},'POST','https://evil.test'))).status,403);
  const data=JSON.stringify(await (await team.GET()).json());assert.ok(!data.includes(a.token));assert.ok(!data.includes('token_hash'));
+});
+
+test('host UPI settings, guest UTR submission and host review stay isolated per company',async()=>{
+ const e=await invite('e@example.com','Company E');state.email='e@example.com';assert.equal((await accept.POST(req('/api/team/accept',{token:e.token}))).status,200);
+ const id=(await (await props.POST(req('/api/properties',{...draft,name:'Company E home'}))).json()).property.id;
+ state.email='owner@example.com';assert.equal((await review.POST(req('/api/properties/review',{id,version:1,status:'approved',reason:''}))).status,200);
+ sql.prepare("INSERT INTO bookings VALUES('ANG-PAY00001','guest2','Guest Two','guest2@example.com','9999999999',?,'2028-01-01','2028-01-03',2,7000,'pending','website','now','now')").run(id);
+ state.email='e@example.com';
+ assert.deepEqual(await (await paySettings.GET()).json(),{upiId:'',payeeName:'',configured:false});
+ assert.equal((await bookings.PATCH(req('/api/bookings',{id:'ANG-PAY00001',status:'payment_pending'},'PATCH'))).status,409);
+ assert.equal((await paySettings.PUT(req('/api/payment-settings',{upiId:'not a upi',payeeName:'Company E'},'PUT'))).status,400);
+ assert.equal((await paySettings.PUT(req('/api/payment-settings',{upiId:'companye@okaxis',payeeName:'Company E'},'PUT','https://evil.test'))).status,403);
+ assert.equal((await paySettings.PUT(req('/api/payment-settings',{upiId:'companye@okaxis',payeeName:'Company  E'},'PUT'))).status,200);
+ assert.deepEqual(await (await paySettings.GET()).json(),{upiId:'companye@okaxis',payeeName:'Company E',configured:true});
+ state.email='owner@example.com';assert.equal((await (await paySettings.GET()).json()).upiId,'swapnil69011@ybl');
+ sql.prepare("UPDATE bookings SET status='payment_pending' WHERE id='ANG-PAY00001'").run();
+ state.email='guest2@example.com';let mine=(await (await bookings.GET(req('/api/bookings',null,'GET'))).json()).find(b=>b.id==='ANG-PAY00001');assert.equal(mine.payment_upi,'companye@okaxis');assert.equal(mine.payment_payee,'Company E');assert.equal(mine.payment_utr,null);
+ state.email='intruder@example.com';assert.equal((await payment.POST(req('/api/bookings/payment',{id:'ANG-PAY00001',utr:'412345678901'}))).status,404);
+ state.email='guest2@example.com';assert.equal((await payment.POST(req('/api/bookings/payment',{id:'ANG-PAY00001',utr:'12'}))).status,400);
+ assert.equal((await payment.POST(req('/api/bookings/payment',{id:'ANG-PAY00001',utr:'4123 4567 8901'}))).status,200);
+ mine=(await (await bookings.GET(req('/api/bookings',null,'GET'))).json()).find(b=>b.id==='ANG-PAY00001');assert.equal(mine.payment_utr,'412345678901');
+ const hostMail=sql.prepare("SELECT * FROM booking_emails WHERE booking_id='ANG-PAY00001' AND kind='payment-submitted'").get();assert.equal(hostMail.recipient,'owner@example.com');assert.equal(JSON.parse(hostMail.payload).utr,'412345678901');
+ assert.ok(sql.prepare("SELECT count(*) AS n FROM platform_emails WHERE recipient='e@example.com' AND subject='Guest payment submitted'").get().n>0);
+ state.email='b@example.com';assert.equal((await payment.DELETE(req('/api/bookings/payment',{id:'ANG-PAY00001'},'DELETE'))).status,404);
+ state.email='e@example.com';const row=(await (await bookings.GET(req('/api/bookings?admin=1',null,'GET'))).json()).find(b=>b.id==='ANG-PAY00001');assert.equal(row.payment_utr,'412345678901');
+ assert.equal((await payment.DELETE(req('/api/bookings/payment',{id:'ANG-PAY00001'},'DELETE'))).status,200);
+ state.email='guest2@example.com';mine=(await (await bookings.GET(req('/api/bookings',null,'GET'))).json()).find(b=>b.id==='ANG-PAY00001');assert.equal(mine.payment_utr,null);
+ sql.prepare("UPDATE bookings SET status='confirmed' WHERE id='ANG-PAY00001'").run();assert.equal((await payment.POST(req('/api/bookings/payment',{id:'ANG-PAY00001',utr:'412345678901'}))).status,409);
 });

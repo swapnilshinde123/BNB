@@ -1,3 +1,4 @@
+import {paymentSettingsForProperty} from "@/lib/payments";
 import {canManageBooking} from "@/lib/tenancy";
 import {database,isAdmin,transition} from '@/lib/server';
 import {escapeHtml,reviewPath} from '@/lib/email/templates';
@@ -19,6 +20,7 @@ export async function POST(req:Request){
  const s=selection(req);if(!s)return page('Invalid request','<p>Please reopen the original email.</p>',400);
  if(req.headers.get('origin')!==new URL(req.url).origin)return page('Request not verified',`<p>Please reload the booking review before submitting again.</p><a href="${escapeHtml(reviewPath(s.id,s.action))}">Review booking again</a>`,403);
  if(!await isAdmin())return page('Host sign-in required',`<a href="${escapeHtml(reviewPath(s.id,s.action))}">Return to sign in</a>`,403);
- if(!await canManageBooking(s.id))return page("Booking unavailable","<p>This booking is not assigned to your company.</p>",404);let reason='';if(s.action==='rejected'&&req.headers.get('content-type')?.includes('application/x-www-form-urlencoded')){const form=await req.formData();reason=String(form.get('reason')||'').trim();if(reason.length>500)return page('Reason too long','<p>Keep the reason within 500 characters.</p>',400)}const changed=await transition(s.id,s.action,{reason,actorRole:'host'});
+ if(!await canManageBooking(s.id))return page("Booking unavailable","<p>This booking is not assigned to your company.</p>",404);let reason='';if(s.action==='rejected'&&req.headers.get('content-type')?.includes('application/x-www-form-urlencoded')){const form=await req.formData();reason=String(form.get('reason')||'').trim();if(reason.length>500)return page('Reason too long','<p>Keep the reason within 500 characters.</p>',400)}if(s.action==='payment_pending'){const row=await database().prepare('SELECT property_id FROM bookings WHERE id=?').bind(s.id).first<{property_id:string}>();if(row&&!await paymentSettingsForProperty(row.property_id))return page('Add your UPI first','<p>Add your UPI ID in Payments, then accept this request again. Guests pay you directly by UPI.</p><a href="/host?section=payments">Open Payments</a>',409)}
+ const changed=await transition(s.id,s.action,{reason,actorRole:'host'});
  return page(changed?s.action==='payment_pending'?'Payment requested':'Booking rejected':'Booking already reviewed',`<p>${changed?s.action==='payment_pending'?'Your acceptance is saved. The booking stays unconfirmed until you verify payment and mark it paid in the host dashboard.':'The booking was rejected and its dates released.':'This booking is no longer awaiting this action. Nothing was changed.'}</p><a href="/host">Open dashboard</a>`,changed?200:409);
 }
