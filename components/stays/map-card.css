@@ -1,0 +1,17 @@
+.map-card{position:absolute;z-index:600;width:320px;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 12px 40px #14221b38;cursor:pointer;animation:map-card-in .18s ease-out}
+@keyframes map-card-in{from{opacity:0;transform:translateY(6px) scale(.98)}to{opacity:1;transform:none}}
+.map-card-photo{position:relative;aspect-ratio:1.5;background:#e9ecdf}
+.map-card-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.map-card-actions{position:absolute;top:10px;right:10px;display:flex;gap:8px}
+.map-card-actions button,.map-card-nav{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#ffffffee;color:#1d2b24;border:0;box-shadow:0 2px 8px #00000022}
+.map-card-actions .is-saved{color:#d0523a}
+.map-card-nav{position:absolute;top:50%;transform:translateY(-50%);opacity:0;transition:opacity .15s}
+.map-card:hover .map-card-nav{opacity:1}.map-card-nav.prev{left:10px}.map-card-nav.next{right:10px}
+.map-card-dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:5px}
+.map-card-dots i{width:6px;height:6px;border-radius:50%;background:#ffffff99}.map-card-dots i.on{background:#fff}
+.map-card-body{padding:14px 16px 16px;display:grid;gap:4px}
+.map-card-row{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.map-card-row b{font-size:15px}.map-card-row span{display:inline-flex;align-items:center;gap:3px;font-size:13px;white-space:nowrap}
+.map-card-body p{margin:0;color:#6f7d68;font-size:14px}
+.map-card-price{color:#1d2b24!important;margin-top:4px!important}
+.leaflet-price.selected span{background:#1d2b24;color:#fff;border-color:#1d2b24;transform:scale(1.06)}
