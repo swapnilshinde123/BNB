@@ -39,3 +39,13 @@
 .availability-legend .channel-dot{background:#e0384f}
 .booking-platform{display:inline-flex;margin-top:4px}
 .badge.external{background:#ffe8ea;color:#a3112a}
+
+.availability-day-top{display:flex;align-items:center;justify-content:space-between;width:100%;gap:6px}
+.source-badge{flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;background:#6b7280;box-shadow:0 0 0 2px #fff,0 1px 3px rgba(0,0,0,.12);line-height:1}
+.source-badge.gomzo{background:#fff;overflow:hidden}
+.source-badge.gomzo img{width:18px;height:18px;object-fit:contain}
+.source-badge.airbnb{background:#e0384f}
+.source-badge.booking{background:#003b95}
+.source-badge.vrbo{background:#1d3c8f}
+.source-badge.google{background:#1a73e8}
+@media(max-width:760px){.source-badge{width:18px;height:18px;font-size:10px}.source-badge.gomzo img{width:13px;height:13px}}
