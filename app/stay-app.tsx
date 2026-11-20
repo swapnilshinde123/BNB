@@ -62,6 +62,15 @@ export default function StayApp({initialPage='explore'}:{initialPage?:'explore'|
  const [mobileViewport,setMobileViewport]=useState(false);
  const [loadedPage,setLoadedPage]=useState(''),[listingsReady,setListingsReady]=useState(false),[resumeNotice,setResumeNotice]=useState('');
  const restoredBooking=useRef(false);
+ // A tab left open across a deploy keeps running the old screens. When the person comes back to the tab,
+ // check whether a newer build is live and reload so they always see the current booking flow.
+ useEffect(()=>{const current=(import.meta.url.match(/stay-app-[\w-]+\.js/)||[])[0];if(!current)return;let checking=false,last=0;
+  const check=async()=>{if(checking||document.visibilityState!=='visible'||Date.now()-last<60000)return;checking=true;last=Date.now();
+   try{const html=await (await fetch(location.pathname+location.search,{cache:'no-store',credentials:'same-origin'})).text();const live=(html.match(/stay-app-[\w-]+\.js/)||[])[0];
+    const typing=document.activeElement instanceof HTMLInputElement||document.activeElement instanceof HTMLTextAreaElement;
+    if(live&&live!==current&&!typing)location.reload()}catch{}finally{checking=false}};
+  document.addEventListener('visibilitychange',check);window.addEventListener('focus',check);const timer=setInterval(check,300000);
+  return()=>{document.removeEventListener('visibilitychange',check);window.removeEventListener('focus',check);clearInterval(timer)}},[]);
  useEffect(()=>{const query=window.matchMedia('(max-width:760px)');const update=()=>setMobileViewport(query.matches);update();query.addEventListener('change',update);return()=>query.removeEventListener('change',update)},[]);
  const displayPage=page==='login'?loginBackground:page;
  const roomView=!!roomId&&!!modal&&modal.id===roomId&&!manual;
