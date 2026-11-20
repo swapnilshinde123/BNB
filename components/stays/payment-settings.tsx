@@ -22,7 +22,7 @@ export function PaymentSettings(){
  }
  const ready=validUpi(upiId)&&payee.trim().length>=2;
  const sample=ready?'upi://pay?'+new URLSearchParams({pa:upiId.trim(),pn:payee.trim(),cu:'INR'}).toString():'';
- return <section className="panel"><div className="panel-title"><div><h3>Payments</h3><small>Guests pay you directly by UPI. They scan this QR in My bookings after you accept their request.</small></div></div>
+ return <section className="panel payment-settings-panel"><div className="panel-title"><div><h3>Payments</h3><small>Guests pay you directly by UPI. They scan this QR in My bookings after you accept their request.</small></div></div>
   {!configured&&loaded&&<p className="notice">Add your UPI ID before accepting booking requests. Guests can’t pay until it’s set.</p>}
   <div className="payment-settings">
    <form onSubmit={save}>
@@ -36,7 +36,7 @@ export function PaymentSettings(){
    <div className="payment-preview" aria-label="QR preview">
     <b>Guest QR preview</b>
     {sample?<div className="upi-qr-frame"><QRCodeSVG value={sample} size={176} level="M" marginSize={2}/></div>:<div className="upi-qr-frame" style={{width:194,height:194,display:'grid',placeItems:'center',lineHeight:1.4,color:'var(--muted)',fontSize:12,padding:16}}>Enter your UPI ID to generate the QR</div>}
-    <small>{sample?`${payee.trim()} · ${upiId.trim()}`:'Generated automatically — no upload needed'}</small>
+    <small className={sample?'payment-preview-id':undefined}>{sample?`${payee.trim()} · ${upiId.trim()}`:'Generated automatically — no upload needed'}</small>
     <small>The booking amount is added to each guest’s QR.</small>
    </div>
   </div>
