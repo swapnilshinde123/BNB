@@ -28,5 +28,7 @@ test('worker indexing headers preserve login callbacks and signed-in www navigat
  const redirect=await worker.fetch(new Request('https://www.gomzo.co/about'),{},ctx);assert.equal(redirect.status,308);assert.equal(redirect.headers.get('location'),'https://gomzo.co/about');
  const signed=await worker.fetch(new Request('https://www.gomzo.co/',{headers:{cookie:'aangan_google_session=existing'}}),{},ctx);assert.equal(signed.status,200);
  const callback=await worker.fetch(new Request('https://www.gomzo.co/api/auth/google',{method:'POST'}),{},ctx);assert.equal(callback.status,200);assert.equal(callback.headers.get('x-robots-tag'),'noindex, nofollow');
+ for(const [junk,target] of [['/about:1bcz2a9','/about'],['/$','/'],['/&','/'],['/privacy:fyucee','/privacy'],['/stays/pune:pmn2n','/stays/pune'],['/:7nyoau','/']]){const r=await worker.fetch(new Request('https://gomzo.co'+junk),{},ctx);assert.equal(r.status,301,junk);assert.equal(r.headers.get('location'),'https://gomzo.co'+target)}
+ assert.equal(seo.junkPathRedirect('/about'),null);assert.equal(seo.junkPathRedirect('/api/x:1'),null);assert.equal(seo.junkPathRedirect('/about%3A1bcz2a9'),'/about');
  const missing=await worker.fetch(new Request('https://gomzo.co/missing'),{},ctx);assert.equal(missing.status,404);assert.equal(missing.headers.get('x-robots-tag'),'noindex, nofollow');
 });

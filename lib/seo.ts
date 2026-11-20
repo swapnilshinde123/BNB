@@ -10,6 +10,14 @@ export const privateMetadata:Metadata={robots:{index:false,follow:false}};
 export function jsonLd(value:unknown){return JSON.stringify(value).replace(/</g,'\\u003c')}
 export function brandSchema(){return {'@context':'https://schema.org','@graph':[{'@type':'Organization','@id':origin+'/#organization',name:'Gomzo',alternateName:['GOMZO','Gomzo.co'],url:origin+'/',description:homepageIntroduction,logo:{'@type':'ImageObject',url:origin+'/brand/gomzo-wordmark.png'},email:'customer@gomzo.co',sameAs:[gomzoLinkedIn]},{'@type':'WebSite','@id':origin+'/#website',name:'Gomzo',alternateName:['GOMZO','Gomzo.co'],url:origin+'/',description:homeDescription,publisher:{'@id':origin+'/#organization'},inLanguage:'en-IN'},{'@type':'Service','@id':origin+'/#accommodation-service',name:'Multi-city accommodation discovery and booking requests',serviceType:'Homestays and short-stay accommodation',provider:{'@id':origin+'/#organization'},areaServed:{'@type':'Country',name:'India'},url:origin+'/'}]}}
 export function breadcrumbs(items:{name:string;path:string}[]){return {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:items.map((i,index)=>({'@type':'ListItem',position:index+1,name:i.name,item:origin+i.path}))}}
+// Crawlers sometimes lift fragments out of JS bundles (e.g. "/about:1bcz2a9", "/$", "/&")
+// and request them as pages. Send those to the real public page with a permanent redirect.
+export function junkPathRedirect(path:string){
+  let p=path;try{p=decodeURIComponent(path)}catch{}
+  const clean=p.replace(/:[^/]*$/,'').replace(/[$&]+$/,'').replace(/(.)\/+$/,'$1')||'/';
+  if(clean===p)return null;
+  return publicPages.includes(clean)||/^\/stays\/[a-z0-9-]+$/.test(clean)?clean:null;
+}
 export function isPrivateSurface(host:string,path:string,query=''){
  return host.startsWith('admin.')||host.includes('stays-admin.')||host.endsWith('.workers.dev')||/^\/(api(?:\/|$)|host(?:\/|$)|login(?:\/|$)|join(?:\/|$)|my-bookings(?:\/|$)|saved-homes(?:\/|$))/.test(path)||['section','property','resume','search','checkIn','checkOut','guests','sort','category'].some(key=>new URLSearchParams(query).has(key));
 }
