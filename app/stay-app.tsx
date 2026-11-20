@@ -156,7 +156,7 @@ export default function StayApp({initialPage='explore'}:{initialPage?:'explore'|
    <nav className="footer-links" aria-label="Your account"><span className="footer-label">YOUR STAYS</span><button onClick={()=>navigate('bookings')}>My bookings</button><button onClick={()=>navigate('login','/my-bookings')}>Sign in</button></nav>
    <div className="footer-note"><span className="footer-label">A LITTLE ESCAPE. A LOT LIKE HOME.</span><p>Find a place that feels like yours.</p><span className="footer-coordinate">18.5204° N <i>·</i> 73.8567° E</span></div>
   </div>
-  {(()=>{const areas=Object.entries(areaPages).filter(([,v])=>v.area&&listings.some(p=>p.active!==false&&p.area.toLowerCase()===v.area!.toLowerCase()));return areas.length?<nav className="footer-areas" aria-label="Stays in Pune"><span className="footer-label">STAYS IN PUNE</span><a href="/stays/pune">All Pune stays</a>{areas.map(([slug,v])=><a key={slug} href={areaPath(slug)}>{v.area}</a>)}</nav>:null})()}
+  {listingsReady&&(()=>{const areas=Object.entries(areaPages).filter(([,v])=>v.area&&listings.some(p=>p.active!==false&&p.area.toLowerCase()===v.area!.toLowerCase()));return areas.length?<nav className="footer-areas" aria-label="Stays in Pune"><span className="footer-label">STAYS IN PUNE</span><a href="/stays/pune">All Pune stays</a>{areas.map(([slug,v])=><a key={slug} href={areaPath(slug)}>{v.area}</a>)}</nav>:null})()}
   <div className="footer-bottom"><small>© {new Date().getFullYear()} Gomzo</small><span>Thoughtful homes. Personal hospitality.</span><a className="footer-contact" href={wa('Hi Gomzo! I’d love to plan a stay.')} target="_blank" rel="noreferrer"><MessageCircle size={17}/> WhatsApp us <ArrowUpRight size={15}/></a></div>
  </footer>
  );
