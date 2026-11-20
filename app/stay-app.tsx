@@ -146,6 +146,8 @@ export default function StayApp({initialPage='explore'}:{initialPage?:'explore'|
  const visible=listings.filter(p=>p.active!==false&&matchesLocation(p,area)&&(category==='All stays'||category==='Saved homes'&&saved.includes(p.id)||p.category===category)&&p.guests>=guests&&p.price<=maxPrice).sort((a,b)=>sort==='Price: low to high'?a.price-b.price:sort==='Price: high to low'?b.price-a.price:distance(a)-distance(b));
  const pageCount=Math.max(1,Math.ceil(visible.length/PER_PAGE)),currentPage=Math.min(resultsPage,pageCount),pageHomes=visible.slice((currentPage-1)*PER_PAGE,currentPage*PER_PAGE);
  useEffect(()=>{setResultsPage(1)},[area,category,guests,maxPrice,sort]);
+ // Search results page: measure the sticky header + search bar so the map can sit right under them.
+ useEffect(()=>{if(!searchSlug)return;const root=document.documentElement;const measure=()=>{const header=document.querySelector('header')?.getBoundingClientRect().height||0,bar=document.querySelector('.search-section-compact')?.getBoundingClientRect().height||0;root.style.setProperty('--results-header',Math.round(header)+'px');root.style.setProperty('--results-top',Math.round(header+bar)+'px')};measure();const ro=new ResizeObserver(measure);const h=document.querySelector('header'),b=document.querySelector('.search-section-compact');if(h)ro.observe(h);if(b)ro.observe(b);return()=>ro.disconnect()},[searchSlug,displayPage]);
  function goToPage(n:number){setResultsPage(n);requestAnimationFrame(()=>document.getElementById('stays')?.scrollIntoView({behavior:'smooth',block:'start'}))}
  const modalPhotos=modal?(modal.photos?.length?modal.photos:[modal.image]):[];
  const nights=checkIn&&checkOut?Math.max(0,(Date.parse(checkOut)-Date.parse(checkIn))/86400000):0;

@@ -124,11 +124,16 @@ footer.site-footer .footer-contact svg:first-child{color:#b86140}
 .pagination button:disabled{opacity:.35;cursor:default}
 .pagination-gap{color:var(--muted,#7a7f79);padding:0 4px}
 .pagination-summary{flex-basis:100%;text-align:center;font-size:13px;color:var(--muted,#7a7f79);margin-top:4px}
-/* Search results page (/s/<place>/homes): compact search on top, filters, list + map side by side */
-.search-results-page .search-section-compact{position:sticky;top:0;z-index:20;padding:14px 5.5%;background:rgba(248,247,242,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line,#e6e3da)}
-.search-results-page .search-section-compact .search-bar{max-width:980px;margin:0 auto;box-shadow:none}
+/* Search results page (/s/<place>/homes): compact search under the header, filters, homes list beside a fixed map */
+.search-results-page .search-section-compact{position:sticky;top:var(--results-header,96px);z-index:20;padding:10px 5.5%;background:rgba(248,247,242,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line,#e6e3da)}
+.search-results-page .search-section-compact .search-bar{max-width:860px;margin:0 auto;box-shadow:none;padding:5px 5px 5px 6px}
+.search-results-page .search-section-compact .search-segment{padding:8px 22px;gap:1px}
+.search-results-page .search-section-compact .search-segment b{font-size:12px}
+.search-results-page .search-section-compact .search-segment span{font-size:14px}
+.search-results-page .search-section-compact .search-button{padding:12px 20px;font-size:14px}
 .search-results-page .search-results-section{padding-top:22px}
 .search-results-page .search-results-section .filter-row{margin-top:0}
 .search-results-page .map-layout{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
-.search-results-page .map-panel{top:112px;height:calc(100vh - 136px);min-height:520px}
+/* The map stops right under the search bar and stays put; only the homes list scrolls. */
+.search-results-page .map-panel{position:sticky;top:calc(var(--results-top,170px) + 16px);height:calc(100vh - var(--results-top,170px) - 32px);min-height:420px}
 @media(max-width:1100px){.search-results-page .map-layout{grid-template-columns:1fr 1fr}}
