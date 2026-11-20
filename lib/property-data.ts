@@ -11,14 +11,27 @@ export function fromPropertyRow(row:PropertyRow):Property{const extraPhotos=pars
 // Guest pages only need a short prefix of each uploaded photo (to know it exists and its type);
 // the image bytes are served separately from /photos/<id>/<n>. Reading full photo data costs ~2.6 MB per query.
 const LITE_COLUMNS="id,name,area,address,type,guests,beds,baths,price,rating,reviews,tag,category,CASE WHEN image LIKE 'data:%' THEN substr(image,1,40) ELSE image END AS image,lat,lng,description,amenities_json,(SELECT json_group_array(CASE WHEN j.value LIKE 'data:%' THEN substr(j.value,1,40) ELSE j.value END) FROM json_each(properties.photos_json) j) AS photos_json,cleaning_fee,active,updated_at";
+type Snapshot={deleted:{property_id:string}[];governance:{property_id:string;company_id:string;company_name:string;status:string;requested_active:number;reason:string;version:number}[];rows:PropertyRow[];locations:{property_id:string;city:string;state:string}[]};
+// Guest reads (lite) are shared for a few seconds within a worker instance; host reads (full) are always fresh.
+let liteCache:{at:number;data:Snapshot}|null=null;
+async function snapshot(full:boolean):Promise<Snapshot>{
+ await ensureTenancy();const db=database();
+ const [deleted,governance,rows,locations]=await Promise.all([
+  db.prepare('SELECT property_id FROM property_deletions').all<{property_id:string}>(),
+  db.prepare('SELECT g.*,c.name AS company_name FROM property_governance g JOIN host_companies c ON c.id=g.company_id').all<Snapshot['governance'][number]>(),
+  db.prepare(full?'SELECT * FROM properties':'SELECT '+LITE_COLUMNS+' FROM properties').all<PropertyRow>(),
+  db.prepare('SELECT property_id,city,state FROM property_locations').all<{property_id:string;city:string;state:string}>(),
+ ]);
+ return {deleted:deleted.results,governance:governance.results,rows:rows.results,locations:locations.results};
+}
+async function readSnapshot(full:boolean){if(full)return snapshot(true);if(liteCache&&Date.now()-liteCache.at<5000)return liteCache.data;const data=await snapshot(false);liteCache={at:Date.now(),data};return data}
+/** Clears the guest cache after a host change so the next read is fresh. */
+export function forgetProperties(){liteCache=null}
 /** full=true returns the stored photo data (host editing); otherwise photo entries are short placeholders for photo links. */
 export async function allProperties(includeInactive=false,includeDeleted=false,full=false):Promise<Property[]>{
- await ensureTenancy();
- const deleted=await database().prepare('SELECT property_id FROM property_deletions').all<{property_id:string}>();
- const deletedIds=new Set(deleted.results.map(row=>row.property_id));
- const governance=await database().prepare('SELECT g.*,c.name AS company_name FROM property_governance g JOIN host_companies c ON c.id=g.company_id').all<{property_id:string;company_id:string;company_name:string;status:string;requested_active:number;reason:string;version:number}>();
- const rows=await database().prepare(full?'SELECT * FROM properties':'SELECT '+LITE_COLUMNS+' FROM properties').all<PropertyRow>();
- const locations=await database().prepare('SELECT property_id,city,state FROM property_locations').all<{property_id:string;city:string;state:string}>();
+ const {deleted:deletedRows,governance:govRows,rows:rowList,locations:locationRows}=await readSnapshot(full);
+ const deletedIds=new Set(deletedRows.map(row=>row.property_id));
+ const governance={results:govRows},rows={results:rowList},locations={results:locationRows};
  const place=new Map(locations.results.map(l=>[l.property_id,l]));
  const merged=new Map<string,Property>(properties.map(p=>[p.id,{...p,active:true}]));
  for(const row of rows.results)merged.set(row.id,fromPropertyRow(row));

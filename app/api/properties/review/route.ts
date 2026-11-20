@@ -1,4 +1,5 @@
 import {database,json} from '@/lib/server';
+import {forgetProperties} from '@/lib/property-data';
 import {hostAccess,ensureTenancy,sameOrigin} from '@/lib/tenancy';
 import {platformJob,platformMessage,companyRecipients} from '@/lib/email/platform';
 export async function POST(req:Request){
@@ -11,5 +12,6 @@ export async function POST(req:Request){
   db.prepare("UPDATE properties SET active=CASE WHEN ?='approved' THEN (SELECT requested_active FROM property_governance WHERE property_id=?) ELSE 0 END WHERE id=? AND changes()>0").bind(b.status,b.id,b.id),
   ...recipients.map(email=>platformJob(email,platformMessage(b.status==='approved'?'Your property is approved':'Property changes requested',b.status==='approved'?'Your home has been approved. It is visible to guests when listing visibility is enabled.':'Your home is not published. Update the details below and submit it again.',{Home:row.name,...(b.reason.trim()?{Note:b.reason.trim()}:{})},'/host?section=properties'),`review-${b.id}-${b.version}-${email}`,true)),
  ]);
+ forgetProperties();
  return result[0].meta.changes?json({ok:true}):json({error:'This submission changed or was already reviewed. Refresh before deciding.'},409);
 }

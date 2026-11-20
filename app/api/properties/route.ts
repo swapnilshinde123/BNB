@@ -3,7 +3,7 @@ import {platformJob,platformMessage,companyRecipients} from '@/lib/email/platfor
 import {config} from '@/lib/server';
 import {identity,isAdmin,database,json} from '@/lib/server';
 import {Property} from '@/lib/properties';
-import {allProperties,fromPropertyRow} from '@/lib/property-data';
+import {allProperties,fromPropertyRow,forgetProperties} from '@/lib/property-data';
 import {withPhotoLinks} from '@/lib/photo-url';
 
 type PropertyInput={id?:unknown;name?:unknown;area?:unknown;city?:unknown;state?:unknown;address?:unknown;type?:unknown;guests?:unknown;beds?:unknown;baths?:unknown;price?:unknown;tag?:unknown;category?:unknown;description?:unknown;lat?:unknown;lng?:unknown;amenities?:unknown;photos?:unknown;active?:unknown;cleaningFee?:unknown};
@@ -36,6 +36,7 @@ function locationStatement(id:string,input:PropertyInput){const clean=(v:unknown
 async function saveProperty(data:ReturnType<typeof normalize>,extra:D1PreparedStatement[]=[]){
  const db=database(),now=new Date().toISOString();
  await db.batch([db.prepare(`INSERT INTO properties(id,name,area,address,type,guests,beds,baths,price,rating,reviews,tag,category,image,lat,lng,description,amenities_json,photos_json,cleaning_fee,active,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET name=excluded.name,area=excluded.area,address=excluded.address,type=excluded.type,guests=excluded.guests,beds=excluded.beds,baths=excluded.baths,price=excluded.price,tag=excluded.tag,category=excluded.category,image=excluded.image,lat=excluded.lat,lng=excluded.lng,description=excluded.description,amenities_json=excluded.amenities_json,photos_json=excluded.photos_json,cleaning_fee=excluded.cleaning_fee,active=excluded.active,updated_at=excluded.updated_at`).bind(data.id,data.name,data.area,data.address,data.type,data.guests,data.beds,data.baths,data.price,data.rating,data.reviews,data.tag,data.category,data.image,data.lat,data.lng,data.description,data.amenities_json,data.photos_json,data.cleaning_fee,data.active,now,now),...extra]);
+ forgetProperties();
  const row=await db.prepare('SELECT * FROM properties WHERE id=?').bind(data.id).first<Row>();
  return row?fromPropertyRow(row):null;
 }
@@ -81,6 +82,7 @@ export async function DELETE(req:Request){
   db.prepare('DELETE FROM blocked_dates WHERE property_id=?').bind(input.id),
   db.prepare('DELETE FROM property_rate_plans WHERE property_id=?').bind(input.id),
  ]);
+ forgetProperties();
  return json({ok:true,hasBookingHistory:hasBookings});
 }
 
