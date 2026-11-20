@@ -1,4 +1,5 @@
 import {purgeGuestIds} from "../lib/guest-id";
+import {syncDueChannels} from "../lib/channels";
 import {drainPlatformEmails} from "../lib/email/platform";
 import {drainEmails} from '../lib/email/service';
 import handler from "vinext/server/fetch-handler";
@@ -9,7 +10,7 @@ import {isPrivateSurface,publicPages,junkPathRedirect,areaPages} from '../lib/se
 const worker = {
   async scheduled() {
     // Cloudflare invokes this even when nobody has the website open.
-    const results=await Promise.allSettled([drainEmails(),drainPlatformEmails(),purgeGuestIds()]);
+    const results=await Promise.allSettled([drainEmails(),drainPlatformEmails(),purgeGuestIds(),syncDueChannels()]);
     const failure=results.find(r=>r.status==='rejected');if(failure?.status==='rejected')throw failure.reason;
   },
   fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext<{ CONNECTORS?: ConnectorBinding }>) {

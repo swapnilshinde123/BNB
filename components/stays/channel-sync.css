@@ -1,0 +1,41 @@
+.channel-sync .panel-title{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;flex-wrap:wrap}
+.channel-home{display:flex;flex-direction:column;gap:6px;font-size:12.5px;font-weight:600;min-width:240px}
+.channel-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;margin-top:22px;align-items:start}
+.channel-steps{display:flex;flex-direction:column;gap:14px}
+.channel-step{display:flex;gap:14px;border:1px solid var(--line,#e6e3da);border-radius:16px;padding:16px;background:#fff}
+.channel-step>span{flex:0 0 28px;height:28px;border-radius:50%;background:#2c3d33;color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px}
+.channel-step>div{display:flex;flex-direction:column;gap:8px;min-width:0;flex:1}
+.channel-step ol{margin:0;padding-left:18px;font-size:13.5px;line-height:1.65;color:#3d453f}
+.channel-step small{font-size:12.5px;color:var(--muted,#6b706b);line-height:1.5}
+.channel-step code{background:#f1efe8;border-radius:5px;padding:1px 5px;font-size:12px}
+.channel-add{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:8px}
+.channel-add input,.channel-export input{border:1px solid var(--line,#e6e3da);border-radius:12px;padding:10px 12px;font:inherit;font-size:13px;min-width:0;background:#fbfaf6}
+.channel-export{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.channel-export button,.channel-actions button{display:inline-flex;align-items:center;gap:6px}
+.channel-status{border:1px solid var(--line,#e6e3da);border-radius:16px;padding:16px;background:#fbfaf6;display:flex;flex-direction:column;gap:12px;position:sticky;top:20px}
+.channel-status-title{font-size:14px}
+.channel-empty{display:flex;gap:8px;align-items:center;color:var(--muted,#6b706b);font-size:13.5px;margin:0}
+.channel-card{background:#fff;border:1px solid var(--line,#e6e3da);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.channel-card.has-error{border-color:#f0c4bd}
+.channel-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.channel-card-head small{font-size:12px;color:var(--muted,#6b706b)}
+.channel-url{font-size:11.5px;color:#5c635d;overflow-wrap:anywhere;background:#f6f4ee;border-radius:8px;padding:6px 8px}
+.channel-error{display:flex;gap:6px;align-items:flex-start;color:#b42318;font-size:12.5px;margin:0;line-height:1.5}
+.channel-ok{display:flex;gap:6px;align-items:center;color:#2f6b45;font-size:12.5px;margin:0}
+.channel-actions{display:flex;gap:10px;align-items:center}
+.channel-remove{color:#b42318;display:inline-flex;gap:5px;align-items:center}
+.platform-pill{display:inline-flex;align-items:center;border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:700;background:#ecebe5;color:#3d453f;white-space:nowrap}
+.platform-pill.airbnb{background:#ffe8ea;color:#c4142e}
+.platform-pill.booking{background:#e4ecfb;color:#003b95}
+.platform-pill.vrbo{background:#e7eefc;color:#1d3c8f}
+.platform-pill.website,.platform-pill.gomzo{background:#e5ede6;color:#2c3d33}
+.channel-upcoming ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.channel-upcoming li{display:flex;gap:8px;align-items:center;font-size:13px}
+.channel-upcoming li small{color:var(--muted,#6b706b);margin-left:auto}
+.channel-upcoming a{color:inherit}
+@media(max-width:980px){.channel-grid{grid-template-columns:1fr}.channel-status{position:static}.channel-add{grid-template-columns:1fr}}
+/* Calendar & bookings */
+.availability-day.channel{background:#ffe8ea;color:#a3112a;border-color:#f5b8c1}
+.availability-legend .channel-dot{background:#e0384f}
+.booking-platform{display:inline-flex;margin-top:4px}
+.badge.external{background:#ffe8ea;color:#a3112a}

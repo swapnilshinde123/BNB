@@ -12,6 +12,7 @@ test('scheduled delivery runs without a website request and reports failures',as
   if(line.includes('fetch-handler'))return 'const handler={fetch(){throw Error("HTTP handler must not run")}};';
   if(line.includes('connector-context'))return 'const runWithConnectorBinding=()=>{};';
   if(line.includes('guest-id'))return 'const purgeGuestIds=async()=>{};';
+  if(line.includes('lib/channels'))return 'const syncDueChannels=async()=>{};';
   return '';
  });
  const {default:worker}=await import(encode(source));

@@ -2,6 +2,8 @@ import type {Booking} from './booking-feed';
 export function monthOffset(month:string,offset:number){const [year,m]=month.split('-').map(Number);const d=new Date(Date.UTC(year,m-1+offset,1));return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`}
 export function growth(current:number,previous:number):number|null{return previous?Math.round((current-previous)/previous*100):current?null:0}
 export function hostAnalytics(bookings:Booking[],month:string){
+ // Stays imported from Airbnb etc. have no Gomzo amount; keep them out of Gomzo booking value and counts.
+ bookings=bookings.filter(b=>b.status!=='external');
  const monthly=bookings.filter(b=>b.check_in.startsWith(month)),previous=bookings.filter(b=>b.check_in.startsWith(monthOffset(month,-1)));
  const confirmed=monthly.filter(b=>b.status==='confirmed'),cancelled=monthly.filter(b=>b.status==='cancelled'),rejected=monthly.filter(b=>b.status==='rejected');
  const value=confirmed.reduce((sum,b)=>sum+b.total,0),previousValue=previous.filter(b=>b.status==='confirmed').reduce((sum,b)=>sum+b.total,0);
