@@ -141,3 +141,10 @@ footer.site-footer .footer-contact svg:first-child{color:#b86140}
    is at least one screen tall, so the sticky map never runs out of room and scrolls away. */
 .search-results-page .map-layout{align-items:start;min-height:calc(100vh - var(--results-top,170px))}
 .search-results-page .map-layout>.property-results{min-height:calc(100vh - var(--results-top,170px) - 16px)}
+@media(min-width:761px){
+ html.search-mode .search-results-page .map-panel{position:fixed;top:calc(var(--results-top,170px) + 16px);left:var(--map-left,55%);width:var(--map-width,40%);height:calc(100vh - var(--results-top,170px) - 32px);z-index:5}
+ html.search-mode .search-results-page .map-layout{min-height:0}
+ html.search-mode .search-results-page .map-layout>.property-results{min-height:calc(100vh - var(--results-top,170px) - 16px)}
+ /* Content below the results stays in the left column so it never slides under the fixed map. */
+ html.search-mode .destinations,html.search-mode .site-footer{width:calc(var(--map-left,55vw) - var(--map-gap,24px));max-width:none;margin-left:0;margin-right:0;box-sizing:border-box}
+}

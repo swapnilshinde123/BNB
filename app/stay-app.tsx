@@ -154,8 +154,13 @@ export default function StayApp({initialPage='explore'}:{initialPage?:'explore'|
  // a different home, or stay up after they have changed the dates or guests they were told to fix.
  useEffect(()=>{setError('')},[displayPage,roomId,modal?.id]);
  useEffect(()=>{setError(e=>/date|night|guest|available|book/i.test(e)?'':e)},[checkIn,checkOut,guests,adultGuests]);
- // Search results page: measure the sticky header + search bar so the map can sit right under them.
- useEffect(()=>{if(!searchSlug)return;const root=document.documentElement;const measure=()=>{const header=document.querySelector('header')?.getBoundingClientRect().height||0,bar=document.querySelector('.search-section-compact')?.getBoundingClientRect().height||0;root.style.setProperty('--results-header',Math.round(header)+'px');root.style.setProperty('--results-top',Math.round(header+bar)+'px')};measure();const ro=new ResizeObserver(measure);const h=document.querySelector('header'),b=document.querySelector('.search-section-compact');if(h)ro.observe(h);if(b)ro.observe(b);return()=>ro.disconnect()},[searchSlug,displayPage]);
+ // Search results page (Airbnb style): the map is fixed on the right under the search bar and never scrolls;
+ // only the left column (homes, then the footer content) scrolls. Measure where the map column sits.
+ useEffect(()=>{if(!searchSlug)return;const root=document.documentElement;root.classList.add('search-mode');
+  const measure=()=>{const header=document.querySelector('header')?.getBoundingClientRect().height||0,bar=document.querySelector('.search-section-compact')?.getBoundingClientRect().height||0;root.style.setProperty('--results-header',Math.round(header)+'px');root.style.setProperty('--results-top',Math.round(header+bar)+'px');
+   const layout=document.querySelector('.search-results-page .map-layout') as HTMLElement|null;if(layout){const r=layout.getBoundingClientRect(),cols=getComputedStyle(layout).gridTemplateColumns.split(' ').map(parseFloat),gap=parseFloat(getComputedStyle(layout).columnGap)||0;if(cols.length===2&&cols[1]>0){root.style.setProperty('--map-left',Math.round(r.left+cols[0]+gap)+'px');root.style.setProperty('--map-width',Math.round(cols[1])+'px');root.style.setProperty('--map-gap',Math.round(gap)+'px')}}};
+  measure();const ro=new ResizeObserver(measure);const h=document.querySelector('header'),b=document.querySelector('.search-section-compact'),l=document.querySelector('.search-results-page .map-layout');if(h)ro.observe(h);if(b)ro.observe(b);if(l)ro.observe(l);window.addEventListener('resize',measure);
+  return()=>{ro.disconnect();window.removeEventListener('resize',measure);root.classList.remove('search-mode')}},[searchSlug,displayPage,listingsReady]);
  function goToPage(n:number){setResultsPage(n);requestAnimationFrame(()=>document.getElementById('stays')?.scrollIntoView({behavior:'smooth',block:'start'}))}
  const modalPhotos=modal?(modal.photos?.length?modal.photos:[modal.image]):[];
  const nights=checkIn&&checkOut?Math.max(0,(Date.parse(checkOut)-Date.parse(checkIn))/86400000):0;
