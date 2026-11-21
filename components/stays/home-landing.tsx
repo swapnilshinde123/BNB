@@ -48,7 +48,7 @@ export function HomeSections({areas,city,allHref}:{areas:LandingArea[];city:stri
    <div className="hl-areas-copy"><h2 id="hl-areas-title">Popular<br/>neighbourhoods</h2><p>Where guests love to stay in {city}.</p><a className="hl-dark-btn" href={allHref}>View all stays <ArrowRight size={17}/></a></div>
    <div className="hl-area-cards">{areas.slice(0,3).map((a,i)=><a key={a.href} href={a.href}>{a.image?<img src={a.image} alt={`${a.name}, ${city}`} loading="lazy"/>:scenes[i%scenes.length]}<span><b><MapPin size={17}/>{a.name}</b><small>{city} · {a.count} {a.count===1?'home':'homes'}</small></span></a>)}</div>
   </section>}
-  <section className="hl-howto" id="how-it-works" aria-labelledby="hl-how-title">
+  <section className="hl-how" id="how-it-works" aria-labelledby="hl-how-title">
    <h2 id="hl-how-title">How Gomzo works</h2><p>Three simple steps, no surprises.</p>
    <div className="hl-steps">{[['Pick dates & send a request','Choose a home, your dates and guests. No payment needed to request.'],['Your host confirms','A real host reviews your request and replies — usually the same day.'],['Pay by UPI & check in','Scan the host’s UPI QR, share the UTR, and your stay is confirmed.']].map(([t,d],i)=><div key={t}><span>{i+1}</span><b>{t}</b><p>{d}</p></div>)}</div>
    <p className="hl-intro">{homepageIntroduction}</p>
