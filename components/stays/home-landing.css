@@ -55,7 +55,7 @@
 .hl-intro{margin:26px 0 0!important;font-size:14px!important;color:#7a837c!important;max-width:880px}
 
 .hl-host{position:relative;width:min(1240px,90vw);margin:100px auto 0;min-height:320px;border-radius:32px;overflow:hidden;background:linear-gradient(110deg,#263f33 0%,#2f5240 55%,#dd643f 140%);display:flex;align-items:center}
-.hl-host>svg{position:absolute;right:0;top:0;height:100%;width:auto}
+.hl-host svg{position:absolute;right:0;top:0;height:100%;width:auto}
 .hl-host>div{position:relative;padding:48px 64px;color:#fff}.hl-host h2{color:#fff;margin-top:14px}.hl-host p{margin:12px 0 0;font-size:17px;opacity:.9}
 .hl-eyebrow{display:inline-flex;align-items:center;gap:14px;font-size:13px;font-weight:700;letter-spacing:3px;color:#f6d9cb}.hl-eyebrow i{display:inline-block;width:70px;height:1px;background:currentColor;opacity:.6}.hl-eyebrow.dark{color:#1f2b25}
 
@@ -88,6 +88,6 @@
  .hl-areas,.hl-howto,.hl-faq{margin-top:64px}
  .hl-area-cards{grid-template-columns:repeat(3,78%);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}.hl-area-cards a{height:300px;scroll-snap-align:start}
  .hl-steps{grid-template-columns:1fr;gap:14px}.hl-steps div{padding:22px}
- .hl-host{margin-top:64px;min-height:0}.hl-host>svg{opacity:.35}.hl-host>div{padding:36px 26px}
+ .hl-host{margin-top:64px;min-height:0}.hl-host svg{opacity:.35}.hl-host>div{padding:36px 26px}
  .hl-faq{margin-bottom:80px}.hl-faq-list details{padding:16px 18px}.hl-faq-list summary b{font-size:15.5px}
 }
