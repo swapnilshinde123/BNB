@@ -137,3 +137,7 @@ footer.site-footer .footer-contact svg:first-child{color:#b86140}
 /* The map stops right under the search bar and stays put; only the homes list scrolls. */
 .search-results-page .map-panel{position:sticky;top:calc(var(--results-top,170px) + 16px);height:calc(100vh - var(--results-top,170px) - 32px);min-height:420px}
 @media(max-width:1100px){.search-results-page .map-layout{grid-template-columns:1fr 1fr}}
+/* Keep the map pinned under the search bar even when only a few homes are listed: the list column
+   is at least one screen tall, so the sticky map never runs out of room and scrolls away. */
+.search-results-page .map-layout{align-items:start;min-height:calc(100vh - var(--results-top,170px))}
+.search-results-page .map-layout>.property-results{min-height:calc(100vh - var(--results-top,170px) - 16px)}
