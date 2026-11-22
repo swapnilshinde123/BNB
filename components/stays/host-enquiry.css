@@ -2,3 +2,5 @@
 
 /* Popup only: the banner is hidden, the dialog is opened by openHostEnquiry(). */
 .host-enquiry-cta.host-enquiry-hidden{display:none}
+.contact-wide{grid-column:1/-1}
+.contact-page-btn{display:inline-flex;margin-top:14px;padding:13px 22px;border-radius:999px;border:0;cursor:pointer;font:inherit;font-weight:600}.join-contact{border:0;background:none;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}

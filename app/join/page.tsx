@@ -1,4 +1,5 @@
 'use client';
+import {ContactButton} from '@/components/stays/contact-dialog';
 import {useEffect,useState} from 'react';
 import {Building2,CalendarCheck,IndianRupee,MessageCircle,ShieldCheck,ArrowRight} from 'lucide-react';
 import {GoogleSignIn} from '@/components/stays/google-signin';
@@ -40,6 +41,6 @@ export default function Join(){
     <ul>{perks.map(({icon:Icon,title,text})=><li key={title}><span className="join-perk-icon"><Icon size={20}/></span><span><b>{title}</b><small>{text}</small></span></li>)}</ul>
    </aside>
   </main>
-  <footer className="join-foot">Questions? WhatsApp us on <a href="https://wa.me/917083834078">+91 70838 34078</a> or email <a href="mailto:customer@gomzo.co">customer@gomzo.co</a></footer>
+  <footer className="join-foot">Questions? <ContactButton className="join-contact">Send us a message</ContactButton> or email <a href="mailto:customer@gomzo.co">customer@gomzo.co</a></footer>
  </div>
 }
