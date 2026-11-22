@@ -1,4 +1,4 @@
-.homepage-help{width:min(89%,1281.6px);margin:90px auto 80px;display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:60px;align-items:start;color:#1f2b25}
+.homepage-help{width:min(89%,1566.4px);margin:90px auto 80px;display:grid;grid-template-columns:minmax(0,360px) minmax(0,1fr);gap:60px;align-items:start;color:#1f2b25}
 .qa-eyebrow{display:flex;align-items:center;gap:14px;font-size:12px;font-weight:600;letter-spacing:2.6px;color:#1f2b25}.qa-eyebrow:after{content:'';width:64px;height:1px;background:#c9c8b8}
 .homepage-help h2{margin:22px 0 0;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(40px,4vw,56px);line-height:1.02;letter-spacing:-.5px;color:#1f2b25}
 .homepage-help h2 em{color:#c8694a;font-style:italic}
