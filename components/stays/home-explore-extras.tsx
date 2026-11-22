@@ -1,4 +1,6 @@
+'use client';
 import {ArrowRight,MapPin} from 'lucide-react';
+import {openHostEnquiry} from './host-enquiry';
 import {photo} from '@/lib/properties';
 import './home-explore-extras.css';
 // Homepage: popular neighbourhoods + "Have a home in Pune?" banner (stock interior photos, not hosts' listings).
@@ -11,7 +13,7 @@ export function HomeExploreExtras(){
   </section>
   <section className="hx-host" aria-labelledby="hx-host-title">
    <img src={photo('photo-1600607687939-ce8a6c25118c',1600)} alt="" loading="lazy"/>
-   <div><span className="hx-eyebrow">For home owners <i/></span><h2 id="hx-host-title">Have a home in Pune?</h2><p>List it on Gomzo and welcome guests you approve.</p><a className="hx-btn light" href="/list-your-property">List your home <ArrowRight size={17}/></a></div>
+   <div><span className="hx-eyebrow">For home owners <i/></span><h2 id="hx-host-title">Have a home in Pune?</h2><p>List it on Gomzo and welcome guests you approve.</p><button type="button" className="hx-btn light" onClick={openHostEnquiry}>List your home <ArrowRight size={17}/></button></div>
   </section>
  </>
 }

@@ -1,7 +1,7 @@
 .hx-areas{width:min(1240px,90vw);margin:100px auto 0;display:grid;grid-template-columns:380px minmax(0,1fr);gap:48px;align-items:center}
 .hx-areas h2,.hx-host h2{margin:0;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(36px,3.6vw,52px);line-height:1.04;color:#1f2b25}
 .hx-areas-copy p{margin:18px 0 0;color:#5d675f;font-size:17px;line-height:1.6}
-.hx-btn{display:inline-flex;align-items:center;gap:10px;margin-top:28px;padding:15px 24px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;transition:transform .15s}
+.hx-btn{border:0;cursor:pointer;font:inherit;font-weight:600;display:inline-flex;align-items:center;gap:10px;margin-top:28px;padding:15px 24px;border-radius:999px;font-weight:600;font-size:15px;text-decoration:none;transition:transform .15s}
 .hx-btn:hover{transform:translateY(-2px)}.hx-btn svg{width:17px;height:17px;flex:0 0 auto}
 .hx-btn.dark{background:#1f2b25;color:#fff}.hx-btn.light{background:#fff;color:#1f2b25}
 .hx-area-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
@@ -20,3 +20,7 @@
  .hx-area-cards{grid-template-columns:repeat(3,78%);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}.hx-area-cards a{height:340px;scroll-snap-align:start}
  .hx-host{margin-top:64px;min-height:0}.hx-host>div{padding:44px 26px}
 }
+
+/* Space before the green “How do bookings work on GOMZO?” block that follows the banner. */
+.hx-host{margin-bottom:64px}
+@media(max-width:900px){.hx-host{margin-bottom:44px}}
