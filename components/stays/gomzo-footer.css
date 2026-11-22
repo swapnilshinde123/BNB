@@ -54,3 +54,7 @@ footer.gf .gf-top{display:grid;place-items:center;width:40px;height:40px;border-
 .mobile-extras .hx-host{margin:36px 16px 32px;width:auto}
 .mobile-extras section.stay-steps.gx-steps{margin:0 16px 8px}
 .mobile-extras [data-reveal]{opacity:1!important;transform:none!important}
+.mobile-explore:has(~ .mobile-extras):not(.is-map){min-height:0}
+.mobile-explore:has(~ .mobile-extras):not(.is-map) .mobile-host-note{padding-bottom:28px}
+.mobile-extras{background:#f7f5ef;padding-top:4px}
+.mobile-extras .hx-areas{margin-top:36px}
