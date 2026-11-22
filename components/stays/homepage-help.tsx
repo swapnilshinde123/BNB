@@ -1,3 +1,15 @@
-import {homepageFaqs,homepageReviewedDate} from '@/lib/homepage-content';
+import {ArrowRight,MessageSquareText} from 'lucide-react';
+import {homepageFaqs} from '@/lib/homepage-content';
 import './homepage-help.css';
-export function HomepageHelp(){return <section id="faq" className="homepage-help" aria-labelledby="homepage-help-title"><div className="homepage-help-heading"><h2 id="homepage-help-title">A few things before you stay</h2><p>Simple answers. Clear next steps.</p></div><div className="homepage-help-grid"><div className="homepage-faqs">{homepageFaqs.map(item=><details key={item.question}><summary><h3>{item.question}</h3><span aria-hidden="true"/></summary><p>{item.answer} <a href={item.href}>{item.label}</a>.</p></details>)}</div><aside className="homepage-status"><h3>Your booking, at a glance</h3><table><caption className="help-sr-only">Booking statuses and what they mean</caption><thead className="help-sr-only"><tr><th scope="col">Status</th><th scope="col">Meaning</th></tr></thead><tbody><tr><th scope="row"><i className="status-dot"/>Pending</th><td>Host review</td></tr><tr><th scope="row"><i className="status-dot payment"/>Payment pending</th><td>Payment verification</td></tr><tr><th scope="row"><i className="status-dot confirmed"/>Confirmed</th><td>Ready for your stay</td></tr></tbody></table><nav aria-label="Booking help"><ul><li><a href="/how-it-works">How it works</a></li><li><a href="/faq">Booking FAQs</a></li><li><a href="/contact">Contact</a></li></ul></nav></aside></div><div className="homepage-help-bottom"><a href="mailto:customer@gomzo.co">customer@gomzo.co</a><span>WhatsApp <a href="https://wa.me/917083834078" target="_blank" rel="noopener noreferrer">+91 70838 34078</a></span><small>Updated <time dateTime={homepageReviewedDate}>15 Nov 2026</time> · <a href="/about">Gomzo</a></small></div></section>}
+export function HomepageHelp(){return <section id="faq" className="homepage-help" aria-labelledby="homepage-help-title">
+ <div className="qa-side">
+  <span className="qa-eyebrow">GOOD TO KNOW</span>
+  <h2 id="homepage-help-title">Questions,<br/><em>answered.</em></h2>
+  <p className="qa-lead">Everything you need to know before you book your little escape.</p>
+  <div className="qa-chat"><span className="qa-chat-icon"><MessageSquareText size={18}/></span><h3>Still have a question?</h3><p>Message us on WhatsApp — a real person replies, not a bot.</p><a href="https://wa.me/917083834078" target="_blank" rel="noopener noreferrer">Chat with us <ArrowRight size={15}/></a></div>
+ </div>
+ <div className="qa-list">
+  {homepageFaqs.map((item,i)=><details key={item.question} open={i===0}><summary><h3>{item.question}</h3><span className="qa-toggle" aria-hidden="true"/></summary><p>{item.answer} <a href={item.href}>{item.label}</a>.</p></details>)}
+  <a className="qa-all" href="/faq">See all FAQs</a>
+ </div>
+</section>}
