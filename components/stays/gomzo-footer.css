@@ -1,0 +1,51 @@
+footer.gf{display:block;position:relative;overflow:hidden;width:min(89%,1281.6px);max-width:none;margin:40px auto 0;padding:0;border:0;background:none;color:#1f2b25;font-family:'Plus Jakarta Sans',sans-serif}
+footer.gf:before,footer.gf:after{display:none}
+footer.gf button{font-family:inherit}
+.gf-hello{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:32px;padding:46px 52px;border-radius:30px;color:#fff;background:radial-gradient(circle at 92% -30%,#46654e 0,rgba(70,101,78,0) 52%),#22392d}
+.gf-hello:before,.gf-hello:after{content:'';position:absolute;border:1px solid rgba(255,255,255,.08);border-radius:50%;pointer-events:none}
+.gf-hello:before{width:360px;height:360px;right:-90px;top:-210px}.gf-hello:after{width:240px;height:240px;right:-30px;top:-150px}
+.gf-hello-copy{position:relative;display:grid;grid-template-columns:auto 1fr;column-gap:20px;align-items:start}
+.gf-sun{grid-row:span 2;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:#d7784e;color:#fff;font-size:26px;animation:gf-spin 14s linear infinite}
+@keyframes gf-spin{to{transform:rotate(360deg)}}
+.gf-hello h2{margin:0;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:clamp(30px,3.4vw,46px);line-height:1.08;letter-spacing:-.3px;color:#fff}
+.gf-hello h2 em{color:#efbc83}
+.gf-hello p{margin:12px 0 0;font-size:15px;line-height:1.6;color:#b8c3b0;max-width:460px}
+.gf-hello-actions{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:12px;flex:0 0 auto}
+footer.gf .gf-btn{display:inline-flex;align-items:center;gap:9px;padding:14px 22px;border-radius:999px;border:0;font-size:15px;font-weight:600;cursor:pointer;transition:transform .2s,background .2s}
+footer.gf .gf-btn:hover{transform:translateY(-2px)}
+footer.gf .gf-btn.orange{background:#d7784e;color:#fff}footer.gf .gf-btn.orange:hover{background:#c96a41}
+footer.gf .gf-btn.light{background:#fff;color:#1f2b25}
+.gf-main{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.35fr;gap:40px;align-items:start;padding:56px 4px 44px}
+footer.gf .gf-brand{display:block;padding:0;border:0;background:none;cursor:pointer}
+.gf-brand img{display:block;width:180px;height:auto}
+.gf-story p{margin:18px 0 0;max-width:320px;font-size:15px;line-height:1.7;color:#5d675f}
+.gf-pill{display:inline-flex;align-items:center;gap:7px;margin-top:18px;padding:8px 14px;border-radius:999px;background:#fff;border:1px solid #e6e1d4;font-size:13px;color:#a85d40}
+.gf-label{display:block;font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#8b9289}
+.gf-col{display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+.gf-col .gf-label{margin-bottom:12px}
+footer.gf .gf-col a,footer.gf .gf-col button{position:relative;display:inline-flex;align-items:center;gap:6px;padding:6px 0;border:0;background:none;font-size:15px;font-weight:500;color:#2f3b34;text-decoration:none;cursor:pointer;transition:color .2s,transform .2s}
+footer.gf .gf-col a:hover,footer.gf .gf-col button:hover{color:#c8694a;transform:translateX(4px)}
+.gf-postcard{position:relative;padding:26px 26px 22px;border-radius:20px;background:#fffdf8;border:1.5px dashed #d9cdb6;box-shadow:0 14px 34px rgba(31,43,37,.07);transform:rotate(-1.6deg);transition:transform .3s}
+.gf-postcard:hover{transform:rotate(0)}
+.gf-postcard .gf-label{max-width:160px;line-height:1.6}
+.gf-postcard p{margin:14px 0 0;font-family:'DM Serif Display',Georgia,serif;font-size:26px;line-height:1.15;color:#1f2b25}
+.gf-postcard p em{color:#c8694a}
+.gf-coord{display:block;margin-top:18px;padding-top:12px;border-top:1px solid #eee7d8;font-size:12px;letter-spacing:.6px;color:#8b9289}
+.gf-stamp{position:absolute;right:18px;top:-14px;display:grid;place-items:center;align-content:center;width:68px;height:68px;border-radius:50%;border:2px dashed #d7784e;background:#fff6ee;color:#c8694a;transform:rotate(12deg)}
+.gf-stamp b{font-size:12px;letter-spacing:1.4px}.gf-stamp small{font-size:9px;letter-spacing:1px}
+.gf-areas{display:flex;align-items:center;gap:22px;padding:22px 4px;border-top:1px solid #e6e1d4}
+.gf-areas>div{display:flex;flex-wrap:wrap;gap:10px}
+.gf-areas a{padding:9px 16px;border-radius:999px;background:#fff;border:1px solid #e6e1d4;font-size:14px;color:#2f3b34;text-decoration:none;transition:background .2s,color .2s,border-color .2s}
+.gf-areas a:hover{background:#1f2b25;border-color:#1f2b25;color:#fff}
+.gf-bottom{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;padding:20px 4px 24px;border-top:1px solid #e6e1d4}
+footer.gf .gf-bottom small{width:auto;margin:0;padding:0;border:0;font-size:13px;color:#8b9289}
+.gf-bottom>div{display:flex;align-items:center;gap:14px}
+.gf-bottom a{font-size:13px;color:#5d675f;text-decoration:none}.gf-bottom a:hover{text-decoration:underline}
+footer.gf .gf-contact{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;border:1px solid #d9d3c4;background:#fff;color:#1f2b25;font-size:14px;font-weight:600;cursor:pointer;transition:border-color .2s,transform .2s}
+footer.gf .gf-contact:hover{border-color:#c8694a;transform:translateY(-2px)}footer.gf .gf-contact svg{color:#c8694a}
+footer.gf .gf-top{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:0;background:#1f2b25;color:#fff;font-size:17px;cursor:pointer;transition:transform .2s}footer.gf .gf-top:hover{transform:translateY(-3px)}
+.gf-word{margin:0 0 -0.22em;font-family:'DM Serif Display',Georgia,serif;font-size:clamp(90px,19vw,270px);line-height:.9;letter-spacing:-4px;text-align:center;color:transparent;-webkit-text-stroke:1.2px #ddd5c3;user-select:none;pointer-events:none}
+@media(max-width:1100px){.gf-main{grid-template-columns:1fr 1fr;gap:36px}.gf-hello{flex-direction:column;align-items:flex-start}}
+@media(max-width:760px){footer.gf{width:auto;margin:28px 16px 0;padding:0 0 max(8px,env(safe-area-inset-bottom));display:block}.gf-hello{padding:30px 22px;border-radius:24px}.gf-hello-copy{grid-template-columns:1fr}.gf-sun{grid-row:auto;width:46px;height:46px;font-size:21px;margin-bottom:14px}.gf-main{grid-template-columns:1fr 1fr;gap:30px 20px;padding:36px 2px 30px}.gf-story,.gf-postcard{grid-column:1/-1}.gf-postcard{transform:rotate(-1deg)}.gf-areas{flex-direction:column;align-items:flex-start;gap:12px}.gf-bottom{flex-direction:column-reverse;align-items:flex-start}footer.gf .gf-btn{font-size:14px;padding:12px 18px}}
+@media(prefers-reduced-motion:reduce){.gf-sun{animation:none}}
+.host-shell footer.gf{display:none}
