@@ -3,11 +3,12 @@ import {env} from 'cloudflare:workers';
 import {mailJob} from '@/lib/email/service';
 import type {BookingMail,MailKind} from '@/lib/email/templates';
 import {getChatGPTUser} from '@/app/chatgpt-auth';
-import {readGoogleUser} from '@/app/google-auth';
+import {readGoogleUser,readSessionUser} from '@/app/google-auth';
 export function config(){return env as unknown as Record<string,string>}
 export async function identity(){
  const google=await readGoogleUser(config().GOOGLE_CLIENT_ID);
  if(google)return google;
+ try{const session=await readSessionUser(database() as any);if(session)return session}catch{}
  // The Sites mock identity is only for local preview. Production must use the
  // verified Google token; never trust caller-supplied identity headers on a Worker.
  return import.meta.env.DEV?getChatGPTUser():null;

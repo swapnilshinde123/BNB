@@ -1,5 +1,5 @@
-import {config,json} from '@/lib/server';
-import {cookieName,cookieValue,verifyGoogleToken} from '@/app/google-auth';
+import {config,json,database} from '@/lib/server';
+import {cookieName,cookieValue,verifyGoogleToken,createSession,sessionCookie} from '@/app/google-auth';
 import {recordWebsiteUser} from '@/lib/user-registry';
 
 const RETURN_COOKIE='aangan_google_return';
@@ -27,5 +27,6 @@ export async function POST(request:Request){
  const headers=new Headers({'Location':new URL(returnTo,url.origin).toString(),'Cache-Control':'no-store'});
  headers.append('Set-Cookie',`${cookieName()}=${encodeURIComponent(credential)}; Path=/; SameSite=Lax; Max-Age=${maxAge}${url.protocol==='https:'?'; Secure':''}; HttpOnly`);
  headers.append('Set-Cookie',`${RETURN_COOKIE}=; ${returnCookieOptions(url)}; Max-Age=0`);
+ try{const name=claims.name||claims.email,picture=typeof claims.picture==='string'&&/^https:\/\/[a-z0-9.-]*googleusercontent\.com\//i.test(claims.picture)?claims.picture:null;const token=await createSession(database() as any,{userId:'google:'+claims.sub,displayName:name,email:claims.email,fullName:name,picture});headers.append('Set-Cookie',sessionCookie(token,url.protocol==='https:'))}catch{console.error('Could not start a lasting session')}
  return new Response(null,{status:303,headers});
 }
