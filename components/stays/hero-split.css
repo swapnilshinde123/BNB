@@ -32,12 +32,12 @@
 .search-section.sq-search .search-bar .search-button{height:56px;padding:0 24px;border-radius:999px;background:#d7784e;color:#fff;font-size:15px;font-weight:700;gap:10px;flex-direction:row-reverse}
 .search-section.sq-search .search-bar .search-button:hover{background:#c96a41}
 .sq-search .search-button span:after{content:' stays'}
-.sq-trust{list-style:none;max-width:1080px;margin:36px auto 10px;box-sizing:border-box;padding:0 14px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
-.sq-trust li{display:flex;gap:14px;align-items:center;font-size:14px;line-height:1.45;color:#5d675f}
-.sq-trust li>span{flex:none;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#fff;border:1px solid #e6e1d4;color:#c8694a}
+.sq-trust{list-style:none;margin:34px 0 0;padding:6px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#fff;border:1px solid #ebe7dc;border-radius:24px;box-shadow:0 10px 30px rgba(31,43,37,.05)}
+.sq-trust li{display:flex;gap:14px;align-items:center;padding:16px 22px;font-size:13.5px;line-height:1.45;color:#5d675f}.sq-trust li+li{border-left:1px solid #f0ece3}
+.sq-trust li>span{flex:none;width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:#f8f2ea;color:#c8694a}
 .sq-trust b{display:block;font-size:16px;color:#1f2b25}
-@media(max-width:1100px){.sq{grid-template-columns:1fr;gap:34px}.sq-copy{padding-bottom:0}.sq-art{height:460px;max-width:620px;width:100%;justify-self:center}.sq-search .search-segment{padding-left:58px}.sq-search .search-segment:before{left:10px;width:38px;height:38px;margin-top:-19px}.sq-trust{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.sq{padding:24px 18px 70px}.sq h1{font-size:46px;letter-spacing:-2px}.sq-copy>p{font-size:14px}.sq-art{height:380px}.sq-small{width:130px;border-width:6px}.sq-sticker{right:4px;width:96px;height:96px;font-size:11px}.sq-sticker b{font-size:28px}.search-section.sq-search{padding:0 16px;margin-top:-40px}.search-section.sq-search .search-bar{margin:0;border-radius:26px!important;min-height:0}.sq-search .search-segment+.search-segment:after{display:none}.sq-trust{margin:32px 0 10px;padding:0 4px}}
+@media(max-width:1100px){.sq{grid-template-columns:1fr;gap:34px}.sq-copy{padding-bottom:0}.sq-art{height:460px;max-width:620px;width:100%;justify-self:center}.sq-search .search-segment{padding-left:58px}.sq-search .search-segment:before{left:10px;width:38px;height:38px;margin-top:-19px}.sq-trust{grid-template-columns:repeat(2,minmax(0,1fr))}.sq-trust li:nth-child(3){border-left:0}.sq-trust li:nth-child(n+3){border-top:1px solid #f0ece3}}
+@media(max-width:760px){.sq{padding:24px 18px 70px}.sq h1{font-size:46px;letter-spacing:-2px}.sq-copy>p{font-size:14px}.sq-art{height:380px}.sq-small{width:130px;border-width:6px}.sq-sticker{right:4px;width:96px;height:96px;font-size:11px}.sq-sticker b{font-size:28px}.search-section.sq-search{padding:0 16px;margin-top:-40px}.search-section.sq-search .search-bar{margin:0;border-radius:26px!important;min-height:0}.sq-search .search-segment+.search-segment:after{display:none}.sq-trust{margin:28px 0 0}}
 @media(prefers-reduced-motion:reduce){.sq-sticker{animation:none}}
 
 .guest-shell:has(.sq)>.header{background:#e6eee4f2!important;border-bottom-color:transparent!important;box-shadow:0 0 0 100vmax #e6eee4;clip-path:inset(0 -100vmax)}
@@ -51,3 +51,9 @@
 .sq-docked .search-segment b{font-size:11px}.sq-docked .search-segment>span{font-size:13px}
 .search-section.sq-search.sq-docked .search-bar .search-button{height:52px;width:52px;padding:0;justify-content:center}
 .sq-docked .search-button span{display:none}
+
+/* neighbourhood ribbon under the hero: aligned with the page, softer */
+.guest-shell:has(.sq) .neighbourhood-ribbon{margin:28px 5.5% 0;padding:16px 0;border:1px solid #ebe7dc;border-radius:999px;background:#fbf9f4}
+.guest-shell:has(.sq) .ribbon-group{gap:30px;padding-right:30px}
+.guest-shell:has(.sq) .ribbon-group>span{gap:30px;font-size:20px;color:#6f7d68}
+.guest-shell:has(.sq) .ribbon-star{width:18px;height:18px;color:#d7784e}
