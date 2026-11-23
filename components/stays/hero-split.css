@@ -82,3 +82,6 @@
 @media(min-width:1360px){.guest-shell:has(.sq) .stays-section>:not(.map-layout) .property-grid,.guest-shell:has(.sq) .stays-section>.property-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:30px 22px}}
 
 @media(min-width:901px){.search-section.sq-search.sq-docked .search-bar{left:50%;margin:0!important;transform:translateX(-50%);width:min(640px,calc(100vw - 560px));max-width:none}.search-section.sq-search.sq-docked .search-segments{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Dock immediately: never interpolate the centering transform on scroll. */
+@media(min-width:901px){.search-section.sq-search,.search-section.sq-search.reveal-ready{transform:none!important;animation:none!important;transition:none!important}.search-section.sq-search .search-bar{transition:none!important;animation:none!important}.search-section.sq-search.sq-docked .search-bar{translate:-50% 0;transform:none!important;left:50%;margin:0!important}}
