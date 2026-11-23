@@ -1,7 +1,7 @@
 import {headers} from 'next/headers';
 
-export type GoogleUser={userId:string;displayName:string;email:string;fullName:string|null};
-type Claims={iss:string;sub:string;aud:string|Array<string>;azp?:string;exp:number;email:string;email_verified:boolean|string;name?:string};
+export type GoogleUser={userId:string;displayName:string;email:string;fullName:string|null;picture?:string|null};
+type Claims={iss:string;sub:string;aud:string|Array<string>;azp?:string;exp:number;email:string;email_verified:boolean|string;name?:string;picture?:string};
 type Jwk={kid:string;kty:string;alg?:string;use?:string;n:string;e:string};
 let keyCache:{keys:Jwk[];expiresAt:number}|null=null;
 const COOKIE='aangan_google_session';
@@ -16,7 +16,8 @@ export async function readGoogleUser(clientId:string|undefined,requestHeaders?:H
  const claims=await verifyGoogleToken(token,clientId);
  if(!claims||!claims.sub||!claims.email||!(claims.email_verified===true||claims.email_verified==='true'))return null;
  const name=typeof claims.name==='string'&&claims.name.trim()?claims.name.trim():claims.email;
- return {userId:`google:${claims.sub}`,displayName:name,email:claims.email,fullName:name};
+ const picture=typeof claims.picture==='string'&&/^https:\/\/[a-z0-9.-]*googleusercontent\.com\//i.test(claims.picture)?claims.picture:null;
+ return {userId:`google:${claims.sub}`,displayName:name,email:claims.email,fullName:name,picture};
 }
 
 export async function verifyGoogleToken(token:string,clientId:string):Promise<Claims|null>{
