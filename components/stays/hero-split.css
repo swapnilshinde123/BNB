@@ -43,7 +43,7 @@
 .guest-shell:has(.sq)>.header{background:#e6eee4f2!important;border-bottom-color:transparent!important;box-shadow:0 0 0 100vmax #e6eee4;clip-path:inset(0 -100vmax)}
 .guest-shell:has(.sq)>.header .pm-trigger{background:#fff;border-color:#d5dcd2}
 /* docked into the nav bar on scroll */
-.search-section.sq-search.sq-docked{padding-top:var(--dock-h,88px)}
+.search-section.sq-search.sq-docked{padding-top:var(--dock-h,88px);z-index:auto}
 .search-section.sq-search.sq-docked .search-bar{position:fixed;top:14px;left:50%;width:640px;max-width:calc(100vw - 420px);margin:0 0 0 -320px!important;min-height:0;height:68px;padding:6px 6px 6px 8px!important;z-index:45;box-shadow:0 10px 30px rgba(31,43,37,.14);border-color:#e3e8e0}
 @media(max-width:1180px){.search-section.sq-search.sq-docked .search-bar{width:520px;margin-left:-260px!important}}
 .sq-docked .search-segment{padding:6px 16px 6px 18px}
