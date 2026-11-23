@@ -159,3 +159,4 @@ footer.site-footer .footer-contact svg:first-child{color:#b86140}
 .search-results-page .search-section-compact .search-button{height:50px;padding:0 18px;font-size:14px}
 }
 @media(min-width:901px) and (max-width:1180px){.search-results-page .search-section-compact .search-button span{display:none}.search-results-page .search-section-compact .search-button{width:50px;padding:0;justify-content:center}}
+@media(min-width:901px){.search-results-page .search-section-compact .search-bar{padding:6px!important;gap:0;background:#fff!important}.search-results-page .search-section-compact .search-bar .search-button{height:50px;margin:0!important}}
