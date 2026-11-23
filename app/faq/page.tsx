@@ -46,7 +46,7 @@ export default function FAQ() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    '@id': 'https://gomzo.co/faq#faq',
+    '@id': 'https://www.gomzo.co/faq#faq',
     mainEntity: answers.map(({ question, answer }) => ({
       '@type': 'Question',
       name: question,

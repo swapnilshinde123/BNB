@@ -1,7 +1,7 @@
 import {homepageFaqs,homepageIntroduction,homepageReviewedDate} from './homepage-content';
 import {gomzoProfiles} from './brand-links';
 import type {Metadata} from 'next';
-export const origin='https://gomzo.co';
+export const origin='https://www.gomzo.co';
 export const homeTitle='GOMZO | Curated Homestays & Short Stays in Pune';
 export const homeDescription='Book curated homestays and short-stay apartments in Pune with Gomzo: Koregaon Park, Viman Nagar, Kalyani Nagar, Baner, Wakad and Pashan. Compare live homes and send a booking request directly to the host.';
 // Area and use-case landing pages, served at /stays/pune/<slug>.
