@@ -11,7 +11,8 @@ export function PaymentSettings(){
  const [upiId,setUpiId]=useState('');const [payee,setPayee]=useState('');
  const [loaded,setLoaded]=useState(false);const [busy,setBusy]=useState(false);
  const [error,setError]=useState('');const [saved,setSaved]=useState(false);const [configured,setConfigured]=useState(false);
- useEffect(()=>{fetch('/api/payment-settings',{cache:'no-store'}).then(r=>r.json()).then((d:any)=>{if(d.error)throw new Error(d.error);setUpiId(d.upiId||'');setPayee(d.payeeName||'');setConfigured(!!d.configured)}).catch(e=>setError(e instanceof Error?e.message:'Could not load payment settings.')).finally(()=>setLoaded(true))},[]);
+ const [wa,setWa]=useState('');const [waBusy,setWaBusy]=useState(false);const [waMsg,setWaMsg]=useState('');const [waErr,setWaErr]=useState('');
+ useEffect(()=>{fetch('/api/payment-settings',{cache:'no-store'}).then(r=>r.json()).then((d:any)=>{if(d.error)throw new Error(d.error);setUpiId(d.upiId||'');setPayee(d.payeeName||'');setConfigured(!!d.configured);setWa(d.whatsapp||'')}).catch(e=>setError(e instanceof Error?e.message:'Could not load payment settings.')).finally(()=>setLoaded(true))},[]);
  async function save(e:React.FormEvent){
   e.preventDefault();setSaved(false);
   if(!validUpi(upiId)){setError('Enter a valid UPI ID, for example yourname@okhdfcbank.');return}
@@ -20,6 +21,7 @@ export function PaymentSettings(){
   try{const r=await fetch('/api/payment-settings',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({upiId:upiId.trim(),payeeName:payee.trim()})});const d:any=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not save.');setUpiId(d.upiId);setPayee(d.payeeName);setSaved(true);setConfigured(true)}
   catch(err){setError(err instanceof Error?err.message:'Could not save.')}finally{setBusy(false)}
  }
+ async function saveWa(e:React.FormEvent){e.preventDefault();setWaBusy(true);setWaErr('');setWaMsg('');try{const r=await fetch('/api/payment-settings',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({whatsapp:wa})});const d:any=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.error||'Could not save.');setWa(d.whatsapp);setWaMsg('Saved. Guests’ “Message host” now opens a WhatsApp chat with this number.')}catch(err){setWaErr(err instanceof Error?err.message:'Could not save.')}finally{setWaBusy(false)}}
  const ready=validUpi(upiId)&&payee.trim().length>=2;
  const sample=ready?'upi://pay?'+new URLSearchParams({pa:upiId.trim(),pn:payee.trim(),cu:'INR'}).toString():'';
  return <section className="panel payment-settings-panel"><div className="panel-title"><div><h3>Payments</h3><small>Guests pay you directly by UPI. They scan this QR in My bookings after you accept their request.</small></div></div>
@@ -40,5 +42,5 @@ export function PaymentSettings(){
     <small>The booking amount is added to each guest’s QR.</small>
    </div>
   </div>
- </section>
+ <form className="payment-settings host-wa-form" onSubmit={saveWa}><div className="panel-title"><div><h3>Guest WhatsApp</h3><small>When a guest taps <b>Message host</b> on their booking, WhatsApp opens a chat with this number and a ready message with the home, dates and booking reference.</small></div></div><label>WhatsApp number<input type="tel" value={wa} onChange={e=>{setWa(e.target.value);setWaMsg('')}} placeholder="+91 98765 43210" autoComplete="tel" disabled={!loaded}/><span className="hint">Use the number you reply to guests from. Without it, guest messages go to the Gomzo team.</span></label>{waErr&&<p className="upi-error" role="alert">{waErr}</p>}{waMsg&&<p className="upi-fixed"><CheckCircle2 size={14}/>{waMsg}</p>}<div><button className="primary" disabled={waBusy||!loaded}>{waBusy?'Saving…':'Save WhatsApp number'}</button></div></form></section>
 }

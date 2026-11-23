@@ -47,12 +47,12 @@ test('host UPI settings, guest UTR submission and host review stay isolated per 
  state.email='owner@example.com';assert.equal((await review.POST(req('/api/properties/review',{id,version:1,status:'approved',reason:''}))).status,200);
  sql.prepare("INSERT INTO bookings VALUES('ANG-PAY00001','guest2','Guest Two','guest2@example.com','9999999999',?,'2028-01-01','2028-01-03',2,7000,'pending','website','now','now')").run(id);
  state.email='e@example.com';
- assert.deepEqual(await (await paySettings.GET()).json(),{upiId:'',payeeName:'',configured:false});
+ assert.deepEqual(await (await paySettings.GET()).json(),{upiId:'',payeeName:'',configured:false,whatsapp:''});
  assert.equal((await bookings.PATCH(req('/api/bookings',{id:'ANG-PAY00001',status:'payment_pending'},'PATCH'))).status,409);
  assert.equal((await paySettings.PUT(req('/api/payment-settings',{upiId:'not a upi',payeeName:'Company E'},'PUT'))).status,400);
  assert.equal((await paySettings.PUT(req('/api/payment-settings',{upiId:'companye@okaxis',payeeName:'Company E'},'PUT','https://evil.test'))).status,403);
  assert.equal((await paySettings.PUT(req('/api/payment-settings',{upiId:'companye@okaxis',payeeName:'Company  E'},'PUT'))).status,200);
- assert.deepEqual(await (await paySettings.GET()).json(),{upiId:'companye@okaxis',payeeName:'Company E',configured:true});
+ assert.deepEqual(await (await paySettings.GET()).json(),{upiId:'companye@okaxis',payeeName:'Company E',configured:true,whatsapp:''});
  state.email='owner@example.com';assert.equal((await (await paySettings.GET()).json()).upiId,'swapnil69011@ybl');
  sql.prepare("UPDATE bookings SET status='payment_pending' WHERE id='ANG-PAY00001'").run();
  state.email='guest2@example.com';let mine=(await (await bookings.GET(req('/api/bookings',null,'GET'))).json()).find(b=>b.id==='ANG-PAY00001');assert.equal(mine.payment_upi,'companye@okaxis');assert.equal(mine.payment_payee,'Company E');assert.equal(mine.payment_utr,null);

@@ -148,3 +148,4 @@ footer.site-footer .footer-contact svg:first-child{color:#b86140}
 }
 
 @media(max-width:1100px){.steps-route{width:calc((100% - 28px)*2/3 + 28px)}}
+.payment-settings.host-wa-form{display:flex;flex-direction:column;gap:18px;margin-top:34px;padding-top:28px;border-top:1px solid var(--line);max-width:720px}.host-wa-form .panel-title{margin:0}

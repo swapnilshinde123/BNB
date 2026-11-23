@@ -9,6 +9,7 @@ export async function ensureTenancy(){if(ready)return;const db=database();await 
  db.prepare('CREATE TABLE IF NOT EXISTS host_invitations(id TEXT PRIMARY KEY,email TEXT NOT NULL,company_id TEXT NOT NULL,token_hash TEXT NOT NULL UNIQUE,status TEXT NOT NULL,expires_at INTEGER NOT NULL,created_at INTEGER NOT NULL,accepted_at INTEGER)'),
  db.prepare('CREATE TABLE IF NOT EXISTS property_governance(property_id TEXT PRIMARY KEY,company_id TEXT NOT NULL,status TEXT NOT NULL,requested_active INTEGER NOT NULL,reason TEXT NOT NULL DEFAULT \'\',version INTEGER NOT NULL DEFAULT 1,submitted_at INTEGER NOT NULL,reviewed_at INTEGER,reviewed_by TEXT)'),
  db.prepare('CREATE TABLE IF NOT EXISTS payment_settings(company_id TEXT PRIMARY KEY,upi_id TEXT NOT NULL,payee_name TEXT NOT NULL,updated_at INTEGER NOT NULL,updated_by TEXT NOT NULL)'),
+ db.prepare('CREATE TABLE IF NOT EXISTS host_contacts(company_id TEXT PRIMARY KEY,whatsapp TEXT NOT NULL,updated_at INTEGER NOT NULL)'),
  db.prepare('CREATE TABLE IF NOT EXISTS booking_payments(booking_id TEXT PRIMARY KEY,utr TEXT NOT NULL,submitted_at INTEGER NOT NULL,submitted_by TEXT NOT NULL)'),
  db.prepare('CREATE TABLE IF NOT EXISTS property_locations(property_id TEXT PRIMARY KEY,city TEXT NOT NULL,state TEXT NOT NULL,updated_at INTEGER NOT NULL)'),
  db.prepare('CREATE TABLE IF NOT EXISTS property_deletions(property_id TEXT PRIMARY KEY,deleted_by TEXT NOT NULL,deleted_at INTEGER NOT NULL)'),
@@ -30,5 +31,14 @@ export async function publicHosts():Promise<Record<string,PublicHost>>{
  try{const admin=(config().ADMIN_EMAIL||'').toLowerCase();const p=admin?await db.prepare('SELECT name,picture,created_at FROM host_profiles WHERE email=?').bind(admin).first<{name:string;picture:string|null;created_at:number|null}>():null;const first=await db.prepare('SELECT MIN(created_at) AS t FROM bookings').first<{t:number|null}>();
   out['']={name:(p?.name||'Gomzo').split(' ')[0],picture:p?.picture||null,since:Math.min(...[first?.t,p?.created_at].filter((x):x is number=>typeof x==='number'&&x>0))||null}}catch{out['']={name:'Gomzo',picture:null,since:null}}
  if(out['']&&!Number.isFinite(out[''].since as number))out[''].since=null;
+ return out;
+}
+
+/** Digits for wa.me: Indian 10-digit numbers get the 91 country code. */
+export function waNumber(v:unknown){const d=typeof v==='string'?v.replace(/\D/g,''):'';if(d.length===10)return '91'+d;if(d.length===11&&d.startsWith('0'))return '91'+d.slice(1);return d.length>=11&&d.length<=15?d:''}
+/** WhatsApp of the host who manages each home: the number they saved, else the one from their host request, else Gomzo's. */
+export async function hostWhatsapps(propertyIds:string[]){
+ await ensureTenancy();const db=database(),out:Record<string,string>={},fallback=waNumber(config().OWNER_WHATSAPP||'');
+ for(const id of [...new Set(propertyIds)]){let n='';try{const g=await db.prepare('SELECT company_id FROM property_governance WHERE property_id=?').bind(id).first<{company_id:string}>();const company=g?.company_id||'platform';const c=await db.prepare('SELECT whatsapp FROM host_contacts WHERE company_id=?').bind(company).first<{whatsapp:string}>();n=waNumber(c?.whatsapp);if(!n&&g?.company_id){const r=await db.prepare("SELECT r.whatsapp FROM host_members m JOIN host_requests r ON lower(r.email)=lower(m.email) WHERE m.company_id=? AND m.active=1 ORDER BY r.created_at DESC LIMIT 1").bind(g.company_id).first<{whatsapp:string}>().catch(()=>null);n=waNumber(r?.whatsapp)}}catch{}out[id]=n||fallback}
  return out;
 }
