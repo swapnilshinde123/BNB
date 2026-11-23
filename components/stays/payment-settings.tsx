@@ -42,5 +42,5 @@ export function PaymentSettings(){
     <small>The booking amount is added to each guest’s QR.</small>
    </div>
   </div>
- <form className="payment-settings host-wa-form" onSubmit={saveWa}><div className="panel-title"><div><h3>Guest WhatsApp</h3><small>When a guest taps <b>Message host</b> on their booking, WhatsApp opens a chat with this number and a ready message with the home, dates and booking reference.</small></div></div><label>WhatsApp number<input type="tel" value={wa} onChange={e=>{setWa(e.target.value);setWaMsg('')}} placeholder="+91 98765 43210" autoComplete="tel" disabled={!loaded}/><span className="hint">Use the number you reply to guests from. Without it, guest messages go to the Gomzo team.</span></label>{waErr&&<p className="upi-error" role="alert">{waErr}</p>}{waMsg&&<p className="upi-fixed"><CheckCircle2 size={14}/>{waMsg}</p>}<div><button className="primary" disabled={waBusy||!loaded}>{waBusy?'Saving…':'Save WhatsApp number'}</button></div></form></section>
+ </section>
 }
