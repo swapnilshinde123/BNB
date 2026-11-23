@@ -19,14 +19,14 @@
 .gallery-more{position:absolute;inset:3px;border-radius:5px;background:#14221bb3;color:#fff;display:grid;place-items:center;font-size:15px;font-weight:700;pointer-events:none}
 /* full room page on desktop/tablet: a taller hero photo and a booking card that stays in view */
 @media(min-width:761px){
-.room-page .booking-modal .modal-photo.property-gallery-hero{height:clamp(360px,34vw,520px);border-radius:24px;overflow:hidden}
+.room-page .booking-modal .modal-photo.property-gallery-hero{border-radius:24px;overflow:hidden}
 .room-page .booking-modal .modal-photo.property-gallery-hero img{object-position:center 55%}
 .room-page .booking-modal .modal-body{align-items:start}
 .room-page .booking-modal .reservation{position:sticky;top:110px}
 }
 /* room page lines up with the header and the rest of the site */
 @media(min-width:761px){
-.modal-backdrop.room-page{padding-left:5.5%;padding-right:5.5%}
-.modal-backdrop.room-page .booking-modal{max-width:none}
-.room-page .booking-modal .modal-body{grid-template-columns:minmax(0,1fr) 380px;gap:56px}
+.guest-shell .modal-backdrop.room-page{padding-left:5.5%;padding-right:5.5%}
+.guest-shell .modal-backdrop.room-page .booking-modal{max-width:none;margin-left:0;margin-right:0}
+.guest-shell .room-page .booking-modal .modal-body{grid-template-columns:minmax(0,1fr) 380px;gap:56px}
 }
