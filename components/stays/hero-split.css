@@ -80,3 +80,5 @@
 @media(prefers-reduced-motion:reduce){.sq-orbit,.sq-map-route,.sq-map-pulse{animation:none}}
 /* homes grid follows the screen size: 4 per row on wide screens, 3 on laptops */
 @media(min-width:1360px){.guest-shell:has(.sq) .stays-section>:not(.map-layout) .property-grid,.guest-shell:has(.sq) .stays-section>.property-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:30px 22px}}
+
+@media(min-width:901px){.search-section.sq-search.sq-docked .search-bar{left:50%;margin:0!important;transform:translateX(-50%);width:min(640px,calc(100vw - 560px));max-width:none}.search-section.sq-search.sq-docked .search-segments{grid-template-columns:repeat(3,minmax(0,1fr))}}
