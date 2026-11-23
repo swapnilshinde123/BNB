@@ -5,6 +5,7 @@ import {identity,isAdmin,database,json} from '@/lib/server';
 import {Property} from '@/lib/properties';
 import {allProperties,fromPropertyRow,forgetProperties} from '@/lib/property-data';
 import {withPhotoLinks} from '@/lib/photo-url';
+import {reviewSummaries} from '@/lib/reviews';
 
 type PropertyInput={id?:unknown;name?:unknown;area?:unknown;city?:unknown;state?:unknown;address?:unknown;type?:unknown;guests?:unknown;beds?:unknown;baths?:unknown;price?:unknown;tag?:unknown;category?:unknown;description?:unknown;lat?:unknown;lng?:unknown;amenities?:unknown;photos?:unknown;active?:unknown;cleaningFee?:unknown};
 type Row={id:string;name:string;area:string;address:string;type:string;guests:number;beds:number;baths:number;price:number;rating:string;reviews:number;tag:string;category:string;image:string;lat:string;lng:string;description:string;amenities_json:string;photos_json:string;cleaning_fee:number;active:number};
@@ -49,7 +50,8 @@ export async function GET(req:Request){
  if(!admin&&bookedIds.size){const allWithArchived=await allProperties(true,true);const known=new Set(all.map(p=>p.id));for(const p of allWithArchived)if(bookedIds.has(p.id)&&!known.has(p.id))all.push(p)}
  const visible=admin?(access.role==='super_admin'?all:all.filter(p=>p.companyId===access.companyId)):all.filter(p=>p.active!==false||bookedIds.has(p.id));
  const hosts=admin?{}:await publicHosts().catch(()=>({} as Record<string,PublicHost>));
- const payload=visible.map(p=>{if(admin)return p;const {address,companyId,companyName,reviewStatus,reviewReason,reviewVersion,requestedActive,...publicProperty}=withPhotoLinks(p);return {...publicProperty,host:hosts[companyId||'']||null}});
+ const summaries=admin?{}:await reviewSummaries().catch(()=>({} as Record<string,{count:number;average:number}>));
+ const payload=visible.map(p=>{if(admin)return p;const {address,companyId,companyName,reviewStatus,reviewReason,reviewVersion,requestedActive,...publicProperty}=withPhotoLinks(p);const r=(summaries as any)[p.id];return {...publicProperty,...(r?{rating:r.average.toFixed(2).replace(/0$/,''),reviews:r.count}:{}),host:hosts[companyId||'']||null}});
  return json(payload);
 }
 
