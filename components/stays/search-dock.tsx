@@ -10,11 +10,12 @@ export function SearchDock(){
   let docked=false,raf=0,motion:Animation|null=null;
   const set=(next:boolean)=>{
    if(next===docked)return;
+   const startTop=bar.getBoundingClientRect().top;
    motion?.cancel();
    if(next){sec.style.setProperty('--dock-h',bar.offsetHeight+'px');sec.classList.add('sq-docked')}
    else sec.classList.remove('sq-docked');
    docked=next;
-   if(next&&!reduced.matches){const top=parseFloat(getComputedStyle(bar).top)||14;motion=bar.animate([{top:(top+12)+'px',opacity:.85},{top:top+'px',opacity:1}],{duration:240,easing:'cubic-bezier(.22,1,.36,1)'});}
+   if(next&&!reduced.matches){const top=parseFloat(getComputedStyle(bar).top)||14;motion=bar.animate([{top:Math.max(top+24,Math.min(startTop,top+120))+'px',opacity:.94},{top:top+'px',opacity:1}],{duration:420,easing:'cubic-bezier(.22,1,.36,1)'});}
   };
   const check=()=>{raf=0;if(innerWidth<901){set(false);return}const limit=header.getBoundingClientRect().bottom;const top=sec.getBoundingClientRect().top;if(!docked&&top<limit-10)set(true);else if(docked&&top>limit+10)set(false)};
   const onScroll=()=>{if(!raf)raf=requestAnimationFrame(check)};
