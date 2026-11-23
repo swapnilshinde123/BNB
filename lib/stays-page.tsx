@@ -15,7 +15,7 @@ export async function staysMetadata(slug:string){
  if(slug==='pune'){const from=fromPrice(all);return pageMetadata('Homestays & Short Stay Apartments in Pune | GOMZO',`Book host-confirmed homestays and short stay apartments in Pune${from?' from '+from+'/night':''}, in Koregaon Park, Viman Nagar, Baner and more. ₹0 to request; pay by UPI only after the host accepts.`,'/stays/pune')}
  const homes=matchingHomes(all,slug);if(!homes.length)return {title:'Page not found | GOMZO',robots:{index:false,follow:false}};
  const g=areaPages[slug],from=fromPrice(homes),what=g.area?`a host-confirmed ${homes.length===1?homes[0].type.toLowerCase()==='studio'?'studio':homes[0].type+' apartment':'homestay or apartment'} in ${g.area}, Pune`:`a ${typeNoun[slug]||'stay'} in Pune for a night or longer`;
- return pageMetadata(g.title+' | GOMZO',`Book ${what} from ${from}/night. ₹0 to request; your host confirms first and you pay by UPI only after they accept.`,areaPath(slug))}
+ return pageMetadata((g.area?`Homestays & Short Stay Apartments in ${g.area}, Pune`:`${g.title} · Book by the Night`)+' | GOMZO',`Book ${what} from ${from}/night. ₹0 to request; your host confirms first and you pay by UPI only after they accept.`,areaPath(slug))}
 export async function StaysPage({slug}:{slug:string}){
  const all=await seoHomes(),homes=slug==='pune'?all:matchingHomes(all,slug);if(slug!=='pune'&&!homes.length)notFound();
  const title=slug==='pune'?'Homestays & short stay apartments in Pune':areaPages[slug].title;
