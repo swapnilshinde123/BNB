@@ -20,7 +20,7 @@
 /* search overlapping the green band */
 .search-section.sq-search{position:relative;z-index:4;padding:0 5.5%;margin-top:-6px}.search-section.sq-search:before{content:'';position:absolute;left:0;right:0;top:0;height:60px;background:#e6eee4;z-index:-1}
 .search-section.sq-search.reveal-ready:not(.is-visible){opacity:1;transform:none}
-.search-section.sq-search .search-bar{max-width:none;margin:0 3%;min-height:118px;align-items:center;background:rgba(255,255,255,.96)!important;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid #fff;border-radius:80px!important;padding:10px 14px 10px 12px!important;box-shadow:0 30px 60px rgba(31,43,37,.16)}
+.search-section.sq-search .search-bar{max-width:none;margin:0 3%;min-height:118px;align-items:center;background:#fff!important;backdrop-filter:none;-webkit-backdrop-filter:none;border:1px solid #fff;border-radius:80px!important;padding:10px 14px 10px 12px!important;box-shadow:0 30px 60px rgba(31,43,37,.16)}
 .sq-search .search-segment{position:relative;padding:16px 20px 16px 78px;justify-content:center}
 .sq-search .search-segment+.search-segment:after{content:'';position:absolute;left:0;top:22%;bottom:22%;width:1px;background:#e6e1d4}
 .sq-search .search-segment:before{content:'';position:absolute;left:18px;top:50%;width:48px;height:48px;margin-top:-24px;border-radius:50%;background:#f4efe4 center/20px no-repeat}
