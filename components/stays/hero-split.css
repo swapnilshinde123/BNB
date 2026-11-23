@@ -78,3 +78,5 @@
 @media(max-width:1100px){.sq-map{right:0;width:160px}.sq-map b{font-size:16px}}
 @media(max-width:760px){.sq-map{width:130px;bottom:-14px;border-width:4px}.sq-map>svg{height:58px}.sq-map b{font-size:14px}.sq-orbit{width:120px;top:-26px}}
 @media(prefers-reduced-motion:reduce){.sq-orbit,.sq-map-route,.sq-map-pulse{animation:none}}
+/* homes grid follows the screen size: 4 per row on wide screens, 3 on laptops */
+@media(min-width:1360px){.guest-shell:has(.sq) .stays-section:not(.map-layout) .property-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:30px 22px}}
