@@ -48,3 +48,14 @@
 .destination-input input{flex:1;min-width:0}.destination-clear{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#e9eee4;color:#4f5f49;flex-shrink:0}
 .destination-soon{font-style:normal;font-size:11px;font-weight:600;color:#a0522d;background:#fbeee6;border-radius:999px;padding:3px 8px;white-space:nowrap}
 .destination-note{font-size:13px;color:#6f7d68;margin:8px 6px}
+/* phones: the destination picker opens as a full-screen sheet anchored to the top, so the list stays visible above the keyboard */
+.sheet-close{display:none}
+@media(max-width:760px){
+[data-radix-popper-content-wrapper]:has(>.search-popover-destination){position:fixed!important;inset:0!important;transform:none!important;min-width:0!important;z-index:400!important}
+.search-popover.search-popover-destination{position:relative;box-sizing:border-box;width:100vw!important;max-width:none!important;height:100dvh;max-height:none!important;margin:0;border:0;border-radius:0;padding:calc(env(safe-area-inset-top) + 18px) 18px calc(env(safe-area-inset-bottom) + 12px);display:flex;flex-direction:column;animation:sheet-up .22s ease-out}
+@keyframes sheet-up{from{opacity:0;transform:translateY(16px)}}
+.search-popover-destination .sheet-close{display:grid;place-items:center;position:absolute;right:16px;top:calc(env(safe-area-inset-top) + 12px);width:42px;height:42px;border:0;border-radius:50%;background:#f1efe8;color:#1f2b25;cursor:pointer}
+.search-popover-destination h3{font-size:26px;margin:6px 0 14px;padding-right:50px}
+.search-popover-destination .destination-input{flex:none}
+.search-popover-destination .destination-list{flex:1;min-height:0;max-height:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:40px}
+}
