@@ -1,4 +1,4 @@
-import {hostAccess,ensureTenancy,canManageProperty,sameOrigin} from '@/lib/tenancy';
+import {hostAccess,ensureTenancy,canManageProperty,sameOrigin,publicHosts,type PublicHost} from '@/lib/tenancy';
 import {platformJob,platformMessage,companyRecipients} from '@/lib/email/platform';
 import {config} from '@/lib/server';
 import {identity,isAdmin,database,json} from '@/lib/server';
@@ -48,7 +48,8 @@ export async function GET(req:Request){
  const bookedIds=new Set(pastHomes?.results.map(row=>row.property_id)||[]);
  if(!admin&&bookedIds.size){const allWithArchived=await allProperties(true,true);const known=new Set(all.map(p=>p.id));for(const p of allWithArchived)if(bookedIds.has(p.id)&&!known.has(p.id))all.push(p)}
  const visible=admin?(access.role==='super_admin'?all:all.filter(p=>p.companyId===access.companyId)):all.filter(p=>p.active!==false||bookedIds.has(p.id));
- const payload=visible.map(p=>{if(admin)return p;const {address,companyId,companyName,reviewStatus,reviewReason,reviewVersion,requestedActive,...publicProperty}=withPhotoLinks(p);return publicProperty});
+ const hosts=admin?{}:await publicHosts().catch(()=>({} as Record<string,PublicHost>));
+ const payload=visible.map(p=>{if(admin)return p;const {address,companyId,companyName,reviewStatus,reviewReason,reviewVersion,requestedActive,...publicProperty}=withPhotoLinks(p);return {...publicProperty,host:hosts[companyId||'']||null}});
  return json(payload);
 }
 
