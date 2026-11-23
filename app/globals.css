@@ -171,3 +171,5 @@ footer.site-footer .footer-contact svg:first-child{color:#b86140}
 /* Keep desktop decorations and wide grid contents inside the viewport. */
 @media(min-width:761px){html{overflow-x:clip}body{overflow-x:clip}.hero-copy,.hero-visual,.property-grid,.map-layout,.neighbourhood-ribbon{min-width:0}.neighbourhood-ribbon{max-width:100%}}
 @media(min-width:1025px){.hero{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+@media(min-width:761px){main .neighbourhood-ribbon{width:auto!important;max-width:none;margin-inline:5.5%;contain:inline-size}}
