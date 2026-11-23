@@ -24,3 +24,9 @@
 .room-page .booking-modal .modal-body{align-items:start}
 .room-page .booking-modal .reservation{position:sticky;top:110px}
 }
+/* room page lines up with the header and the rest of the site */
+@media(min-width:761px){
+.modal-backdrop.room-page{padding-left:5.5%;padding-right:5.5%}
+.modal-backdrop.room-page .booking-modal{max-width:none}
+.room-page .booking-modal .modal-body{grid-template-columns:minmax(0,1fr) 380px;gap:56px}
+}
