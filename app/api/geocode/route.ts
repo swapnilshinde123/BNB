@@ -11,7 +11,7 @@ export async function POST(request:Request){
  recent.set(access.email,now);
  try{
   const url=new URL('https://photon.komoot.io/api/');url.searchParams.set('q',address);url.searchParams.set('limit','1');if(Number.isFinite(lat)&&Number.isFinite(lng)&&Math.abs(lat!)<=90&&Math.abs(lng!)<=180){url.searchParams.set('lat',String(lat));url.searchParams.set('lon',String(lng))}url.searchParams.set('lang','en');
-  const response=await fetch(url,{headers:{'User-Agent':'Gomzo/1.0 (https://gomzo.co; customer@gomzo.co)'},signal:AbortSignal.timeout(8000)});
+  const response=await fetch(url,{headers:{'User-Agent':'Gomzo/1.0 (https://www.gomzo.co; customer@gomzo.co)'},signal:AbortSignal.timeout(8000)});
   if(!response.ok)throw Error();const result=await response.json() as {features?:{geometry?:{coordinates?:number[]};properties?:Record<string,string>}[]};
   const match=result.features?.[0],coords=match?.geometry?.coordinates;
   if(!coords||!Number.isFinite(coords[0])||!Number.isFinite(coords[1])||Math.abs(coords[0])>180||Math.abs(coords[1])>90)return json({error:'No matching location found. Add a landmark and city, or place the pin on the map.'},404);
