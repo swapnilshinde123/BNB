@@ -149,3 +149,13 @@ footer.site-footer .footer-contact svg:first-child{color:#b86140}
 
 @media(max-width:1100px){.steps-route{width:calc((100% - 28px)*2/3 + 28px)}}
 .payment-settings.host-wa-form{display:flex;flex-direction:column;gap:18px;margin-top:34px;padding-top:28px;border-top:1px solid var(--line);max-width:720px}.host-wa-form .panel-title{margin:0}
+/* Search results (desktop): the search bar sits inside the top nav bar, compact */
+@media(min-width:901px){
+.search-results-page .search-section-compact{position:static;height:0;padding:0;border:0;background:none;backdrop-filter:none;z-index:auto}
+.search-results-page .search-section-compact .search-bar{position:fixed;top:calc((var(--results-header,84px) - 62px)/2);left:50%;transform:translateX(-50%);width:min(640px,calc(100vw - 460px));max-width:none;height:62px;min-height:0;margin:0;padding:5px 5px 5px 8px;z-index:45;background:#fff;border:1px solid #e3e1d8;box-shadow:0 6px 22px rgba(31,43,37,.10)}
+.search-results-page .search-section-compact .search-segment{padding:5px 16px 5px 18px;gap:1px}
+.search-results-page .search-section-compact .search-segment b{font-size:11.5px}
+.search-results-page .search-section-compact .search-segment span{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search-results-page .search-section-compact .search-button{height:50px;padding:0 18px;font-size:14px}
+}
+@media(min-width:901px) and (max-width:1180px){.search-results-page .search-section-compact .search-button span{display:none}.search-results-page .search-section-compact .search-button{width:50px;padding:0;justify-content:center}}
