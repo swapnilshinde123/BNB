@@ -141,7 +141,7 @@ export default function StayApp({initialPage='explore'}:{initialPage?:'explore'|
    }
    setLoginBackground(page==='login'?loginBackground:page);setLoginReturn(target);path='/login?return_to='+encodeURIComponent(target);
   }else if(page==='login'){try{sessionStorage.removeItem(BOOKING_DRAFT_KEY)}catch{}}
-  roomOpen.current=false;roomPushed.current=false;setRoomId(null);setSearchSlug(null);
+  roomOpen.current=false;roomPushed.current=false;setRoomId(null);setSearchSlug(null);if(p!=='login'){setModal(null);setManual(false)}
   window.history.pushState({page:p},'',path);setPage(p);setError('');setInfo('');window.scrollTo({top:0,behavior:'smooth'});
  }
  function favourite(id:string){const s=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];setSaved(s);localStorage.setItem('aangan-saved',JSON.stringify(s))}
