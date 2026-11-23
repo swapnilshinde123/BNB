@@ -25,6 +25,34 @@ const answers = [
     answer: 'No upfront payment is needed to submit a booking request. After the host accepts, the request becomes payment pending. Confirmation follows host verification of payment.',
   },
   {
+    question: 'How do I pay, and is GST extra?',
+    answer: 'You pay by UPI, and only after the host accepts your request. My bookings then shows the exact amount and a UPI QR code; after paying, you enter the UTR (transaction reference) so the host can verify it. Prices are shown as a nightly base rate, and 5% GST is added in the quote you see before sending the request.',
+  },
+  {
+    question: 'How is GOMZO different from Airbnb or OYO?',
+    answer: 'GOMZO is a small, curated collection of homestays and short-stay apartments in Pune. Every booking is a request first: sending it costs ₹0, a real host reviews it, and you pay by UPI only after the host says yes. Once you have booked, you can message your host on WhatsApp, and the GOMZO team is reachable any time through Contact us.',
+  },
+  {
+    question: 'What happens if the host declines my request?',
+    answer: 'No money is taken, because nothing is paid until a host accepts. The held dates are released, the status in My bookings changes, and you can request another home or other dates.',
+  },
+  {
+    question: 'Which ID do I need to book?',
+    answer: 'Each adult guest uploads one government photo ID before the booking is confirmed: Aadhaar (masked, showing only the last four digits), passport, driving licence or voter ID. Foreign guests need a passport and visa. An approved ID can be kept on your account so you do not need to upload it again next time.',
+  },
+  {
+    question: 'Can I bring extra guests or visitors?',
+    answer: 'Book for everyone who will stay overnight; each home shows its maximum number of guests and the booking form will not go above it. Ask the host before inviting day visitors.',
+  },
+  {
+    question: 'Are couples, pets or parties allowed?',
+    answer: 'House rules are set by each host and differ from home to home. Message the host before you request if you are travelling as a couple, with a pet, or planning a gathering, and get their answer in writing.',
+  },
+  {
+    question: 'Can I check in early or check out late?',
+    answer: 'Standard times are check-in at 12 noon and check-out at 10 am. Early check-in or late check-out depends on whether the home is free before or after your stay, so ask the host; some hosts may charge for it.',
+  },
+  {
     question: 'Are prices fixed for every date?',
     answer: 'Nightly rates can vary for weekends, festivals or dates set by the host. Review the quote for your exact dates and guest count; the booking form shows 5% GST before submission.',
   },
