@@ -160,3 +160,10 @@ footer.site-footer .footer-contact svg:first-child{color:#b86140}
 }
 @media(min-width:901px) and (max-width:1180px){.search-results-page .search-section-compact .search-button span{display:none}.search-results-page .search-section-compact .search-button{width:50px;padding:0;justify-content:center}}
 @media(min-width:901px){.search-results-page .search-section-compact .search-bar{padding:6px!important;gap:0;background:#fff!important}.search-results-page .search-section-compact .search-bar .search-button{height:50px;margin:0!important}}
+/* Keep the nav search bar fixed to the screen (no transformed parent), never wider than the space between logo and menu */
+@media(min-width:901px){
+.search-results-page .search-section-compact,.search-results-page .search-section-compact.reveal-ready{transform:none!important;opacity:1!important;filter:none!important;animation:none!important;transition:none!important}
+.search-results-page .search-section-compact .search-bar{width:clamp(340px,calc(100vw - 600px),640px)!important}
+}
+@media(min-width:901px) and (max-width:1100px){.search-results-page .search-section-compact .search-segment b{display:none}.search-results-page .search-section-compact .search-segment{padding:5px 12px}.search-results-page .search-section-compact .brand-logo{max-width:150px}}
+.search-mode body{overflow-x:clip}
