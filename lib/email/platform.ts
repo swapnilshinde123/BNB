@@ -4,7 +4,7 @@ import {adminOrigin,emailHtml} from './templates';
 import {deliveryPolicy} from './policy';
 import {sendGmail} from './gmail-relay';
 export function platformMessage(subject:string,description:string,details:Record<string,string>,path='/host',guest=false){
- const url=(guest?'https://gomzo.co':adminOrigin)+path,text=[subject,description,...Object.entries(details).map(([k,v])=>`${k}: ${v}`),(guest?'Visit Gomzo: ':'Open host space: ')+url].join('\n\n');
+ const url=(guest?'https://www.gomzo.co':adminOrigin)+path,text=[subject,description,...Object.entries(details).map(([k,v])=>`${k}: ${v}`),(guest?'Visit Gomzo: ':'Open host space: ')+url].join('\n\n');
  const html=emailHtml({eyebrow:guest?'Gomzo':'Gomzo · Host community',title:subject,intro:description,rows:Object.entries(details) as [string,string][],buttons:[{label:guest?'Explore Gomzo':path.startsWith('/join')?'Accept invitation':'Open host space',url}],notes:[guest?'Our team will contact you about your request.':'Sign in with the email address that received this message.']});return {subject,text,html}
 }
 export function platformJob(recipient:string,message:ReturnType<typeof platformMessage>,id='platform-'+crypto.randomUUID(),conditional=false){return database().prepare(`INSERT OR IGNORE INTO platform_emails(id,recipient,subject,payload,created_at) SELECT ?,?,?,?,?${conditional?' WHERE changes()>0':''}`).bind(id,recipient.toLowerCase(),message.subject,JSON.stringify(message),Date.now())}

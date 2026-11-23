@@ -7,7 +7,7 @@ import './property-share.css';
 
 export function PropertyShare({home,className}:{home:Property;className:string}){
  const [open,setOpen]=useState(false),[copied,setCopied]=useState(false),timer=useRef<ReturnType<typeof setTimeout>|null>(null),input=useRef<HTMLInputElement>(null);
- const url='https://gomzo.co/?property='+encodeURIComponent(home.id),text=home.name+' · '+home.area+'\n'+url;
+ const url='https://www.gomzo.co/?property='+encodeURIComponent(home.id),text=home.name+' · '+home.area+'\n'+url;
  useEffect(()=>()=>{if(timer.current)clearTimeout(timer.current)},[]);
  function markCopied(){setCopied(true);if(timer.current)clearTimeout(timer.current);timer.current=setTimeout(()=>setCopied(false),2200)}
  async function copy(){try{await navigator.clipboard.writeText(url);markCopied()}catch{setOpen(true);input.current?.select()}}

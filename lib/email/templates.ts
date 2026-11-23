@@ -2,7 +2,7 @@ export type BookingMail = {id:string;name:string;email:string;phone:string;prope
 export type MailKind = 'admin-request'|'payment-submitted'|'guest-request'|'payment-pending'|'confirmed'|'rejected'|'cancelled';
 /** Emails addressed to the host rather than the guest. */
 export const hostMailKinds=['admin-request','payment-submitted'];
-export const guestOrigin='https://gomzo.co';
+export const guestOrigin='https://www.gomzo.co';
 export const adminOrigin='https://admin.gomzo.co';
 export function escapeHtml(value:unknown){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!))}
 export function reviewPath(id:string,action:string){return '/api/bookings/email-action?'+new URLSearchParams({id,action})}
@@ -54,7 +54,7 @@ export function emailHtml(p: EmailParts) {
 <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#f6f4ed">${esc(p.preheader || p.intro)}</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f6f4ed"><tr><td class="gz-outer" align="center" style="padding:32px 16px">
 <table role="presentation" class="gz-card" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;border-radius:20px;overflow:hidden;font-family:${font};color:#263a2e">
-<tr><td style="padding:22px 32px;background:#fbf8f2;border-bottom:1px solid #efe9df"><a href="https://gomzo.co" style="text-decoration:none"><img src="https://gomzo.co/brand/gomzo-wordmark.png" width="132" alt="Gomzo" style="display:block;width:132px;max-width:60%;height:auto;border:0"></a></td></tr>
+<tr><td style="padding:22px 32px;background:#fbf8f2;border-bottom:1px solid #efe9df"><a href="https://www.gomzo.co" style="text-decoration:none"><img src="https://www.gomzo.co/brand/gomzo-wordmark.png" width="132" alt="Gomzo" style="display:block;width:132px;max-width:60%;height:auto;border:0"></a></td></tr>
 <tr><td class="gz-pad" style="padding:32px">
 <p style="margin:0 0 10px;font-size:12px;letter-spacing:2px;font-weight:700;color:#9a6a4a;text-transform:uppercase">${esc(p.eyebrow)}</p>
 <h1 class="gz-title" style="margin:0 0 14px;font-size:27px;line-height:1.25;color:#1f2f26;font-weight:800">${esc(p.title)}</h1>
@@ -63,6 +63,6 @@ ${rows ? `<table role="presentation" width="100%" cellpadding="0" cellspacing="0
 ${buttons ? `<div style="margin:0 0 14px">${buttons}</div>` : ''}
 ${notes}
 </td></tr>
-<tr><td style="padding:18px 32px 24px;border-top:1px solid #efe9df;font-size:12px;line-height:1.6;color:#8a9184">Gomzo · Thoughtful stays with a real host · <a href="https://gomzo.co" style="color:#8a9184">gomzo.co</a><br>Need help? Reply to this email or WhatsApp us on <a href="https://wa.me/917083834078" style="color:#8a9184">+91 70838 34078</a>.</td></tr>
+<tr><td style="padding:18px 32px 24px;border-top:1px solid #efe9df;font-size:12px;line-height:1.6;color:#8a9184">Gomzo · Thoughtful stays with a real host · <a href="https://www.gomzo.co" style="color:#8a9184">www.gomzo.co</a><br>Need help? Reply to this email or WhatsApp us on <a href="https://wa.me/917083834078" style="color:#8a9184">+91 70838 34078</a>.</td></tr>
 </table></td></tr></table></body></html>`;
 }

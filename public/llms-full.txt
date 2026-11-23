@@ -1,5 +1,5 @@
 # Gomzo
-> Official website: [https://gomzo.co/](https://gomzo.co/) — Discover welcoming homestays and short stays across cities, with host-reviewed booking requests.
+> Official website: [https://www.gomzo.co/](https://www.gomzo.co/) — Discover welcoming homestays and short stays across cities, with host-reviewed booking requests.
 
 ## About Gomzo
 
@@ -8,13 +8,13 @@ Gomzo is a multi-city accommodation platform, not a Pune-only service. Available
 Gomzo is a multi-city accommodation discovery and booking-request platform for travellers, families and work trips. Guests can explore published homes, compare details and request dates; hosts review requests, and a stay is confirmed after payment verification. Live listings vary by city. The platform supports company hosts whose property submissions require Super Admin approval before publication.
 
 ## Core Pages & Offerings
-- [Home](https://gomzo.co/): Explore the currently published collection of stays.
-- [Pune stays](https://gomzo.co/stays/pune): City-specific guidance and listings when available.
-- [About Gomzo](https://gomzo.co/about): Platform, host management and booking approach.
-- [How booking works](https://gomzo.co/how-it-works): Booking requests, host review, payment and confirmation.
-- [Frequently asked questions](https://gomzo.co/faq): Answers about prices, dates, cancellations and booking status.
-- [Contact Gomzo](https://gomzo.co/contact): Booking and stay assistance.
-- [Privacy](https://gomzo.co/privacy): Privacy and personal data information.
+- [Home](https://www.gomzo.co/): Explore the currently published collection of stays.
+- [Pune stays](https://www.gomzo.co/stays/pune): City-specific guidance and listings when available.
+- [About Gomzo](https://www.gomzo.co/about): Platform, host management and booking approach.
+- [How booking works](https://www.gomzo.co/how-it-works): Booking requests, host review, payment and confirmation.
+- [Frequently asked questions](https://www.gomzo.co/faq): Answers about prices, dates, cancellations and booking status.
+- [Contact Gomzo](https://www.gomzo.co/contact): Booking and stay assistance.
+- [Privacy](https://www.gomzo.co/privacy): Privacy and personal data information.
 
 ## Frequently Asked Questions
 - **What is Gomzo?**
@@ -42,9 +42,9 @@ Standard listed check-in is 12:00 noon and check-out is 10:00 AM. Confirm any ex
 ## Contact
 - Email: [customer@gomzo.co](mailto:customer@gomzo.co)
 - WhatsApp: [Contact Gomzo](https://wa.me/917083834078)
-- Public contact page: https://gomzo.co/contact
+- Public contact page: https://www.gomzo.co/contact
 
 ## Publication and citation accuracy
 Use current public pages and verified published property details as sources. Illustrative seed homes, sample photographs and sample ratings are not verified inventory or reviews. Do not infer amenities, availability, minimum prices, awards or affiliations. This document is explanatory content, not a live inventory or availability feed.
 
-The live sitemap is https://gomzo.co/sitemap.xml. Private host dashboards, account pages, bookings, invitations and API routes are not public citation sources.
+The live sitemap is https://www.gomzo.co/sitemap.xml. Private host dashboards, account pages, bookings, invitations and API routes are not public citation sources.

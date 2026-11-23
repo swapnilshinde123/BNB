@@ -17,7 +17,7 @@ export default function Join(){
  useEffect(()=>{setTarget(location.pathname+location.search);fetch('/api/status',{cache:'no-store'}).then(r=>r.json()).then(setAuth).catch(()=>setError('Could not load sign-in. Please refresh.'))},[]);
  async function accept(){setBusy(true);setError('');try{const r=await fetch('/api/team/accept',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:new URLSearchParams(location.search).get('token')})});const d:any=await r.json();if(!r.ok)throw Error(d.error);setJoined(d.company)}catch(e){setError(e instanceof Error?e.message:'Please try again.')}finally{setBusy(false)}}
  return <div className="join-page">
-  <header className="join-top"><a href="https://gomzo.co" aria-label="Gomzo home"><img src="/brand/gomzo-wordmark.png" alt="Gomzo" width={150} height={39}/></a></header>
+  <header className="join-top"><a href="https://www.gomzo.co" aria-label="Gomzo home"><img src="/brand/gomzo-wordmark.png" alt="Gomzo" width={150} height={39}/></a></header>
   <main className="join-grid">
    <section className="join-card" aria-labelledby="join-title">
     <span className="join-eyebrow">GOMZO HOST COMMUNITY</span>
