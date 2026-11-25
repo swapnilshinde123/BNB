@@ -7,6 +7,8 @@ import { runWithConnectorBinding } from "../lib/connector-context";
 import type { ConnectorBinding } from "../lib/connector-contract.mjs";
 import {origin,isPrivateSurface,publicPages,junkPathRedirect,areaPages} from '../lib/seo';
 
+import {rejectCrossSiteWrite,protectResponse} from '../lib/security';
+
 const worker = {
   async scheduled() {
     // Cloudflare invokes this even when nobody has the website open.
@@ -15,6 +17,7 @@ const worker = {
   },
   fetch(request: Request, env: Cloudflare.Env, ctx: ExecutionContext<{ CONNECTORS?: ConnectorBinding }>) {
     const url=new URL(request.url);
+    if(rejectCrossSiteWrite(request))return protectResponse(Response.json({error:'Request origin not allowed.'},{status:403}),true,url.protocol==='https:');
     const legacyArea=url.pathname.match(/^\/stays\/([a-z0-9-]+)\/?$/)?.[1];
     if(['GET','HEAD'].includes(request.method)&&legacyArea&&legacyArea!=='pune'&&areaPages[legacyArea])return Response.redirect(origin+'/stays/pune/'+legacyArea+url.search,301);
     const junkTarget=['GET','HEAD'].includes(request.method)&&['gomzo.co','www.gomzo.co'].includes(url.hostname)?junkPathRedirect(url.pathname):null;
@@ -42,6 +45,8 @@ const worker = {
     const response = runWithConnectorBinding(binding, () => handler.fetch(request, env, ctx));
     ctx.waitUntil(Promise.resolve(response).then(() => Promise.allSettled([drainEmails(),drainPlatformEmails(),purgeGuestIds()])).catch(() => console.error('Booking email delivery unavailable')));
     return Promise.resolve(response).then(result=>{
+      const privateData=url.pathname.startsWith('/api/')||isPrivateSurface(url.hostname,url.pathname,url.search)||/(?:^|;\\s*)(?:gomzo_session|aangan_google_session)=/.test(request.headers.get('cookie')||'');
+      result=protectResponse(result,privateData,url.protocol==='https:');
       if(!isPrivateSurface(url.hostname,url.pathname,url.search)&&result.status!==404)return result;
       const headers=new Headers(result.headers);headers.set('X-Robots-Tag','noindex, nofollow');
       return new Response(result.body,{status:result.status,statusText:result.statusText,headers});

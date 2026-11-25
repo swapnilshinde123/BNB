@@ -73,7 +73,8 @@ export async function createSession(db:Db,u:GoogleUser){await ensureSessions(db)
 export function sessionToken(requestHeaders:Headers){const t=cookieValue(requestHeaders.get('cookie')||'',SESSION_COOKIE);return t&&/^[A-Za-z0-9_-]{30,60}$/.test(t)?t:null}
 export async function readSessionUser(db:Db,requestHeaders?:Headers):Promise<GoogleUser|null>{
  const token=sessionToken(requestHeaders??await headers());if(!token)return null;
- try{await ensureSessions(db);const hash=await sha(token);const row=await db.prepare('SELECT user_id,email,name,picture,last_seen FROM user_sessions WHERE token_hash=?').bind(hash).first<{user_id:string;email:string;name:string;picture:string|null;last_seen:number}>();if(!row)return null;
+ try{await ensureSessions(db);const hash=await sha(token);const row=await db.prepare('SELECT user_id,email,name,picture,created_at,last_seen FROM user_sessions WHERE token_hash=?').bind(hash).first<{user_id:string;email:string;name:string;picture:string|null;created_at:number;last_seen:number}>();if(!row)return null;
+  if(!Number.isFinite(row.created_at)||!Number.isFinite(row.last_seen)||Date.now()-row.created_at>SESSION_MAX_AGE*1000||Date.now()-row.last_seen>30*86400000)return null;
   if(Date.now()-row.last_seen>86400000)await db.prepare('UPDATE user_sessions SET last_seen=? WHERE token_hash=?').bind(Date.now(),hash).run();
   return {userId:row.user_id,displayName:row.name,email:row.email,fullName:row.name,picture:row.picture}}catch{return null}
 }
