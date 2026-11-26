@@ -2,8 +2,8 @@ import {homepageFaqs,homepageIntroduction,homepageReviewedDate} from './homepage
 import {gomzoProfiles} from './brand-links';
 import type {Metadata} from 'next';
 export const origin='https://www.gomzo.co';
-export const homeTitle='GOMZO | Curated Homestays & Short Stays in Pune';
-export const homeDescription='Book curated homestays and short-stay apartments in Pune with Gomzo: Koregaon Park, Viman Nagar, Kalyani Nagar, Baner, Wakad and Pashan. Compare live homes and send a booking request directly to the host.';
+export const homeTitle='Gomzo | Homestays & Short Stays Across Cities';
+export const homeDescription='Discover homestays, private apartments and short stays with Gomzo. Compare published homes by city and send a booking request directly to the host.';
 // Area and use-case landing pages, served at /stays/pune/<slug>.
 export const areaPages:Record<string,{title:string;area?:string;type?:string;category?:string}>={
  'koregaon-park':{title:'Stays in Koregaon Park, Pune',area:'Koregaon Park'},'viman-nagar':{title:'Stays in Viman Nagar, Pune',area:'Viman Nagar'},'kalyani-nagar':{title:'Stays in Kalyani Nagar, Pune',area:'Kalyani Nagar'},baner:{title:'Stays in Baner, Pune',area:'Baner'},wakad:{title:'Stays in Wakad, Pune',area:'Wakad'},hinjewadi:{title:'Stays in Hinjewadi, Pune',area:'Hinjewadi'},pashan:{title:'Stays in Pashan, Pune',area:'Pashan'},'studio-apartments':{title:'Studio apartments in Pune',type:'Studio'},'1bhk':{title:'1 BHK short stays in Pune',type:'1 BHK'},'2bhk':{title:'2 BHK short stays in Pune',type:'2 BHK'},'family-friendly':{title:'Family-friendly stays in Pune',category:'Family friendly'},'work-friendly':{title:'Work-friendly apartments in Pune',category:'Work-friendly'},'design-led':{title:'Design-led homestays in Pune',category:'Design-led'},'city-views':{title:'Stays with city views in Pune',category:'City views'}
